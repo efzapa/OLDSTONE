@@ -9,3 +9,5 @@ The wiki is currently being worked on.
 
 ## Discord
 Come say hi on the [discord](https://discord.gg/Sgt34t3Zd6), it is where the community is the most active.
+
+test
