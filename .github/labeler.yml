@@ -1,18 +1,34 @@
 Spriting:
 - changed-files:
-  - any-glob-to-any-file: icons/**
+  - any-glob-to-any-file: '**/*.dmi'
 
 Mapping:
 - changed-files:
   - any-glob-to-any-file: _maps/**
 
-documentation:
+Config:
 - changed-files:
   - any-glob-to-any-file:
     - .github/**
     - README.md**
+    - config/**
 
-Balance:
+Audio:
 - changed-files:
-  - any-glob-to-any-file:
-    - code/modules/jobs/job_types/roguetown/**
+  - any-glob-to-any-file: '**/*.ogg'
+
+TGUI:
+- changed-files:
+  - any-glob-to-any-file: '**/*.tgui'
+
+Python:
+- changed-files:
+  - any-glob-to-any-file: '**/*.py'
+
+Javascript:
+- changed-files:
+  - any-glob-to-any-file: '**/*.java'
+
+SQL:
+- changed-files:
+  - any-glob-to-any-file: '**/*.sql'
