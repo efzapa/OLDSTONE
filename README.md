@@ -1,7 +1,7 @@
 # BEING DEVELOPED
 
 <p align="center">
-	<a href="https://github.com/efzapa/OLDSTONE/actions/workflows/ci_suite.yml?query=workflow%3ACI	"><img src="https://github.com/efzapa/OLDSTONE/workflows/ci_suite/badge.svg" alt="CI"></a>
+	<a href="https://github.com/efzapa/OLDSTONE/actions/workflows/BYOND_Build.yml?query=workflow%3ACI	"><img src="https://github.com/efzapa/OLDSTONE/workflows/BYOND_Build/badge.svg" alt="BYOND Build"></a>
 	<a href="https://isitmaintained.com/project/efzapa/OLDSTONE"><img src="http://isitmaintained.com/badge/resolution/efzapa/OLDSTONE.svg" alt="Average time to resolve an issue"></a>
 	<a href="https://isitmaintained.com/project/efzapa/OLDSTONE"><img src="http://isitmaintained.com/badge/open/efzapa/OLDSTONE.svg" alt="Percentage of issues still open"></a>
 </p>
