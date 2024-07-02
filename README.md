@@ -1,5 +1,11 @@
 # BEING DEVELOPED
 
+<p align="center">
+	<a href="https://github.com/efzapa/OLDSTONE/actions?query=workflow%3ACI"><img src="https://github.com/efzapa/OLDSTONE/workflows/CI/badge.svg" alt="CI"></a>
+	<a href="https://isitmaintained.com/project/efzapa/OLDSTONE"><img src="http://isitmaintained.com/badge/resolution/efzapa/OLDSTONE.svg" alt="Average time to resolve an issue"></a>
+	<a href="https://isitmaintained.com/project/efzapa/OLDSTONE"><img src="http://isitmaintained.com/badge/open/efzapa/OLDSTONE.svg" alt="Percentage of issues still open"></a>
+</p>
+
 "Ne participes, nec mors sequetur"
 # Oldstone
 Oldstone is a fantasy roleplaying game based on the source code for Blackstone, our aim is to provide a classic Blackstone experience, keeping the core features that made it the hit that it was in the first place.
