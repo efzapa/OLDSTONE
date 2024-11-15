@@ -728,7 +728,6 @@
 /area/rogue/indoors/town/tavern)
 "aVv" = (
 /obj/structure/fermenting_barrel/random/water,
-/obj/item/storage/box/matches,
 /turf/open/floor/rogue/cobble,
 /area/rogue/under/town/basement)
 "aVy" = (
@@ -2883,6 +2882,12 @@
 /obj/structure/bed/rogue/shit,
 /turf/open/floor/rogue/dirt/road,
 /area/rogue/under/town/basement)
+"dQS" = (
+/obj/structure/floordoor/gatehatch/outer{
+	redstone_id = "kybraxoracid"
+	},
+/turf/open/transparent/openspace,
+/area/rogue/indoors/shelter/town)
 "dSq" = (
 /obj/structure/mineral_door/wood{
 	icon_state = "wcr";
@@ -2935,10 +2940,12 @@
 	},
 /area/rogue/indoors/town/magician)
 "dTD" = (
-/obj/structure/floordoor/gatehatch/outer{
-	redstone_id = "kybraxoracid"
+/obj/structure/winch{
+	gid = "manor2";
+	redstone_id = "manor1";
+	dir = 4
 	},
-/turf/open/transparent/openspace,
+/turf/open/floor/rogue/blocks,
 /area/rogue/indoors/shelter/town)
 "dTL" = (
 /obj/structure/fluff/railing/wood{
@@ -4342,8 +4349,17 @@
 /turf/open/floor/rogue/dirt/road,
 /area/rogue/outdoors/bog/dense)
 "fJM" = (
-/turf/open/lava/acid,
-/area/rogue/under/cave)
+/obj/structure/kybraxor{
+	pixel_x = -32;
+	pixel_y = -32;
+	redstone_id = "pitouter";
+	desc = "The mad king's hungriest pet."
+	},
+/obj/structure/floordoor/gatehatch/inner{
+	redstone_id = "kybraxoracid"
+	},
+/turf/open/transparent/openspace,
+/area/rogue/indoors/shelter/town)
 "fKe" = (
 /obj/effect/decal/cleanable/blood/tracks,
 /turf/closed/mineral/rogue,
@@ -8327,13 +8343,6 @@
 "lgg" = (
 /turf/open/floor/rogue/dirt/road,
 /area/rogue/outdoors/mountains)
-"lgh" = (
-/obj/structure/floordoor/gatehatch/outer{
-	redstone_id = "kybraxoracid"
-	},
-/obj/structure/kybraxor,
-/turf/open/transparent/openspace,
-/area/rogue/indoors)
 "lgp" = (
 /turf/open/water/river{
 	icon_state = "rockwd";
@@ -9542,6 +9551,13 @@
 "naI" = (
 /turf/closed/wall/mineral/rogue/decowood,
 /area/rogue/indoors/town/manor)
+"nbb" = (
+/obj/structure/gate/bars{
+	gid = "manor2";
+	redstone_id = s
+	},
+/turf/open/floor/rogue/blocks,
+/area/rogue/indoors/shelter/town)
 "nbe" = (
 /turf/open/floor/rogue/blocks,
 /area/rogue/indoors/town/dwarfin)
@@ -13534,14 +13550,6 @@
 /obj/machinery/light/rogue/firebowl/church,
 /turf/open/floor/rogue/hexstone,
 /area/rogue/indoors/town/church)
-"syM" = (
-/obj/structure/winch{
-	gid = "manor2";
-	redstone_id = "manor1";
-	dir = 4
-	},
-/turf/open/floor/rogue/blocks,
-/area/rogue/indoors/shelter/town)
 "syY" = (
 /obj/structure/fluff/statue/knight,
 /turf/open/floor/rogue/tile/masonic/single,
@@ -13756,11 +13764,6 @@
 "sSS" = (
 /turf/closed/mineral/random/rogue/med,
 /area/rogue/under/cave)
-"sSW" = (
-/obj/structure/closet/crate/roguecloset,
-/obj/item/storage/box/matches,
-/turf/open/floor/rogue/wood,
-/area/rogue/indoors/town/shop)
 "sSY" = (
 /obj/effect/decal/cleanable/cobweb,
 /turf/open/floor/rogue/ruinedwood/spiral,
@@ -13771,6 +13774,12 @@
 /obj/item/gun/ballistic/revolver/grenadelauncher/bow,
 /turf/open/floor/rogue/cobble,
 /area/rogue/under/town/basement)
+"sTn" = (
+/obj/structure/floordoor/gatehatch/inner{
+	redstone_id = "kybraxoracid"
+	},
+/turf/open/transparent/openspace,
+/area/rogue/indoors/shelter/town)
 "sTr" = (
 /obj/structure/table/wood{
 	icon_state = "largetable";
@@ -14953,18 +14962,6 @@
 /obj/machinery/light/rogue/firebowl,
 /turf/open/floor/rogue/dirt,
 /area/rogue/outdoors/bog/dense)
-"uzx" = (
-/obj/structure/kybraxor{
-	pixel_x = -32;
-	pixel_y = -32;
-	redstone_id = "pitouter";
-	desc = "The mad king's hungriest pet."
-	},
-/obj/structure/floordoor/gatehatch/inner{
-	redstone_id = "kybraxoracid"
-	},
-/turf/open/transparent/openspace,
-/area/rogue/indoors/shelter/town)
 "uzS" = (
 /obj/structure/roguewindow,
 /turf/open/floor/rogue/ruinedwood,
@@ -15153,13 +15150,6 @@
 /obj/structure/bars/grille,
 /turf/open/transparent/openspace,
 /area/rogue/indoors)
-"uLP" = (
-/obj/structure/gate/bars{
-	gid = "manor2";
-	redstone_id = s
-	},
-/turf/open/floor/rogue/blocks,
-/area/rogue/indoors/shelter/town)
 "uMc" = (
 /obj/structure/table/wood{
 	icon_state = "tablewood1"
@@ -16891,6 +16881,13 @@
 	icon_state = "bluestone"
 	},
 /area/rogue/under/town/basement)
+"xhM" = (
+/obj/structure/floordoor/gatehatch/outer{
+	redstone_id = "kybraxoracid"
+	},
+/obj/structure/kybraxor,
+/turf/open/transparent/openspace,
+/area/rogue/indoors)
 "xif" = (
 /obj/structure/fluff/railing/border{
 	dir = 8
@@ -17595,11 +17592,8 @@
 /turf/closed/wall/mineral/rogue/stone,
 /area/rogue/outdoors/town)
 "xXq" = (
-/obj/structure/floordoor/gatehatch/inner{
-	redstone_id = "kybraxoracid"
-	},
-/turf/open/transparent/openspace,
-/area/rogue/indoors/shelter/town)
+/turf/open/lava/acid,
+/area/rogue/under/cave)
 "xXs" = (
 /obj/structure/fluff/walldeco/church/line,
 /obj/effect/landmark/start/puritan,
@@ -185051,9 +185045,9 @@ vRu
 vRu
 vRu
 vRu
-fJM
-fJM
-fJM
+xXq
+xXq
+xXq
 vRu
 rSC
 rSC
@@ -185453,9 +185447,9 @@ vRu
 vRu
 vRu
 vRu
-fJM
-fJM
-fJM
+xXq
+xXq
+xXq
 vRu
 rSC
 rSC
@@ -185855,9 +185849,9 @@ vRu
 vRu
 vRu
 vRu
-fJM
-fJM
-fJM
+xXq
+xXq
+xXq
 vRu
 rSC
 rSC
@@ -287264,7 +287258,7 @@ jXZ
 woa
 xoS
 jhn
-lgh
+xhM
 vRn
 rEe
 pNH
@@ -287561,10 +287555,10 @@ wbg
 wVI
 wbg
 acb
-uLP
-dTD
-xXq
-dTD
+nbb
+dQS
+sTn
+dQS
 iyp
 aVy
 aVy
@@ -287964,9 +287958,9 @@ wbg
 wbg
 acb
 acb
-dTD
-uzx
-dTD
+dQS
+fJM
+dQS
 acb
 wVI
 wVI
@@ -288366,9 +288360,9 @@ wbg
 wVI
 acb
 acb
-dTD
-xXq
-dTD
+dQS
+sTn
+dQS
 acb
 eZC
 eZC
@@ -289169,7 +289163,7 @@ wbg
 wbg
 wbg
 uoM
-syM
+dTD
 fAw
 tuK
 eBa
@@ -289217,7 +289211,7 @@ hUt
 hUt
 jTo
 hUt
-sSW
+vlK
 fjX
 toW
 wVI
