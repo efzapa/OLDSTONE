@@ -3,8 +3,8 @@
 	flag = ELDER
 	department_flag = GARRISON
 	faction = "Station"
-	total_positions = 0
-	spawn_positions = 0
+	total_positions = 1
+	spawn_positions = 1
 
 	allowed_sexes = list(MALE, FEMALE) //same as bog guard
 	allowed_races = list(
@@ -48,16 +48,14 @@
 
 /datum/outfit/job/roguetown/woodsman/pre_equip(mob/living/carbon/human/H)
 	..()
-	cloak = /obj/item/clothing/cloak/raincloak/furcloak
-	neck = /obj/item/clothing/neck/roguetown/gorget
-	armor = /obj/item/clothing/suit/roguetown/armor/brigandine/coatplates
-	shirt = /obj/item/clothing/suit/roguetown/armor/chainmail
-	pants = /obj/item/clothing/under/roguetown/chainlegs
-	shoes = /obj/item/clothing/shoes/roguetown/boots/armor
-	belt = /obj/item/storage/belt/rogue/leather
-	beltr = /obj/item/rogueweapon/mace/cudgel
-	beltl = /obj/item/flashlight/flare/torch/lantern
-	r_hand = /obj/item/rogueweapon/spear/billhook
+	head = /obj/item/clothing/head/roguetown/roguehood/random
+	if(prob(50))
+		head = /obj/item/clothing/head/roguetown/strawhat
+	pants = /obj/item/clothing/under/roguetown/tights/random
+	armor = /obj/item/clothing/suit/roguetown/armor/workervest
+	shirt = /obj/item/clothing/suit/roguetown/shirt/undershirt/random
+	shoes = /obj/item/clothing/shoes/roguetown/simpleshoes
+	belt = /obj/item/storage/belt/rogue/leather/rope
 	backr = /obj/item/storage/backpack/rogue/satchel
 	backpack_contents = list(/obj/item/keyring/velder  = 1, /obj/item/storage/belt/rogue/pouch/coins/rich = 1, /obj/item/rogueweapon/huntingknife/idagger/steel/special = 1)
 	if(H.mind)
@@ -84,5 +82,3 @@
 		H.change_stat("speed", -3)
 		H.change_stat("intelligence", 5)
 	H.verbs |= /mob/proc/haltyell
-	ADD_TRAIT(H, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
-	ADD_TRAIT(H, TRAIT_MEDIUMARMOR, TRAIT_GENERIC)
