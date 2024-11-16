@@ -20,6 +20,8 @@
 			say("Your balance is NEGATIVE.")
 			return
 		var/list/choicez = list()
+		if(amt > 50)
+			choicez += "PLATINUM"
 		if(amt > 10)
 			choicez += "GOLD"
 		if(amt > 5)
@@ -30,6 +32,8 @@
 			return
 		amt = SStreasury.bank_accounts[H]
 		var/mod = 1
+		if(selection == "PLATINUM")
+			mod = 50
 		if(selection == "GOLD")
 			mod = 10
 		if(selection == "SILVER")
@@ -49,7 +53,7 @@
 			return
 		budget2change(coin_amt*mod, user, selection)
 	else
-		to_chat(user, span_warning("The machine bites my finger."))
+		to_chat(user, "<span class='warning'>The machine bites my finger.</span>")
 		icon_state = "atm-b"
 		H.flash_fullscreen("redflash3")
 		playsound(H, 'sound/combat/hits/bladed/genstab (1).ogg', 100, FALSE, -1)
@@ -85,5 +89,5 @@
 
 /obj/structure/roguemachine/atm/examine(mob/user)
 	. += ..()
-	. += span_info("The current tax rate on deposits is [SStreasury.tax_value * 100] percent. Nobles exempt.")
+	. += "<span class='info'>The current tax rate on deposits is [SStreasury.tax_value * 100] percent. Nobles exempt.</span>"
 

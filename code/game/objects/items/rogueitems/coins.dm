@@ -1,3 +1,4 @@
+#define CTYPE_XYBRIUM "x"
 #define CTYPE_GOLD "g"
 #define CTYPE_SILV "s"
 #define CTYPE_COPP "c"
@@ -46,11 +47,13 @@
 	if(isturf(T) && quantity > 1)
 		var/obj/structure/table/TA = locate() in T
 		if(!TA) //no table
-			var/obj/item/roguecoin/new_coin = new type(T)
-			new_coin.set_quantity(1) // prevent exploits with coin piles
-			new_coin.pixel_x = rand(-8, 8)
-			new_coin.pixel_y = rand(-5, 5)
-			set_quantity(quantity - 1)
+			for(var/i in 2 to quantity) // exclude the first coin
+				var/obj/item/roguecoin/new_coin = new type(T)
+				new_coin.set_quantity(1) // prevent exploits with coin piles
+				new_coin.pixel_x = rand(-8, 8)
+				new_coin.pixel_y = rand(-5, 5)
+
+	set_quantity(1)
 
 /obj/item/roguecoin/get_real_price()
 	return sellprice * quantity
@@ -63,7 +66,7 @@
 /obj/item/roguecoin/examine(mob/user)
 	. = ..()
 	if(quantity > 1)
-		. += span_info("\Roman [quantity] coins.")
+		. += "<span class='info'>\Roman [quantity] coins.</span>"
 
 /obj/item/roguecoin/proc/merge(obj/item/roguecoin/G, mob/user)
 	if(!G)
@@ -118,10 +121,10 @@
 	flip_cd = world.time
 	playsound(user, 'sound/foley/coinphy (1).ogg', 100, FALSE)
 	if(prob(50))
-		user.visible_message(span_info("[user] flips the coin. Heads!"))
+		user.visible_message("<span class='info'>[user] flips the coin. Heads!</span>")
 		heads_tails = TRUE
 	else
-		user.visible_message(span_info("[user] flips the coin. Tails!"))
+		user.visible_message("<span class='info'>[user] flips the coin. Tails!</span>")
 		heads_tails = FALSE
 	update_icon()
 
@@ -169,6 +172,15 @@
 		return
 	return ..()
 
+//XYBRIUM
+/obj/item/roguecoin/xybrium
+	name = "xentara"
+	desc = "Xybrium, an exceptionally rare metal, was primarily used to craft small, high-value items like coins. Its extreme rarity made it perfect for minting precious currency such as Zentari, valued for their enduring worth and unique composition."
+	icon_state = "x1"
+	sellprice = 50
+	base_type = CTYPE_XYBRIUM
+	plural_name = "zentari"
+
 //GOLD
 /obj/item/roguecoin/gold
 	name = "zenar"
@@ -209,6 +221,11 @@
 	. = ..()
 	set_quantity(rand(4,19))
 
+/obj/item/roguecoin/xybrium/pile/Initialize()
+	. = ..()
+	set_quantity(rand(4,19))
+
+#undef CTYPE_XYBRIUM
 #undef CTYPE_GOLD
 #undef CTYPE_SILV
 #undef CTYPE_COPP
