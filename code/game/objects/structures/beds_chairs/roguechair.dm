@@ -273,6 +273,7 @@
 	debris = list(/obj/item/grown/log/tree/small = 1)
 
 /obj/structure/bed/rogue/shit
+	name = "straw bed"
 	icon_state = "shitbed"
 	sleepy = 1
 
@@ -356,6 +357,7 @@
 	debris = list(/obj/item/grown/log/tree/small = 1)
 
 /obj/structure/bed/rogue/inn/pileofshit
+	name = "inn bed"
 	icon_state = "shitbed2"
 	icon = 'icons/roguetown/misc/structure.dmi'
 	anchored = TRUE
