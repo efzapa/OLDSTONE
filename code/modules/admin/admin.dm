@@ -544,6 +544,19 @@
 	usr << browse(dat, "window=admin2;size=240x280")
 	return
 
+/datum/admins/proc/announce_emperor() //make this better later, maybe use the sound system
+	set category = "Fun"
+	set name = "Announce Emperor"
+	set desc = "Announce 'All Hail the Emperor' to the world"
+	if(!check_rights(0))
+		return
+
+	to_chat(world, "<span class='adminnotice'><b>All Hail the Emperor</b></span>")
+	//SEND_SOUND(world, 'sound/emperor.ogg')
+	log_admin("Announce Emperor: [key_name(usr)] announced 'All Hail the Emperor'")
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "Announce Emperor")
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////admins2.dm merge
 //i.e. buttons/verbs
 
