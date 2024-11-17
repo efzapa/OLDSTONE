@@ -1,10 +1,10 @@
-/datum/job/roguetown/bailiff
+/datum/job/roguetown/bailiff //THIS ROLE IS NOT MEANT TO BE PLAYED BY PLAYERS AND IS A PLACEHOLDER FOR SHERIFF CODE
 	title = "Bailiff"
 	flag = BAILIFF
 	department_flag = NOBLEMEN
 	faction = "Station"
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	allowed_sexes = list(MALE)
 	allowed_races = list("Humen")
 	allowed_ages = list(AGE_MIDDLEAGED, AGE_OLD)
@@ -57,71 +57,7 @@
 	ADD_TRAIT(H, TRAIT_NOBLE, TRAIT_GENERIC)
 	ADD_TRAIT(H, TRAIT_MEDIUMARMOR, TRAIT_GENERIC)
 	H.verbs |= /mob/proc/haltyell
-	H.verbs |= list(/mob/living/carbon/human/proc/request_outlaw, /mob/living/carbon/human/proc/request_law, /mob/living/carbon/human/proc/request_law_removal, /mob/living/carbon/human/proc/request_purge)
 
-/mob/living/carbon/human/proc/request_law()
-	set name = "Request Law"
-	set category = "Bailiff"
-	if(stat)
-		return
-	var/inputty = input("Write a new law", "BAILIFF") as text|null
-	if(inputty)
-		if(hasomen(OMEN_NOLORD))
-			make_law(inputty)
-		else
-			var/lord = find_lord()
-			if(lord)
-				INVOKE_ASYNC(GLOBAL_PROC, GLOBAL_PROC_REF(lord_law_requested), src, lord, inputty)
-			else
-				make_law(inputty)
-
-/mob/living/carbon/human/proc/request_law_removal()
-	set name = "Request Law Removal"
-	set category = "Bailiff"
-	if(stat)
-		return
-	var/inputty = input("Remove a law", "BAILIFF") as text|null
-	var/law_index = text2num(inputty) || 0
-	if(law_index && GLOB.laws_of_the_land[law_index])
-		if(hasomen(OMEN_NOLORD))
-			remove_law(law_index)
-		else
-			var/lord = find_lord()
-			if(lord)
-				INVOKE_ASYNC(GLOBAL_PROC, GLOBAL_PROC_REF(lord_law_removal_requested), src, lord, law_index)
-			else
-				remove_law(law_index)
-
-/mob/living/carbon/human/proc/request_purge()
-	set name = "Request Purge"
-	set category = "Bailiff"
-	if(stat)
-		return
-	if(hasomen(OMEN_NOLORD))
-		purge_laws()
-	else
-		var/lord = find_lord()
-		if(lord)
-			INVOKE_ASYNC(GLOBAL_PROC, GLOBAL_PROC_REF(lord_purge_requested), src, lord)
-		else
-			purge_laws()
-
-/mob/living/carbon/human/proc/request_outlaw()
-	set name = "Request Outlaw"
-	set category = "Bailiff"
-	if(stat)
-		return
-	var/inputty = input("Outlaw a person", "BAILIFF") as text|null
-	if(inputty)
-		if(hasomen(OMEN_NOLORD))
-			make_outlaw(inputty)
-		else
-			var/lord = find_lord()
-			if(lord)
-				INVOKE_ASYNC(GLOBAL_PROC, GLOBAL_PROC_REF(lord_outlaw_requested), src, lord, inputty)
-			else
-				make_outlaw(inputty)
-				
 /proc/find_lord(required_stat = CONSCIOUS)
 	var/mob/living/lord
 	for(var/mob/living/carbon/human/H in GLOB.human_list)

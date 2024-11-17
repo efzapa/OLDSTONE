@@ -92,6 +92,7 @@
 	ADD_TRAIT(H, TRAIT_MEDIUMARMOR, TRAIT_GENERIC)
 	ADD_TRAIT(H, TRAIT_STEELHEARTED, TRAIT_GENERIC)
 	H.verbs |= /mob/proc/haltyell
+	H.verbs |= list(/mob/living/carbon/human/proc/request_outlaw, /mob/living/carbon/human/proc/request_law, /mob/living/carbon/human/proc/request_law_removal, /mob/living/carbon/human/proc/request_purge)
 
 /obj/effect/proc_holder/spell/self/convertrole
 	name = "Recruit Beggar"
@@ -180,3 +181,23 @@
 	if(!.)
 		return
 	recruit.verbs |= /mob/proc/haltyell
+
+/mob/living/carbon/human/proc/request_law()
+	set name = "Request Law"
+	set category = "Sheriff"
+	// ...existing code...
+
+/mob/living/carbon/human/proc/request_law_removal()
+	set name = "Request Law Removal"
+	set category = "Sheriff"
+	// ...existing code...
+
+/mob/living/carbon/human/proc/request_purge()
+	set name = "Request Purge"
+	set category = "Sheriff"
+	// ...existing code...
+
+/mob/living/carbon/human/proc/request_outlaw()
+	set name = "Request Outlaw"
+	set category = "Sheriff"
+	// ...existing code...

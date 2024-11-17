@@ -15,10 +15,10 @@
 	)
 	allowed_sexes = list(MALE, FEMALE)
 	display_order = JDO_COUNCILLOR
-	tutorial = "You may have inherited this role, bought your way into it, or were appointed by the bailiff; \
-			Whatever it was you now serve as a assistant, planner, and juror for the Bailiff. \
-			You help him oversee the taxation, construction, and planning of new laws. \
-			You only answer to the Bailiff, Queen, King, Princes, or Princesses. However, your main focus is to assist the Bailiff."
+	tutorial = "You may have inherited this role, bought your way into it, or were appointed by the council; \
+			Whatever it was you now serve as an assistant, planner, and juror for the council. \
+			You help oversee the taxation, construction, and planning of new laws. \
+			You only answer to the Queen, King, Princes, or Princesses. However, your main focus is to assist the council."
 	whitelist_req = FALSE
 	outfit = /datum/outfit/job/roguetown/councillor
 	
