@@ -102,7 +102,7 @@ GLOBAL_LIST_EMPTY(emperor_titles)
 			if(istype(H.wear_mask, /obj/item/clothing/mask/rogue/eyepatch/left))
 				qdel(H.wear_mask)
 				mask = /obj/item/clothing/mask/rogue/lordmask/l
-	else //Empress
+	else //Empress, probably not used but just in case
 		armor = /obj/item/clothing/suit/roguetown/armor/armordress
 		belt = /obj/item/storage/belt/rogue/leather/plaquegold
 		shoes = /obj/item/clothing/shoes/roguetown/shortboots
