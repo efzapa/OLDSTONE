@@ -7,7 +7,7 @@
 
 /obj/structure/roguemachine/steward
 	name = "nerve master"
-	desc = "The stewards most trusted friend."
+	desc = ""
 	icon = 'icons/roguetown/misc/machines.dmi'
 	icon_state = "steward_machine"
 	density = TRUE
@@ -29,7 +29,7 @@
 			update_icon()
 			return
 		else
-			to_chat(user, span_warning("Wrong key."))
+			to_chat(user, "<span class='warning'>Wrong key.</span>")
 			return
 	if(istype(P, /obj/item/keyring))
 		var/obj/item/keyring/K = P
@@ -39,7 +39,7 @@
 				playsound(loc, 'sound/misc/beep.ogg', 100, FALSE, -1)
 				update_icon()
 				return
-		to_chat(user, span_warning("Wrong key."))
+		to_chat(user, "<span class='warning'>Wrong key.</span>")
 		return
 	return ..()
 
@@ -67,19 +67,11 @@
 		var/datum/roguestock/D = locate(href_list["export"]) in SStreasury.stockpile_datums
 		if(!D)
 			return
-		if((D.held_items[1] + D.held_items[2]) < D.importexport_amt)
+		if(D.held_items < D.importexport_amt)
 			say("Insufficient stock.")
 			return
 		var/amt = D.get_export_price()
-
-		// Try to export everything from town stockpile
-		if(D.held_items[1] >= D.importexport_amt)
-			D.held_items[1] -= D.importexport_amt
-		// If not possible, first pull form town stockpile, then bog stockpile
-		else
-			D.held_items[2] -= (D.importexport_amt - D.held_items[1])
-			D.held_items[1] = 0
-
+		D.held_items -= D.importexport_amt
 		SStreasury.treasury_value += amt
 		SStreasury.log_to_steward("+[amt] exported [D.name]")
 		scom_announce("Rockhill exports [D.name] for [amt] mammon.")
@@ -165,7 +157,7 @@
 				SStreasury.give_money_account(-newtax, A)
 				break
 	if(href_list["payroll"])
-		var/list/L = list(GLOB.noble_positions) + list(GLOB.garrison_positions) + list(GLOB.church_positions) + list(GLOB.yeoman_positions) + list(GLOB.peasant_positions) + list(GLOB.youngfolk_positions)
+		var/list/L = list(GLOB.noble_positions) + list(GLOB.garrison_positions) + list(GLOB.church_positions) + list(GLOB.serf_positions) + list(GLOB.peasant_positions) + list(GLOB.youngfolk_positions)
 		var/list/things = list()
 		for(var/list/category in L)
 			for(var/A in category)
@@ -217,7 +209,7 @@
 	if(.)
 		return
 	if(locked)
-		to_chat(user, span_warning("It's locked. Of course."))
+		to_chat(user, "<span class='warning'>It's locked. Of course.</span>")
 		return
 	user.changeNext_move(CLICK_CD_MELEE)
 	playsound(loc, 'sound/misc/keyboard_enter.ogg', 100, FALSE, -1)
@@ -239,12 +231,8 @@
 			contents += "--------------<BR>"
 			contents += "Treasury: [SStreasury.treasury_value]m</center><BR>"
 			contents += "<a href='?src=\ref[src];payroll=1'>\[Pay by Class\]</a><BR><BR>"
-			for(var/mob/living/carbon/human/A in SStreasury.bank_accounts)
-				if(ishuman(A))
-					var/mob/living/carbon/human/tmp = A
-					contents += "[tmp.real_name] ([tmp.advjob ? tmp.advjob : tmp.job]) - [SStreasury.bank_accounts[A]]m<BR>"
-				else
-					contents += "[A.real_name] - [SStreasury.bank_accounts[A]]m<BR>"
+			for(var/mob/living/A in SStreasury.bank_accounts)
+				contents += "[A.real_name] - [SStreasury.bank_accounts[A]]m<BR>"
 				contents += "<a href='?src=\ref[src];givemoney=\ref[A]'>\[Give Money\]</a> <a href='?src=\ref[src];fineaccount=\ref[A]'>\[Fine Account\]</a><BR><BR>"
 		if(TAB_STOCK)
 			contents += "<a href='?src=\ref[src];switchtab=[TAB_MAIN]'>\[Return\]</a><BR>"
@@ -256,7 +244,7 @@
 			for(var/datum/roguestock/stockpile/A in SStreasury.stockpile_datums)
 				contents += "[A.name]<BR>"
 				contents += "[A.desc]<BR>"
-				contents += "Stockpiled Amount: [A.held_items[1] + A.held_items[2]]<BR>"
+				contents += "Stockpiled Amount: [A.held_items]<BR>"
 				contents += "Bounty Price: <a href='?src=\ref[src];setbounty=\ref[A]'>[A.payout_price]</a><BR>"
 				contents += "Withdraw Price: <a href='?src=\ref[src];setprice=\ref[A]'>[A.withdraw_price]</a><BR>"
 				contents += "Demand: [A.demand2word()]<BR>"
@@ -285,7 +273,7 @@
 			for(var/datum/roguestock/bounty/A in SStreasury.stockpile_datums)
 				contents += "[A.name]<BR>"
 				contents += "[A.desc]<BR>"
-				contents += "Total Collected: [A.held_items[1] + A.held_items[2]]<BR>"
+				contents += "Total Collected: [A.held_items]<BR>"
 				if(A.percent_bounty)
 					contents += "Bounty Price: <a href='?src=\ref[src];setbounty=\ref[A]'>[A.payout_price]%</a><BR><BR>"
 				else

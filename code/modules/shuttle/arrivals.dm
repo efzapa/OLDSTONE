@@ -76,7 +76,7 @@
 		damaged = TRUE
 		if(console)
 			console.say("Alert, hull breach detected!")
-		var/obj/machinery/announcement_system/announcer = safepick(GLOB.announcement_systems)
+		var/obj/machinery/announcement_system/announcer = pick(GLOB.announcement_systems)
 		if(!QDELETED(announcer))
 			announcer.announce("ARRIVALS_BROKEN", channels = list())
 		if(mode != SHUTTLE_CALL)
@@ -186,7 +186,7 @@
 
 	Launch(TRUE)
 
-	to_chat(user, span_notice("Calling your shuttle. One moment..."))
+	to_chat(user, "<span class='notice'>Calling your shuttle. One moment...</span>")
 	while(mode != SHUTTLE_CALL && !damaged)
 		stoplag()
 

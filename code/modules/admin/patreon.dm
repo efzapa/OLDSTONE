@@ -237,15 +237,15 @@ GLOBAL_LIST_EMPTY(anonymize)
 	if(get_playerquality(client.ckey) <= -5)
 		client.prefs.anonymize = FALSE
 		client.prefs.save_preferences()
-		to_chat(src, span_warning("Your PQ is too low!"))
+		to_chat(src, "<span class='warning'>Your PQ is too low!</span>")
 		return
 //	if(!check_whitelist(client.ckey))
-//		to_chat(src, span_warning("Whitelisted players only."))
+//		to_chat(src, "<span class='warning'>Whitelisted players only.</span>")
 //		return
 	if(client.prefs.anonymize == TRUE)
 		if(alert(src, "Disable Anonymize? (Not Recommended)", "ROGUETOWN", "YES", "NO") == "YES")
 			if(GLOB.respawncounts[client.ckey])
-				to_chat(src, span_warning("You have already spawned."))
+				to_chat(src, "<span class='warning'>You have already spawned.</span>")
 				return
 			client.prefs.anonymize = FALSE
 			client.prefs.save_preferences()
@@ -256,7 +256,7 @@ GLOBAL_LIST_EMPTY(anonymize)
 		Dungeon Masters while playing here, useful for dealing with negative OOC bias or \
 		maintaining privacy from other BYOND users.", "ROGUETOWN", "YES", "NO") == "YES")
 			if(GLOB.respawncounts[client.ckey])
-				to_chat(src, span_warning("You have already spawned."))
+				to_chat(src, "<span class='warning'>You have already spawned.</span>")
 				return
 			client.prefs.anonymize = TRUE
 			client.prefs.save_preferences()
@@ -299,16 +299,16 @@ GLOBAL_LIST_EMPTY(temporary_donators)
 	if(!email)
 		return
 	if(!patreon_lookup(name) || !patreon_lookup(email) || !findtext(email, "@"))
-		to_chat(src, span_warning("We couldn't find that name/email combo.</span> <span class='info'>Donator status is updated weekly before every playtest. If you have waited a week, seek help in our DISCORD SERVER (https://discord.gg/9uYTPsRMKa)"))
+		to_chat(src, "<span class='warning'>We couldn't find that name/email combo.</span> <span class='info'>Donator status is updated weekly before every playtest. If you have waited a week, seek help in our DISCORD SERVER (https://discord.gg/9uYTPsRMKa)</span>")
 		return
 //	var/saniemail = sanitize_simple(email,list("@"="AT","."="DOT"))
 	var/fug = patemail2ckey(email)
 	if(fug && (fug != ckey))
-		to_chat(src, span_warning("That Patreon is already registered to a different player.</span> <span class='info'>Donator status is updated weekly before every playtest. If you have waited a week, seek help in our DISCORD SERVER (https://discord.gg/9uYTPsRMKa)"))
+		to_chat(src, "<span class='warning'>That Patreon is already registered to a different player.</span> <span class='info'>Donator status is updated weekly before every playtest. If you have waited a week, seek help in our DISCORD SERVER (https://discord.gg/9uYTPsRMKa)</span>")
 		return
 	add_patreon(ckey,email)
 	client.patreonlevel = -1
-	to_chat(src, span_boldnotice("Patreon registered."))
+	to_chat(src, "<span class='boldnotice'>Patreon registered.</span>")
 	var/shown_patreon_level = client.patreonlevel()
 	if(!shown_patreon_level)
 		shown_patreon_level = "NONE"
@@ -323,7 +323,7 @@ GLOBAL_LIST_EMPTY(temporary_donators)
 			shown_patreon_level = "Merchant"
 		if(5)
 			shown_patreon_level = "Lord"
-	to_chat(src, span_info("Your Donator Level: [shown_patreon_level]"))
+	to_chat(src, "<span class='info'>Your Donator Level: [shown_patreon_level]</span>")
 */
 /proc/add_patreon(ckey,email)
 	if(!email || !ckey)

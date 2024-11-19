@@ -31,7 +31,6 @@
 	var/loaded = TRUE
 	var/lastfilechange = 0
 	var/curvol = 100
-	anvilrepair = /datum/skill/craft/blacksmithing
 
 /obj/item/dmusicbox/Initialize()
 	soundloop = new(list(src), FALSE)
@@ -47,7 +46,7 @@
 
 /obj/item/dmusicbox/attackby(obj/item/P, mob/user, params)
 	if(!loaded)
-		if(istype(P, /obj/item/roguecoin/copper))
+		if(istype(P, /obj/item/reagent_containers/food/snacks/rogue/honey))
 			loaded=TRUE
 			qdel(P)
 			update_icon()
@@ -91,10 +90,10 @@
 	var/file_size = length(infile)
 
 	if(file_ext != ".ogg")
-		to_chat(user, span_warning("SONG MUST BE AN OGG."))
+		to_chat(user, "<span class='warning'>SONG MUST BE AN OGG.</span>")
 		return
 	if(file_size > 6485760)
-		to_chat(user, span_warning("TOO BIG. 6 MEGS OR LESS."))
+		to_chat(user, "<span class='warning'>TOO BIG. 6 MEGS OR LESS.</span>")
 		return
 	lastfilechange = world.time
 	fcopy(infile,"data/jukeboxuploads/[user.ckey]/[filename]")

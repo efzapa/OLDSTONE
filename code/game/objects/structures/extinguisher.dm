@@ -23,7 +23,7 @@
 
 /obj/structure/extinguisher_cabinet/examine(mob/user)
 	. = ..()
-	. += span_notice("Alt-click to [opened ? "close":"open"] it.")
+	. += "<span class='notice'>Alt-click to [opened ? "close":"open"] it.</span>"
 
 /obj/structure/extinguisher_cabinet/Destroy()
 	if(stored_extinguisher)
@@ -42,11 +42,11 @@
 
 /obj/structure/extinguisher_cabinet/attackby(obj/item/I, mob/user, params)
 	if(I.tool_behaviour == TOOL_WRENCH && !stored_extinguisher)
-		to_chat(user, span_notice("I start unsecuring [name]..."))
+		to_chat(user, "<span class='notice'>I start unsecuring [name]...</span>")
 		I.play_tool_sound(src)
 		if(I.use_tool(src, user, 60))
 			playsound(loc, 'sound/blank.ogg', 50, TRUE)
-			to_chat(user, span_notice("I unsecure [name]."))
+			to_chat(user, "<span class='notice'>I unsecure [name].</span>")
 			deconstruct(TRUE)
 		return
 
@@ -57,7 +57,7 @@
 			if(!user.transferItemToLoc(I, src))
 				return
 			stored_extinguisher = I
-			to_chat(user, span_notice("I place [I] in [src]."))
+			to_chat(user, "<span class='notice'>I place [I] in [src].</span>")
 			update_icon()
 			return TRUE
 		else
@@ -76,7 +76,7 @@
 		return
 	if(stored_extinguisher)
 		user.put_in_hands(stored_extinguisher)
-		to_chat(user, span_notice("I take [stored_extinguisher] from [src]."))
+		to_chat(user, "<span class='notice'>I take [stored_extinguisher] from [src].</span>")
 		stored_extinguisher = null
 		if(!opened)
 			opened = 1
@@ -89,7 +89,7 @@
 /obj/structure/extinguisher_cabinet/attack_tk(mob/user)
 	if(stored_extinguisher)
 		stored_extinguisher.forceMove(loc)
-		to_chat(user, span_notice("I telekinetically remove [stored_extinguisher] from [src]."))
+		to_chat(user, "<span class='notice'>I telekinetically remove [stored_extinguisher] from [src].</span>")
 		stored_extinguisher = null
 		opened = 1
 		playsound(loc, 'sound/blank.ogg', 15, TRUE, -3)
@@ -108,7 +108,7 @@
 
 /obj/structure/extinguisher_cabinet/proc/toggle_cabinet(mob/user)
 	if(opened && broken)
-		to_chat(user, span_warning("[src] is broken open."))
+		to_chat(user, "<span class='warning'>[src] is broken open.</span>")
 	else
 		playsound(loc, 'sound/blank.ogg', 15, TRUE, -3)
 		opened = !opened

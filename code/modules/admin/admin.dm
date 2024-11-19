@@ -24,7 +24,7 @@
 	log_admin("[key_name(usr)] checked the individual player panel for [key_name(M)][isobserver(usr)?"":" while in game"].")
 
 	if(!M)
-		to_chat(usr, span_warning("I seem to be selecting a mob that doesn't exist anymore."))
+		to_chat(usr, "<span class='warning'>I seem to be selecting a mob that doesn't exist anymore.</span>")
 		return
 
 	var/body = "<html><head><title>Options for [M.key]</title></head>"
@@ -192,108 +192,6 @@
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Player Panel") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 
-/datum/admins/proc/admin_heal(mob/living/M in GLOB.mob_list)
-	set name = "Heal Mob"
-	set desc = "Heal a mob to full health"
-	set category = "GameMaster"
-
-	if(!check_rights())
-		return
-
-	M.fully_heal(admin_revive = TRUE)
-	message_admins(span_danger("Admin [key_name_admin(usr)] healed [key_name_admin(M)]!"))
-	log_admin("[key_name(usr)] healed [key_name(M)].")
-
-/datum/admins/proc/admin_revive(mob/living/M in GLOB.mob_list)
-	set name = "Revive Mob"
-	set desc = "Resuscitate a mob"
-	set category = "GameMaster"
-
-	if(!check_rights())
-		return
-
-	M.revive(full_heal = TRUE, admin_revive = TRUE)
-	message_admins(span_danger("Admin [key_name_admin(usr)] revived [key_name_admin(M)]!"))
-	log_admin("[key_name(usr)] Revived [key_name(M)].")
-
-/datum/admins/proc/checkpq(mob/living/M in GLOB.mob_list)
-	set name = "Check PQ"
-	set desc = "Check a mob's PQ"
-	set category = null
-
-	if(!check_rights())
-		return
-	
-	if(!M.ckey)
-		to_chat(src, span_warning("There is no ckey attached to this mob."))
-		return
-
-	check_pq_menu(M.ckey)
-
-/datum/admins/proc/admin_sleep(mob/living/M in GLOB.mob_list)
-	set name = "Toggle Sleeping"
-	set desc = "Toggle a mob's sleeping state"
-	set category = "GameMaster"
-
-	if(!check_rights())
-		return
-	
-	var/S = M.IsSleeping()
-	if(S)
-		M.remove_status_effect(S)
-		M.set_resting(FALSE, TRUE)
-	else
-		M.SetSleeping(999999)
-	message_admins(span_danger("Admin [key_name_admin(usr)] toggled [key_name_admin(M)]'s sleeping state!"))
-	log_admin("[key_name(usr)] toggled [key_name(M)]'s sleeping state.")
-
-/datum/admins/proc/start_vote()
-	set name = "Start Vote"
-	set desc = "Start a vote"
-	set category = "Server"
-
-	if(!check_rights(R_POLL))
-		to_chat(usr, span_warning("You do not have the rights to start a vote."))
-		return
-
-	var/type = input("What kind of vote?") as null|anything in list("End Round", "Custom")
-	switch(type)
-		if("End Round")
-			type = "endround"
-		if("Custom")
-			type = "custom"
-	SSvote.initiate_vote(type, usr.key)
-
-/datum/admins/proc/adjustpq(mob/living/M in GLOB.mob_list)
-	set name = "Adjust PQ"
-	set desc = "Adjust a player's PQ"
-	set category = null
-
-	if(!check_rights())
-		return
-	
-	if(!M.ckey)
-		to_chat(src, span_warning("There is no ckey attached to this mob."))
-		return
-
-	var/ckey = lowertext(M.ckey)
-	var/admin = lowertext(usr.key)
-
-	if(ckey == admin)
-		to_chat(src, span_boldwarning("That's you!"))
-		return
-	if(!fexists("data/player_saves/[copytext(ckey,1,2)]/[ckey]/preferences.sav"))
-		to_chat(src, span_boldwarning("User does not exist."))
-		return
-	var/amt2change = input("How much to modify the PQ by? (20 to -20, or 0 to just add a note)") as null|num
-	if(!check_rights(R_ADMIN,0))
-		amt2change = CLAMP(amt2change, -20, 20)
-	var/raisin = stripped_input("State a short reason for this change", "Game Master", "", null)
-	if(!amt2change && !raisin)
-		return
-	adjust_playerquality(amt2change, ckey, admin, raisin)
-	to_chat(M.client, "<span class=\"admin\"><span class=\"prefix\">ADMIN LOG:</span> <span class=\"message linkify\">Your PQ has been adjusted by [amt2change] by [admin] for reason: [raisin]</span></span>")
-
 /datum/admins/proc/access_news_network() //MARKER
 	set category = "Fun"
 	set name = "Access Newscaster Network"
@@ -328,7 +226,7 @@
 			dat+="<BR><HR><A href='?src=[REF(src)];[HrefToken()];ac_set_signature=1'>The newscaster recognises you as:<BR> <FONT COLOR='green'>[src.admin_signature]</FONT></A>"
 		if(1)
 			dat+= "Station Feed Channels<HR>"
-			if( isemptylist(GLOB.news_network.network_channels) )
+			if( !length(GLOB.news_network.network_channels) )
 				dat+="<I>No active channels found...</I>"
 			else
 				for(var/datum/newscaster/feed_channel/CHANNEL in GLOB.news_network.network_channels)
@@ -381,7 +279,7 @@
 				dat+="<FONT COLOR='red'><B>ATTENTION: </B></FONT>This channel has been deemed as threatening to the welfare of the station, and marked with a Nanotrasen D-Notice.<BR>"
 				dat+="No further feed story additions are allowed while the D-Notice is in effect.</FONT><BR><BR>"
 			else
-				if( isemptylist(src.admincaster_feed_channel.messages) )
+				if( !length(src.admincaster_feed_channel.messages) )
 					dat+="<I>No feed messages found in channel...</I><BR>"
 				else
 					var/i = 0
@@ -403,7 +301,7 @@
 			dat+="<FONT SIZE=1>NOTE: Due to the nature of news Feeds, total deletion of a Feed Story is not possible.<BR>"
 			dat+="Keep in mind that users attempting to view a censored feed will instead see the \[REDACTED\] tag above it.</FONT>"
 			dat+="<HR>Select Feed channel to get Stories from:<BR>"
-			if(isemptylist(GLOB.news_network.network_channels))
+			if(!length(GLOB.news_network.network_channels))
 				dat+="<I>No feed channels found active...</I><BR>"
 			else
 				for(var/datum/newscaster/feed_channel/CHANNEL in GLOB.news_network.network_channels)
@@ -414,7 +312,7 @@
 			dat+="<FONT SIZE=1>A D-Notice is to be bestowed upon the channel if the handling Authority deems it as harmful for the station's"
 			dat+="morale, integrity or disciplinary behaviour. A D-Notice will render a channel unable to be updated by anyone, without deleting any feed"
 			dat+="stories it might contain at the time. You can lift a D-Notice if you have the required access at any time.</FONT><HR>"
-			if(isemptylist(GLOB.news_network.network_channels))
+			if(!length(GLOB.news_network.network_channels))
 				dat+="<I>No feed channels found active...</I><BR>"
 			else
 				for(var/datum/newscaster/feed_channel/CHANNEL in GLOB.news_network.network_channels)
@@ -425,7 +323,7 @@
 			dat+="<B>[src.admincaster_feed_channel.channel_name]: </B><FONT SIZE=1>\[ created by: <FONT COLOR='maroon'>[src.admincaster_feed_channel.returnAuthor(-1)]</FONT> \]</FONT><BR>"
 			dat+="<FONT SIZE=2><A href='?src=[REF(src)];[HrefToken()];ac_censor_channel_author=[REF(src.admincaster_feed_channel)]'>[(src.admincaster_feed_channel.authorCensor) ? ("Undo Author censorship") : ("Censor channel Author")]</A></FONT><HR>"
 
-			if( isemptylist(src.admincaster_feed_channel.messages) )
+			if( !length(src.admincaster_feed_channel.messages) )
 				dat+="<I>No feed messages found in channel...</I><BR>"
 			else
 				for(var/datum/newscaster/feed_message/MESSAGE in src.admincaster_feed_channel.messages)
@@ -442,7 +340,7 @@
 				dat+="<FONT COLOR='red'><B>ATTENTION: </B></FONT>This channel has been deemed as threatening to the welfare of the station, and marked with a Nanotrasen D-Notice.<BR>"
 				dat+="No further feed story additions are allowed while the D-Notice is in effect.</FONT><BR><BR>"
 			else
-				if( isemptylist(src.admincaster_feed_channel.messages) )
+				if( !length(src.admincaster_feed_channel.messages) )
 					dat+="<I>No feed messages found in channel...</I><BR>"
 				else
 					for(var/datum/newscaster/feed_message/MESSAGE in src.admincaster_feed_channel.messages)
@@ -544,19 +442,6 @@
 	usr << browse(dat, "window=admin2;size=240x280")
 	return
 
-/datum/admins/proc/announce_emperor() //make this better later, maybe use the sound system
-	set category = "Fun"
-	set name = "Announce Emperor"
-	set desc = "Announce 'All Hail the Emperor' to the world"
-	if(!check_rights(0))
-		return
-
-	to_chat(world, "<span class='adminnotice'><b>All Hail the Emperor</b></span>")
-	//SEND_SOUND(world, 'sound/emperor.ogg')
-	log_admin("Announce Emperor: [key_name(usr)] announced 'All Hail the Emperor'")
-	SSblackbox.record_feedback("tally", "admin_verb", 1, "Announce Emperor")
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////admins2.dm merge
 //i.e. buttons/verbs
 
@@ -644,7 +529,7 @@
 	else
 		message_admins("[key_name(usr)] set the admin notice.")
 		log_admin("[key_name(usr)] set the admin notice:\n[new_admin_notice]")
-		to_chat(world, span_adminnotice("<b>Admin Notice:</b>\n \t [new_admin_notice]"))
+		to_chat(world, "<span class='adminnotice'><b>Admin Notice:</b>\n \t [new_admin_notice]</span>")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Set Admin Notice") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	GLOB.admin_notice = new_admin_notice
 	return
@@ -701,7 +586,7 @@
 						[usr.key] has forced the gamemode.</font>")
 					return
 				SSticker.manualmodes |= choice
-				roguegamemodes -= choice		
+				roguegamemodes -= choice
 	else
 		to_chat(usr, "<font color='red'>Error: Force Modes: Game has already started.</font>")
 
@@ -716,7 +601,7 @@
 	else
 		to_chat(world, "<B>New players may now enter the game.</B>")
 	log_admin("[key_name(usr)] toggled new player game entering.")
-	message_admins(span_adminnotice("[key_name_admin(usr)] toggled new player game entering."))
+	message_admins("<span class='adminnotice'>[key_name_admin(usr)] toggled new player game entering.</span>")
 	world.update_status()
 	SSblackbox.record_feedback("nested tally", "admin_toggle", 1, list("Toggle Entering", "[GLOB.enter_allowed ? "Enabled" : "Disabled"]")) //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
@@ -744,7 +629,7 @@
 		to_chat(world, "<B>I may now respawn.</B>")
 	else
 		to_chat(world, "<B>I may no longer respawn :(</B>")
-	message_admins(span_adminnotice("[key_name_admin(usr)] toggled respawn to [!new_nores ? "On" : "Off"]."))
+	message_admins("<span class='adminnotice'>[key_name_admin(usr)] toggled respawn to [!new_nores ? "On" : "Off"].</span>")
 	log_admin("[key_name(usr)] toggled respawn to [!new_nores ? "On" : "Off"].")
 	world.update_status()
 	SSblackbox.record_feedback("nested tally", "admin_toggle", 1, list("Toggle Respawn", "[!new_nores ? "Enabled" : "Disabled"]")) //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
@@ -894,7 +779,7 @@
 	else
 		to_chat(world, "<B>Guests may now enter the game.</B>")
 	log_admin("[key_name(usr)] toggled guests game entering [!new_guest_ban ? "" : "dis"]allowed.")
-	message_admins(span_adminnotice("[key_name_admin(usr)] toggled guests game entering [!new_guest_ban ? "" : "dis"]allowed."))
+	message_admins("<span class='adminnotice'>[key_name_admin(usr)] toggled guests game entering [!new_guest_ban ? "" : "dis"]allowed.</span>")
 	SSblackbox.record_feedback("nested tally", "admin_toggle", 1, list("Toggle Guests", "[!new_guest_ban ? "Enabled" : "Disabled"]")) //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /datum/admins/proc/output_ai_laws()
@@ -1066,7 +951,7 @@
 
 	tomob.ghostize(0)
 
-	message_admins(span_adminnotice("[key_name_admin(usr)] has put [frommob.key] in control of [tomob.name]."))
+	message_admins("<span class='adminnotice'>[key_name_admin(usr)] has put [frommob.key] in control of [tomob.name].</span>")
 	log_admin("[key_name(usr)] stuffed [frommob.key] into [tomob.name].")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Ghost Drag Control")
 

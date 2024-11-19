@@ -22,9 +22,9 @@
 			if(prob(5))
 				affected_mob.emote("breathgasp")
 			if(prob(10))
-				to_chat(affected_mob, span_danger("My body hurts all over!"))
+				to_chat(affected_mob, "<span class='danger'>My body hurts all over!</span>")
 		if(4)
-			to_chat(affected_mob, span_danger("My body feels as if it's trying to rip itself apart!"))
+			to_chat(affected_mob, "<span class='danger'>My body feels as if it's trying to rip itself apart!</span>")
 			if(prob(50))
 				affected_mob.gib()
 		else

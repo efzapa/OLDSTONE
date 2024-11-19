@@ -31,8 +31,7 @@ GLOBAL_LIST_EMPTY(redstone_objs)
 		var/mob/living/L = user
 		L.changeNext_move(CLICK_CD_MELEE)
 		var/used_time = 100 - (L.STASTR * 10)
-		user.visible_message(span_warning("[user] pulls the lever."))
-		log_game("[key_name(user)] pulled the lever with redstone id \"[redstone_id]\"")
+		user.visible_message("<span class='warning'>[user] pulls the lever.</span>")
 		if(do_after(user, used_time, target = user))
 			for(var/obj/structure/O in redstone_attached)
 				spawn(0) O.redstone_triggered()
@@ -51,7 +50,7 @@ GLOBAL_LIST_EMPTY(redstone_objs)
 
 /obj/structure/floordoor
 	name = "floorhatch"
-	desc = "A handy floor hatch for people who need privacy upstairs."
+	desc = ""
 	icon = 'icons/roguetown/misc/structure.dmi'
 	icon_state = "floorhatch1"
 	density = FALSE

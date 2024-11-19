@@ -2,8 +2,8 @@
 	name = "Phobia"
 	desc = ""
 	scan_desc = ""
-	gain_text = span_warning("I start finding default values very unnerving...")
-	lose_text = span_notice("I no longer feel afraid of default values.")
+	gain_text = "<span class='warning'>I start finding default values very unnerving...</span>"
+	lose_text = "<span class='notice'>I no longer feel afraid of default values.</span>"
 	var/phobia_type
 	var/next_check = 0
 	var/next_scare = 0
@@ -21,8 +21,8 @@
 	if(!phobia_type)
 		phobia_type = pick(SStraumas.phobia_types)
 
-	gain_text = span_warning("I start finding [phobia_type] very unnerving...")
-	lose_text = span_notice("I no longer feel afraid of [phobia_type].")
+	gain_text = "<span class='warning'>I start finding [phobia_type] very unnerving...</span>"
+	lose_text = "<span class='notice'>I no longer feel afraid of [phobia_type].</span>"
 	scan_desc += " of [phobia_type]"
 	trigger_words = SStraumas.phobia_words[phobia_type]
 	trigger_mobs = SStraumas.phobia_mobs[phobia_type]
@@ -88,7 +88,7 @@
 
 		if(findtext(hearing_args[HEARING_RAW_MESSAGE], reg))
 			addtimer(CALLBACK(src, PROC_REF(freak_out), null, word), 10) //to react AFTER the chat message
-			hearing_args[HEARING_MESSAGE] = reg.Replace(hearing_args[HEARING_MESSAGE], span_phobia("$1"))
+			hearing_args[HEARING_MESSAGE] = reg.Replace(hearing_args[HEARING_MESSAGE], "<span class='phobia'>$1</span>")
 			break
 
 /datum/brain_trauma/mild/phobia/handle_speech(datum/source, list/speech_args)
@@ -98,7 +98,7 @@
 		var/regex/reg = regex("(\\b|\\A)[REGEX_QUOTE(word)]'?s*(\\b|\\Z)", "i")
 
 		if(findtext(speech_args[SPEECH_MESSAGE], reg))
-			to_chat(owner, span_warning("I can't bring myself to say the word \"<span class='phobia'>[word]</span>\"!"))
+			to_chat(owner, "<span class='warning'>I can't bring myself to say the word \"<span class='phobia'>[word]</span>\"!</span>")
 			speech_args[SPEECH_MESSAGE] = ""
 
 /datum/brain_trauma/mild/phobia/proc/freak_out(atom/reason, trigger_word)
@@ -107,15 +107,15 @@
 		return
 	var/message = pick("spooks you to the bone", "shakes you up", "terrifies you", "sends you into a panic", "sends chills down your spine")
 	if(reason)
-		to_chat(owner, span_danger("Seeing [reason] [message]!"))
+		to_chat(owner, "<span class='danger'>Seeing [reason] [message]!</span>")
 	else if(trigger_word)
-		to_chat(owner, span_danger("Hearing \"[trigger_word]\" [message]!"))
+		to_chat(owner, "<span class='danger'>Hearing \"[trigger_word]\" [message]!</span>")
 	else
-		to_chat(owner, span_danger("Something [message]!"))
+		to_chat(owner, "<span class='danger'>Something [message]!</span>")
 	var/reaction = rand(1,4)
 	switch(reaction)
 		if(1)
-			to_chat(owner, span_warning("I are paralyzed with fear!"))
+			to_chat(owner, "<span class='warning'>I are paralyzed with fear!</span>")
 			owner.Stun(70)
 			owner.Jitter(8)
 		if(2)
@@ -125,7 +125,7 @@
 			if(reason)
 				owner.pointed(reason)
 		if(3)
-			to_chat(owner, span_warning("I shut your eyes in terror!"))
+			to_chat(owner, "<span class='warning'>I shut your eyes in terror!</span>")
 			owner.Jitter(5)
 			owner.blind_eyes(10)
 		if(4)

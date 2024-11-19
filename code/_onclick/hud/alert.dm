@@ -18,7 +18,7 @@
 	if(!category || QDELETED(src))
 		return
 
-	var/atom/movable/screen/alert/thealert
+	var/obj/screen/alert/thealert
 	if(alerts[category])
 		thealert = alerts[category]
 		if(thealert.override_alerts)
@@ -68,13 +68,13 @@
 		thealert.timeout = world.time + thealert.timeout - world.tick_lag
 	return thealert
 
-/mob/proc/alert_timeout(atom/movable/screen/alert/alert, category)
+/mob/proc/alert_timeout(obj/screen/alert/alert, category)
 	if(alert.timeout && alerts[category] == alert && world.time >= alert.timeout)
 		clear_alert(category)
 
 // Proc to clear an existing alert.
 /mob/proc/clear_alert(category, clear_override = FALSE)
-	var/atom/movable/screen/alert/alert = alerts[category]
+	var/obj/screen/alert/alert = alerts[category]
 	if(!alert)
 		return 0
 	if(alert.override_alerts && !clear_override)
@@ -90,7 +90,7 @@
 #define ALERT_DEBUFF	1
 #define ALERT_BUFF		2
 
-/atom/movable/screen/alert
+/obj/screen/alert
 	icon = 'icons/mob/screen_alert.dmi'
 	icon_state = "status"
 	name = "Alert"
@@ -104,148 +104,148 @@
 	var/alert_group = ALERT_STATUS //decides where on the screen the alert shows up, if it's a debuff, status effect, or buff
 	nomouseover = FALSE
 
-/atom/movable/screen/alert/MouseEntered(location,control,params)
+/obj/screen/alert/MouseEntered(location,control,params)
 	..()
 //	if(!QDELETED(src))
 //		openToolTip(usr,src,params,title = name,content = desc,theme = alerttooltipstyle)
 
 
-/atom/movable/screen/alert/MouseExited()
+/obj/screen/alert/MouseExited()
 	..()
 //	closeToolTip(usr)
 
 
 //Gas alerts
-/atom/movable/screen/alert/not_enough_oxy
+/obj/screen/alert/not_enough_oxy
 	name = "Choking"
 	desc = ""
 	icon_state = "not_enough_oxy"
 
-/atom/movable/screen/alert/too_much_oxy
+/obj/screen/alert/too_much_oxy
 	name = "Choking (O2)"
 	desc = ""
 	icon_state = "too_much_oxy"
 
-/atom/movable/screen/alert/not_enough_nitro
+/obj/screen/alert/not_enough_nitro
 	name = "Choking (No N2)"
 	desc = ""
 	icon_state = "not_enough_nitro"
 
-/atom/movable/screen/alert/too_much_nitro
+/obj/screen/alert/too_much_nitro
 	name = "Choking (N2)"
 	desc = ""
 	icon_state = "too_much_nitro"
 
-/atom/movable/screen/alert/not_enough_co2
+/obj/screen/alert/not_enough_co2
 	name = "Choking (No CO2)"
 	desc = ""
 	icon_state = "not_enough_co2"
 
-/atom/movable/screen/alert/too_much_co2
+/obj/screen/alert/too_much_co2
 	name = "Choking (CO2)"
 	desc = ""
 	icon_state = "too_much_co2"
 
-/atom/movable/screen/alert/not_enough_tox
+/obj/screen/alert/not_enough_tox
 	name = "Choking (No Plasma)"
 	desc = ""
 	icon_state = "not_enough_tox"
 
-/atom/movable/screen/alert/too_much_tox
+/obj/screen/alert/too_much_tox
 	name = "Choking (Plasma)"
 	desc = ""
 	icon_state = "too_much_tox"
 //End gas alerts
 
 
-/atom/movable/screen/alert/fat
+/obj/screen/alert/fat
 	name = "Fat"
 	desc = ""
 	icon_state = "fat"
 
-/atom/movable/screen/alert/hungry
+/obj/screen/alert/hungry
 	name = "Hungry"
 	desc = ""
 	icon_state = "hungry"
 
-/atom/movable/screen/alert/starving
+/obj/screen/alert/starving
 	name = "Starving"
 	desc = ""
 	icon_state = "starving"
 
-/atom/movable/screen/alert/gross
+/obj/screen/alert/gross
 	name = "Grossed out."
 	desc = ""
 	icon_state = "gross"
 
-/atom/movable/screen/alert/verygross
+/obj/screen/alert/verygross
 	name = "Very grossed out."
 	desc = ""
 	icon_state = "gross2"
 
-/atom/movable/screen/alert/disgusted
+/obj/screen/alert/disgusted
 	name = "DISGUSTED"
 	desc = ""
 	icon_state = "gross3"
 
-/atom/movable/screen/alert/hot
+/obj/screen/alert/hot
 	name = "Too Hot"
 	desc = ""
 	icon_state = "hot"
 
-/atom/movable/screen/alert/cold
+/obj/screen/alert/cold
 	name = "Too Cold"
 	desc = ""
 	icon_state = "cold"
 
-/atom/movable/screen/alert/lowpressure
+/obj/screen/alert/lowpressure
 	name = "Low Pressure"
 	desc = ""
 	icon_state = "lowpressure"
 
-/atom/movable/screen/alert/highpressure
+/obj/screen/alert/highpressure
 	name = "High Pressure"
 	desc = ""
 	icon_state = "highpressure"
 
-/atom/movable/screen/alert/blind
+/obj/screen/alert/blind
 	name = "Blind"
 	desc = ""
 	icon_state = "blind"
 
-/atom/movable/screen/alert/high
+/obj/screen/alert/high
 	name = "High"
 	desc = ""
 	icon_state = "high"
 
-/atom/movable/screen/alert/hypnosis
+/obj/screen/alert/hypnosis
 	name = "Hypnosis"
 	desc = ""
 	icon_state = "hypnosis"
 	var/phrase
 
-/atom/movable/screen/alert/mind_control
+/obj/screen/alert/mind_control
 	name = "Mind Control"
 	desc = ""
 	icon_state = "mind_control"
 	var/command
 
-/atom/movable/screen/alert/mind_control/Click()
+/obj/screen/alert/mind_control/Click()
 	..()
 	var/mob/living/L = usr
-	to_chat(L, span_mind_control("[command]"))
+	to_chat(L, "<span class='mind_control'>[command]</span>")
 
-/atom/movable/screen/alert/drunk //Not implemented
+/obj/screen/alert/drunk //Not implemented
 	name = "Drunk"
 	desc = ""
 	icon_state = "drunk"
 
-/atom/movable/screen/alert/embeddedobject
+/obj/screen/alert/embeddedobject
 	name = "Embedded Objects"
 	desc = ""
 	icon_state = "embeddedobject"
 
-/atom/movable/screen/alert/embeddedobject/Click()
+/obj/screen/alert/embeddedobject/Click()
 	if(!..())
 		if(ishuman(usr))
 			var/mob/living/carbon/human/H = usr
@@ -257,27 +257,27 @@
 			msg += "***"
 			to_chat(H, "[msg.Join()]")
 
-/atom/movable/screen/alert/weightless
+/obj/screen/alert/weightless
 	name = "Weightless"
 	desc = ""
 	icon_state = "weightless"
 
-/atom/movable/screen/alert/highgravity
+/obj/screen/alert/highgravity
 	name = "High Gravity"
 	desc = ""
 	icon_state = "paralysis"
 
-/atom/movable/screen/alert/veryhighgravity
+/obj/screen/alert/veryhighgravity
 	name = "Crushing Gravity"
 	desc = ""
 	icon_state = "paralysis"
 
-/atom/movable/screen/alert/fire
+/obj/screen/alert/fire
 	name = "On Fire"
 	desc = ""
 	icon_state = "fire"
 
-/atom/movable/screen/alert/fire/Click()
+/obj/screen/alert/fire/Click()
 	..()
 	var/mob/living/L = usr
 	if(!istype(L) || !L.can_resist())
@@ -289,20 +289,20 @@
 
 //ALIENS
 
-/atom/movable/screen/alert/alien_tox
+/obj/screen/alert/alien_tox
 	name = "Plasma"
 	desc = ""
 	icon_state = "alien_tox"
 	alerttooltipstyle = "alien"
 
-/atom/movable/screen/alert/alien_fire
+/obj/screen/alert/alien_fire
 // This alert is temporarily gonna be thrown for all hot air but one day it will be used for literally being on fire
 	name = "Too Hot"
 	desc = ""
 	icon_state = "alien_fire"
 	alerttooltipstyle = "alien"
 
-/atom/movable/screen/alert/alien_vulnerable
+/obj/screen/alert/alien_vulnerable
 	name = "Severed Matriarchy"
 	desc = ""
 	icon_state = "alien_noqueen"
@@ -310,7 +310,7 @@
 
 //BLOBS
 
-/atom/movable/screen/alert/nofactory
+/obj/screen/alert/nofactory
 	name = "No Factory"
 	desc = ""
 	icon_state = "blobbernaut_nofactory"
@@ -318,7 +318,7 @@
 
 // BLOODCULT
 
-/atom/movable/screen/alert/bloodsense
+/obj/screen/alert/bloodsense
 	name = "Blood Sense"
 	desc = ""
 	icon_state = "cult_sense"
@@ -327,17 +327,17 @@
 	var/angle = 0
 	var/mob/living/simple_animal/hostile/construct/Cviewer = null
 
-/atom/movable/screen/alert/bloodsense/Initialize()
+/obj/screen/alert/bloodsense/Initialize()
 	. = ..()
 	narnar = new('icons/mob/screen_alert.dmi', "mini_nar")
 	START_PROCESSING(SSprocessing, src)
 
-/atom/movable/screen/alert/bloodsense/Destroy()
+/obj/screen/alert/bloodsense/Destroy()
 	Cviewer = null
 	STOP_PROCESSING(SSprocessing, src)
 	return ..()
 
-/atom/movable/screen/alert/bloodsense/process()
+/obj/screen/alert/bloodsense/process()
 	var/atom/blood_target
 
 	if(!mob_viewer.mind)
@@ -427,19 +427,19 @@
 
 //GUARDIANS
 
-/atom/movable/screen/alert/cancharge
+/obj/screen/alert/cancharge
 	name = "Charge Ready"
 	desc = ""
 	icon_state = "guardian_charge"
 	alerttooltipstyle = "parasite"
 
-/atom/movable/screen/alert/canstealth
+/obj/screen/alert/canstealth
 	name = "Stealth Ready"
 	desc = ""
 	icon_state = "guardian_canstealth"
 	alerttooltipstyle = "parasite"
 
-/atom/movable/screen/alert/instealth
+/obj/screen/alert/instealth
 	name = "In Stealth"
 	desc = ""
 	icon_state = "guardian_instealth"
@@ -447,49 +447,49 @@
 
 //SILICONS
 
-/atom/movable/screen/alert/nocell
+/obj/screen/alert/nocell
 	name = "Missing Power Cell"
 	desc = ""
 	icon_state = "nocell"
 
-/atom/movable/screen/alert/emptycell
+/obj/screen/alert/emptycell
 	name = "Out of Power"
 	desc = "Unit's power cell has no charge remaining. No modules available until power cell is recharged. \
 Recharging stations are available in robotics, the dormitory bathrooms, and the AI satellite."
 	icon_state = "emptycell"
 
-/atom/movable/screen/alert/lowcell
+/obj/screen/alert/lowcell
 	name = "Low Charge"
 	desc = ""
 	icon_state = "lowcell"
 
 //Ethereal
 
-/atom/movable/screen/alert/etherealcharge
+/obj/screen/alert/etherealcharge
 	name = "Low Blood Charge"
 	desc = ""
 	icon_state = "etherealcharge"
 
 //Need to cover all use cases - emag, illegal upgrade module, malf AI hack, traitor cyborg
-/atom/movable/screen/alert/hacked
+/obj/screen/alert/hacked
 	name = "Hacked"
 	desc = ""
 	icon_state = "hacked"
 
-/atom/movable/screen/alert/locked
+/obj/screen/alert/locked
 	name = "Locked Down"
 	desc = "Unit has been remotely locked down. Usage of a Robotics Control Console like the one in the Research Director's \
 office by your AI master or any qualified human may resolve this matter. Robotics may provide further assistance if necessary."
 	icon_state = "locked"
 
-/atom/movable/screen/alert/newlaw
+/obj/screen/alert/newlaw
 	name = "Law Update"
 	desc = "Laws have potentially been uploaded to or removed from this unit. Please be aware of any changes \
 so as to remain in compliance with the most up-to-date laws."
 	icon_state = "newlaw"
 	timeout = 300
 
-/atom/movable/screen/alert/hackingapc
+/obj/screen/alert/hackingapc
 	name = "Hacking APC"
 	desc = "An Area Power Controller is being hacked. When the process is \
 		complete, you will have exclusive control of it, and you will gain \
@@ -498,7 +498,7 @@ so as to remain in compliance with the most up-to-date laws."
 	timeout = 600
 	var/atom/target = null
 
-/atom/movable/screen/alert/hackingapc/Click()
+/obj/screen/alert/hackingapc/Click()
 	if(!usr || !usr.client)
 		return
 	if(!target)
@@ -510,7 +510,7 @@ so as to remain in compliance with the most up-to-date laws."
 
 //MECHS
 
-/atom/movable/screen/alert/low_mech_integrity
+/obj/screen/alert/low_mech_integrity
 	name = "Mech Damaged"
 	desc = ""
 	icon_state = "low_mech_integrity"
@@ -518,19 +518,19 @@ so as to remain in compliance with the most up-to-date laws."
 
 //GHOSTS
 //TODO: expand this system to replace the pollCandidates/CheckAntagonist/"choose quickly"/etc Yes/No messages
-/atom/movable/screen/alert/notify_cloning
+/obj/screen/alert/notify_cloning
 	name = "Revival"
 	desc = ""
 	icon_state = "template"
 	timeout = 300
 
-/atom/movable/screen/alert/notify_cloning/Click()
+/obj/screen/alert/notify_cloning/Click()
 	if(!usr || !usr.client)
 		return
 	var/mob/dead/observer/G = usr
 	G.reenter_corpse()
 
-/atom/movable/screen/alert/notify_action
+/obj/screen/alert/notify_action
 	name = "Body created"
 	desc = ""
 	icon_state = "template"
@@ -538,7 +538,7 @@ so as to remain in compliance with the most up-to-date laws."
 	var/atom/target = null
 	var/action = NOTIFY_JUMP
 
-/atom/movable/screen/alert/notify_action/Click()
+/obj/screen/alert/notify_action/Click()
 	..()
 	if(!usr || !usr.client)
 		return
@@ -559,22 +559,22 @@ so as to remain in compliance with the most up-to-date laws."
 
 //OBJECT-BASED
 
-/atom/movable/screen/alert/restrained/buckled
+/obj/screen/alert/restrained/buckled
 	name = "Sitting/laying"
 	desc = ""
 	icon_state = "buckled"
 
-/atom/movable/screen/alert/restrained/handcuffed
+/obj/screen/alert/restrained/handcuffed
 	name = "Restrained (arms)"
 	desc = ""
 	icon_state = "restrained"
 
-/atom/movable/screen/alert/restrained/legcuffed
+/obj/screen/alert/restrained/legcuffed
 	name = "Restrained (legs)"
 	desc = ""
 	icon_state = "restrained"
 
-/atom/movable/screen/alert/restrained/Click()
+/obj/screen/alert/restrained/Click()
 	..()
 	var/mob/living/L = usr
 	if(!istype(L) || !L.can_resist())
@@ -583,7 +583,7 @@ so as to remain in compliance with the most up-to-date laws."
 	if((L.mobility_flags & MOBILITY_MOVE) && (L.last_special <= world.time))
 		return L.resist_restraints()
 
-/atom/movable/screen/alert/restrained/buckled/Click()
+/obj/screen/alert/restrained/buckled/Click()
 	var/mob/living/L = usr
 	if(!istype(L) || !L.can_resist())
 		return
@@ -605,7 +605,7 @@ so as to remain in compliance with the most up-to-date laws."
 	var/list/debuffs = list()
 	var/list/status_effects = list()
 	for(var/i = 1, i <= alerts.len, i++)
-		var/atom/movable/screen/alert/alert = alerts[alerts[i]]
+		var/obj/screen/alert/alert = alerts[alerts[i]]
 //		if(alert.icon_state == "template")
 //			alert.icon = ui_style
 		switch(alert.alert_group)
@@ -688,7 +688,7 @@ so as to remain in compliance with the most up-to-date laws."
 		mymob.client.screen |= alert
 	return 1
 
-/atom/movable/screen/alert/Destroy()
+/obj/screen/alert/Destroy()
 	. = ..()
 	severity = 0
 	master = null

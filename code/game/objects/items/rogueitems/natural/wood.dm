@@ -2,7 +2,7 @@
 	icon = 'icons/roguetown/items/natural.dmi'
 	seed = null
 	name = "log"
-	desc = "A big tree log. It's very heavy, and huge."
+	desc = ""
 	icon_state = "log"
 	blade_dulling = DULLING_CUT
 	max_integrity = 30
@@ -17,7 +17,6 @@
 
 /obj/item/grown/log/tree/small
 	name = "small log"
-	desc = "Smaller log that came from a larger log. Suitable for building."
 	icon_state = "logsmall"
 	max_integrity = 30
 	static_debris = list(/obj/item/grown/log/tree/stick = 3)
@@ -27,22 +26,11 @@
 	w_class = WEIGHT_CLASS_BULKY
 	smeltresult = /obj/item/rogueore/coal
 
-/obj/item/grown/log/tree/bowpartial
-	name = "unstrung bow"
-	desc = "A partially completed bow, still waiting to be strung."
-	icon_state = "bowpartial"
-	max_integrity = 30
-	firefuel = 10 MINUTES
-	twohands_required = FALSE
-	gripped_intents = null
-	w_class = WEIGHT_CLASS_BULKY
-	smeltresult = /obj/item/rogueore/coal
-
 /obj/item/grown/log/tree/stick
 	seed = null
 	name = "stick"
 	icon_state = "stick1"
-	desc = "A dry stick from a tree branch."
+	desc = ""
 	blade_dulling = 0
 	max_integrity = 20
 	static_debris = null
@@ -71,7 +59,7 @@
 	..()
 
 /obj/item/grown/log/tree/stick/attack_self(mob/living/user)
-	user.visible_message(span_warning("[user] snaps [src]."))
+	user.visible_message("<span class='warning'>[user] snaps [src].</span>")
 	playsound(user,'sound/items/seedextract.ogg', 100, FALSE)
 	qdel(src)
 
@@ -81,14 +69,14 @@
 	if(user.used_intent?.blade_class == BCLASS_CUT)
 		playsound(get_turf(src.loc), 'sound/items/wood_sharpen.ogg', 100)
 		if(do_after(user, 20))
-			user.visible_message(span_notice("[user] sharpens [src]."))
+			user.visible_message("<span class='notice'>[user] sharpens [src].</span>")
 			var/obj/item/grown/log/tree/stake/S = new /obj/item/grown/log/tree/stake(get_turf(src.loc))
 			if(user.is_holding(src))
 				user.dropItemToGround(src)
 				user.put_in_hands(S)
 			qdel(src)
 		else
-			user.visible_message(span_warning("[user] sharpens [src]."))
+			user.visible_message("<span class='warning'>[user] sharpens [src].</span>")
 		return
 	if(istype(I, /obj/item/grown/log/tree/stick))
 		var/obj/item/natural/bundle/stick/F = new(src.loc)
@@ -98,17 +86,16 @@
 		qdel(src)
 	if(istype(I, /obj/item/natural/bundle/stick))
 		var/obj/item/natural/bundle/stick/B = I
-		if(B.amount < B.maxamount)
+		if(B.amount <= 9)
 			H.visible_message("[user] adds the [src] to the bundle.")
 			B.amount += 1
-			B.update_bundle()
 			qdel(src)
 	..()
 
 /obj/item/grown/log/tree/stake
 	name = "stake"
 	icon_state = "stake"
-	desc = "A wooden stake, and it's pointy end!"
+	desc = ""
 	force = 10
 	throwforce = 5
 	possible_item_intents = list(/datum/intent/stab, /datum/intent/pick)
@@ -126,7 +113,7 @@
 	seed = null
 	name = "lumber"
 	icon_state = "lumber"
-	desc = "This is some lumber." // i haven't seen this ingame yet
+	desc = ""
 	blade_dulling = 0
 	max_integrity = 50
 	firefuel = 5 MINUTES

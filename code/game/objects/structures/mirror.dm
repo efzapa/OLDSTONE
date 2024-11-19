@@ -150,9 +150,9 @@
 	if(!I.tool_start_check(user, amount=0))
 		return TRUE
 
-	to_chat(user, span_notice("I begin repairing [src]..."))
+	to_chat(user, "<span class='notice'>I begin repairing [src]...</span>")
 	if(I.use_tool(src, user, 10, volume=50))
-		to_chat(user, span_notice("I repair [src]."))
+		to_chat(user, "<span class='notice'>I repair [src].</span>")
 		broken = 0
 		icon_state = initial(icon_state)
 		desc = initial(desc)
@@ -172,12 +172,11 @@
 			var/datum/species/S = speciestype
 			if(initial(S.changesource_flags) & MIRROR_MAGIC)
 				choosable_races += initial(S.id)
-		choosable_races = sortList(choosable_races)
+		choosable_races = sort_list(choosable_races)
 	..()
 
 /obj/structure/mirror/magic/lesser/New()
-	var/list/selectable_species = get_selectable_species()
-	choosable_races = selectable_species.Copy()
+	choosable_races = GLOB.roundstart_races.Copy()
 	..()
 
 /obj/structure/mirror/magic/badmin/New()
@@ -247,7 +246,7 @@
 						H.dna.features["mcolor"] = sanitize_hexcolor(new_mutantcolor)
 
 					else
-						to_chat(H, span_notice("Invalid color. Your color is not bright enough."))
+						to_chat(H, "<span class='notice'>Invalid color. Your color is not bright enough.</span>")
 
 			H.update_body()
 			H.update_hair()
@@ -262,7 +261,7 @@
 					if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
 						return
 					H.gender = "female"
-					to_chat(H, span_notice("Man, you feel like a woman!"))
+					to_chat(H, "<span class='notice'>Man, you feel like a woman!</span>")
 				else
 					return
 
@@ -271,7 +270,7 @@
 					if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
 						return
 					H.gender = "male"
-					to_chat(H, span_notice("Whoa man, you feel like a man!"))
+					to_chat(H, "<span class='notice'>Whoa man, you feel like a man!</span>")
 				else
 					return
 			H.dna.update_ui_block(DNA_GENDER_BLOCK)

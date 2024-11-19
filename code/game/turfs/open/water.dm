@@ -15,7 +15,7 @@
 /turf/open/water
 	gender = PLURAL
 	name = "water"
-	desc = "Good enough to drink, wet enough to douse fires."
+	desc = ""
 	icon = 'icons/turf/roguefloor.dmi'
 	icon_state = "together"
 	baseturfs = /turf/open/water
@@ -87,7 +87,7 @@
 					user.Immobilize(30)
 					addtimer(CALLBACK(user, TYPE_PROC_REF(/mob/living, Knockdown), 30), 10)
 
-/turf/open/water/hitby(atom/movable/AM, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum, d_type = "blunt")
+/turf/open/water/hitby(atom/movable/AM, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum)
 	..()
 	playsound(src, pick('sound/foley/water_land1.ogg','sound/foley/water_land2.ogg','sound/foley/water_land3.ogg'), 100, FALSE)
 
@@ -113,16 +113,17 @@
 			return
 	if(isliving(AM) && !AM.throwing)
 		var/mob/living/L = AM
-		if(!(L.mobility_flags & MOBILITY_STAND) || water_level == 3)
+		if(L.lying || water_level == 3)
 			L.SoakMob(FULL_BODY)
 		else
 			if(water_level == 2)
 				L.SoakMob(BELOW_CHEST)
 		if(water_overlay)
-			if(water_level > 1 && !istype(oldLoc, type))
-				playsound(AM, 'sound/foley/waterenter.ogg', 100, FALSE)
-			else
-				playsound(AM, pick('sound/foley/watermove (1).ogg','sound/foley/watermove (2).ogg'), 100, FALSE)
+			if(water_level > 1)
+				if(istype(oldLoc, type))
+					playsound(AM, pick('sound/foley/watermove (1).ogg','sound/foley/watermove (2).ogg'), 100, FALSE)
+				else
+					playsound(AM, 'sound/foley/waterenter.ogg', 100, FALSE)
 			if(istype(oldLoc, type) && (get_dir(src, oldLoc) != SOUTH))
 				water_overlay.layer = ABOVE_MOB_LAYER
 				water_overlay.plane = GAME_PLANE_UPPER
@@ -136,7 +137,7 @@
 	if(user.used_intent.type == /datum/intent/fill)
 		if(C.reagents)
 			if(C.reagents.holder_full())
-				to_chat(user, span_warning("[C] is full."))
+				to_chat(user, "<span class='warning'>[C] is full.</span>")
 				return
 			if(do_after(user, 8, target = src))
 				user.changeNext_move(CLICK_CD_MELEE)
@@ -144,7 +145,7 @@
 				var/list/L = list()
 				L[water_reagent] = 100
 				C.reagents.add_reagent_list(L)
-				to_chat(user, span_notice("I fill [C] from [src]."))
+				to_chat(user, "<span class='notice'>I fill [C] from [src].</span>")
 			return
 	. = ..()
 
@@ -157,7 +158,7 @@
 		playsound(user, pick_n_take(wash), 100, FALSE)
 		var/item2wash = user.get_active_held_item()
 		if(!item2wash)
-			user.visible_message(span_info("[user] starts to wash in [src]."))
+			user.visible_message("<span class='info'>[user] starts to wash in [src].</span>")
 			if(do_after(L, 30, target = src))
 				if(wash_in)
 					wash_atom(user, CLEAN_STRONG)
@@ -167,7 +168,7 @@
 					water_color = "#a4955b"
 					update_icon()*/
 		else
-			user.visible_message(span_info("[user] starts to wash [item2wash] in [src]."))
+			user.visible_message("<span class='info'>[user] starts to wash [item2wash] in [src].</span>")
 			if(do_after(L, 30, target = src))
 				if(wash_in)
 					wash_atom(item2wash, CLEAN_STRONG)
@@ -185,7 +186,7 @@
 			if(C.is_mouth_covered())
 				return
 		playsound(user, pick('sound/foley/waterwash (1).ogg','sound/foley/waterwash (2).ogg'), 100, FALSE)
-		user.visible_message(span_info("[user] starts to drink from [src]."))
+		user.visible_message("<span class='info'>[user] starts to drink from [src].</span>")
 		if(do_after(L, 25, target = src))
 			var/list/waterl = list()
 			waterl[water_reagent] = 2
@@ -203,7 +204,7 @@
 	if(water_top_overlay)
 		QDEL_NULL(water_top_overlay)
 
-/turf/open/water/hitby(atom/movable/AM, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum, d_type = "blunt")
+/turf/open/water/hitby(atom/movable/AM, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum)
 	if(isobj(AM))
 		var/obj/O = AM
 		O.extinguish()
@@ -221,7 +222,7 @@
 
 /turf/open/water/bath
 	name = "water"
-	desc = "Faintly yellow colored.. Suspicious."
+	desc = ""
 	icon = 'icons/turf/roguefloor.dmi'
 	icon_state = "bathtileW"
 	water_level = 2
@@ -235,7 +236,7 @@
 
 /turf/open/water/sewer
 	name = "sewage"
-	desc = "This dark water smells like dead rats and sulphur!"
+	desc = ""
 	icon = 'icons/turf/roguefloor.dmi'
 	icon_state = "pavingW"
 	water_level = 1
@@ -251,7 +252,7 @@
 
 /turf/open/water/swamp
 	name = "murk"
-	desc = "Weeds and algae cover the surface of the water."
+	desc = ""
 	icon = 'icons/turf/roguefloor.dmi'
 	icon_state = "dirtW2"
 	water_level = 2
@@ -282,13 +283,12 @@
 					continue
 				if(BP.skeletonized)
 					continue
-				var/obj/item/natural/worms/leech/I = new(C)
-				BP.add_embedded_object(I, silent = TRUE)
+				var/obj/item/natural/worms/leeches/I = new(C)
+				BP.embedded_objects |= I
 				return .
 
 /turf/open/water/swamp/deep
 	name = "murk"
-	desc = "Deep water with several weeds and algae on the surface."
 	icon_state = "dirtW"
 	water_level = 3
 	water_color = "#705a43"
@@ -311,13 +311,13 @@
 					continue
 				if(BP.skeletonized)
 					continue
-				var/obj/item/natural/worms/leech/I = new(C)
-				BP.add_embedded_object(I, silent = TRUE)
+				var/obj/item/natural/worms/leeches/I = new(C)
+				BP.embedded_objects |= I
 				return .
 
 /turf/open/water/cleanshallow
 	name = "water"
-	desc = "Clear and shallow water, what a blessing!"
+	desc = ""
 	icon = 'icons/turf/roguefloor.dmi'
 	icon_state = "rockw2"
 	water_level = 2
@@ -333,7 +333,6 @@
 
 /turf/open/water/river
 	name = "river"
-	desc = "Crystal clear water! Flowing swiflty along the river."
 	icon_state = "rivermove"
 	icon = 'icons/turf/roguefloor.dmi'
 	water_level = 3

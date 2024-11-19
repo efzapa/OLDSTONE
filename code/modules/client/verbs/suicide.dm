@@ -100,7 +100,7 @@
 								"[src] is twisting [p_their()] own neck! It looks like [p_theyre()] trying to commit suicide.", \
 								"[src] is holding [p_their()] breath! It looks like [p_theyre()] trying to commit suicide.")
 
-		visible_message(span_danger("[suicide_message]"), span_danger("[suicide_message]"))
+		visible_message("<span class='danger'>[suicide_message]</span>", "<span class='danger'>[suicide_message]</span>")
 
 		suicide_log()
 
@@ -118,8 +118,8 @@
 		return
 	if(confirm == "Yes")
 		set_suicide(TRUE)
-		visible_message(span_danger("[src]'s brain is growing dull and lifeless. [p_they(TRUE)] look[p_s()] like [p_theyve()] lost the will to live."), \
-						span_danger("[src]'s brain is growing dull and lifeless. [p_they(TRUE)] look[p_s()] like [p_theyve()] lost the will to live."))
+		visible_message("<span class='danger'>[src]'s brain is growing dull and lifeless. [p_they(TRUE)] look[p_s()] like [p_theyve()] lost the will to live.</span>", \
+						"<span class='danger'>[src]'s brain is growing dull and lifeless. [p_they(TRUE)] look[p_s()] like [p_theyve()] lost the will to live.</span>")
 
 		suicide_log()
 
@@ -136,8 +136,8 @@
 		return
 	if(confirm == "Yes")
 		set_suicide(TRUE)
-		visible_message(span_danger("[src] is attempting to bite [p_their()] tongue. It looks like [p_theyre()] trying to commit suicide."), \
-				span_danger("[src] is attempting to bite [p_their()] tongue. It looks like [p_theyre()] trying to commit suicide."))
+		visible_message("<span class='danger'>[src] is attempting to bite [p_their()] tongue. It looks like [p_theyre()] trying to commit suicide.</span>", \
+				"<span class='danger'>[src] is attempting to bite [p_their()] tongue. It looks like [p_theyre()] trying to commit suicide.</span>")
 
 		suicide_log()
 
@@ -153,8 +153,8 @@
 		return
 	if(confirm == "Yes")
 		set_suicide(TRUE)
-		visible_message(span_danger("[src] is powering down. It looks like [p_theyre()] trying to commit suicide."), \
-				span_danger("[src] is powering down. It looks like [p_theyre()] trying to commit suicide."))
+		visible_message("<span class='danger'>[src] is powering down. It looks like [p_theyre()] trying to commit suicide.</span>", \
+				"<span class='danger'>[src] is powering down. It looks like [p_theyre()] trying to commit suicide.</span>")
 
 		suicide_log()
 
@@ -171,8 +171,8 @@
 		return
 	if(confirm == "Yes")
 		set_suicide(TRUE)
-		visible_message(span_danger("[src] is powering down. It looks like [p_theyre()] trying to commit suicide."), \
-				span_danger("[src] is powering down. It looks like [p_theyre()] trying to commit suicide."))
+		visible_message("<span class='danger'>[src] is powering down. It looks like [p_theyre()] trying to commit suicide.</span>", \
+				"<span class='danger'>[src] is powering down. It looks like [p_theyre()] trying to commit suicide.</span>")
 
 		suicide_log()
 
@@ -185,8 +185,8 @@
 	var/confirm = alert("Are you sure you want to commit suicide?", "Confirm Suicide", "Yes", "No")
 	if(confirm == "Yes")
 		var/turf/T = get_turf(src.loc)
-		T.visible_message(span_notice("[src] flashes a message across its screen, \"Wiping core files. Please acquire a new personality to continue using pAI device functions.\""), null, \
-		 span_notice("[src] bleeps electronically."))
+		T.visible_message("<span class='notice'>[src] flashes a message across its screen, \"Wiping core files. Please acquire a new personality to continue using pAI device functions.\"</span>", null, \
+		 "<span class='notice'>[src] bleeps electronically.</span>")
 
 		suicide_log()
 
@@ -203,9 +203,9 @@
 		return
 	if(confirm == "Yes")
 		set_suicide(TRUE)
-		visible_message(span_danger("[src] is thrashing wildly! It looks like [p_theyre()] trying to commit suicide."), \
-				span_danger("[src] is thrashing wildly! It looks like [p_theyre()] trying to commit suicide."), \
-				span_hear("I hear thrashing."))
+		visible_message("<span class='danger'>[src] is thrashing wildly! It looks like [p_theyre()] trying to commit suicide.</span>", \
+				"<span class='danger'>[src] is thrashing wildly! It looks like [p_theyre()] trying to commit suicide.</span>", \
+				"<span class='hear'>I hear thrashing.</span>")
 
 		suicide_log()
 
@@ -224,8 +224,8 @@
 		return
 	if(confirm == "Yes")
 		set_suicide(TRUE)
-		visible_message(span_danger("[src] begins to fall down. It looks like [p_theyve()] lost the will to live."), \
-						span_danger("[src] begins to fall down. It looks like [p_theyve()] lost the will to live."))
+		visible_message("<span class='danger'>[src] begins to fall down. It looks like [p_theyve()] lost the will to live.</span>", \
+						"<span class='danger'>[src] begins to fall down. It looks like [p_theyve()] lost the will to live.</span>")
 
 		suicide_log()
 
@@ -242,17 +242,17 @@
 		if(CONSCIOUS)
 			return TRUE
 		if(SOFT_CRIT)
-			to_chat(src, span_warning("I can't commit suicide while in a critical condition!"))
+			to_chat(src, "<span class='warning'>I can't commit suicide while in a critical condition!</span>")
 		if(UNCONSCIOUS)
-			to_chat(src, span_warning("I need to be conscious to commit suicide!"))
+			to_chat(src, "<span class='warning'>I need to be conscious to commit suicide!</span>")
 		if(DEAD)
-			to_chat(src, span_warning("You're already dead!"))
+			to_chat(src, "<span class='warning'>You're already dead!</span>")
 	return
 
 /mob/living/carbon/canSuicide()
 	if(!..())
 		return
 	if(!(mobility_flags & MOBILITY_USE))	//just while I finish up the new 'fun' suiciding verb. This is to prevent metagaming via suicide
-		to_chat(src, span_warning("I can't commit suicide whilst immobile! ((You can type Ghost instead however.))"))
+		to_chat(src, "<span class='warning'>I can't commit suicide whilst immobile! ((You can type Ghost instead however.))</span>")
 		return
 	return TRUE

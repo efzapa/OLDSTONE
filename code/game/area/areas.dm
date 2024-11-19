@@ -14,6 +14,8 @@
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	invisibility = INVISIBILITY_LIGHTING
 
+	var/area_flags = VALID_TERRITORY | BLOBS_ALLOWED | UNIQUE_AREA | CULT_PERMITTED
+
 	var/map_name // Set in New(); preserves the name set by the map maker, even if renamed by the Blueprints.
 
 	var/valid_territory = TRUE // If it's a valid territory for cult summoning or the CRAB-17 phone to spawn
@@ -39,7 +41,7 @@
 	/// Bonus mood for being in this area
 	var/mood_bonus = 0
 	/// Mood message for being here, only shows up if mood_bonus != 0
-	var/mood_message = span_nicegreen("This area is pretty nice!\n")
+	var/mood_message = "<span class='nicegreen'>This area is pretty nice!\n</span>"
 
 	var/power_equip = TRUE
 	var/power_light = TRUE
@@ -611,7 +613,7 @@ GLOBAL_LIST_EMPTY(teleportlocs)
   *
   * If the area has ambience, then it plays some ambience music to the ambience channel
   */
-/area/Entered(atom/movable/M, atom/OldLoc)
+/area/Entered(atom/movable/M, OldLoc)
 	set waitfor = FALSE
 	SEND_SIGNAL(src, COMSIG_AREA_ENTERED, M)
 	SEND_SIGNAL(M, COMSIG_ENTER_AREA, src) //The atom that enters the area
@@ -630,18 +632,6 @@ GLOBAL_LIST_EMPTY(teleportlocs)
 	if(first_time_text)
 		L.intro_area(src)
 
-	var/mob/living/living_arrived = M
-
-	if(istype(living_arrived) && living_arrived.client && !living_arrived.cmode)
-		//Ambience if combat mode is off
-		SSdroning.area_entered(src, living_arrived.client)
-		SSdroning.play_loop(src, living_arrived.client)
-		var/found = FALSE
-		for(var/datum/weather/rain/R in SSweather.curweathers)
-			found = TRUE
-		if(found)
-			SSdroning.play_rain(src, living_arrived.client)
-
 //	L.play_ambience(src)
 
 /client
@@ -655,7 +645,7 @@ GLOBAL_LIST_EMPTY(teleportlocs)
 	if(!client)
 		return
 	mind.areas_entered += A.first_time_text
-	var/atom/movable/screen/area_text/T = new()
+	var/obj/screen/area_text/T = new()
 	client.screen += T
 	T.maptext = {"<span style='vertical-align:top; text-align:center;
 				color: #820000; font-size: 300%;
@@ -669,7 +659,7 @@ GLOBAL_LIST_EMPTY(teleportlocs)
 	animate(T, alpha = 255, time = 10, easing = EASE_IN)
 	addtimer(CALLBACK(src, PROC_REF(clear_area_text), T), 35)
 
-/mob/living/proc/clear_area_text(atom/movable/screen/A)
+/mob/living/proc/clear_area_text(obj/screen/A)
 	if(!A)
 		return
 	if(!client)
@@ -681,7 +671,7 @@ GLOBAL_LIST_EMPTY(teleportlocs)
 			client.screen -= A
 			qdel(A)
 
-/mob/living/proc/clear_time_icon(atom/movable/screen/A)
+/mob/living/proc/clear_time_icon(obj/screen/A)
 	if(!A)
 		return
 	if(!client)
@@ -759,6 +749,18 @@ GLOBAL_LIST_EMPTY(teleportlocs)
 /// A hook so areas can modify the incoming args (of what??)
 /area/proc/PlaceOnTopReact(list/new_baseturfs, turf/fake_turf_type, flags)
 	return flags
+
+/area/Entered(atom/movable/arrived, area/old_area)
+	var/mob/living/living_arrived = arrived
+	if(istype(living_arrived) && living_arrived.client && !living_arrived.cmode)
+		//Ambience if combat mode is off
+		SSdroning.area_entered(src, living_arrived.client)
+		SSdroning.play_loop(src, living_arrived.client)
+		var/found = FALSE
+		for(var/datum/weather/rain/R in SSweather.curweathers)
+			found = TRUE
+		if(found)
+			SSdroning.play_rain(src, living_arrived.client)
 
 /area/proc/on_joining_game(mob/living/boarder)
 	return

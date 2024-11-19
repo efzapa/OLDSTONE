@@ -5,7 +5,7 @@
 /obj/machinery/disposal
 	icon = 'icons/obj/atmospherics/pipes/disposal.dmi'
 	density = TRUE
-	armor = list("blunt" = 25, "slash" = 20, "stab" = 15, "bullet" = 10, "laser" = 10, "energy" = 100, "bomb" = 0, "bio" = 100, "rad" = 100, "fire" = 90, "acid" = 30)
+	armor = list("melee" = 25, "bullet" = 10, "laser" = 10, "energy" = 100, "bomb" = 0, "bio" = 100, "rad" = 100, "fire" = 90, "acid" = 30)
 	max_integrity = 200
 	resistance_flags = FIRE_PROOF
 	interaction_flags_machine = INTERACT_MACHINE_OPEN | INTERACT_MACHINE_WIRES_IF_OPEN | INTERACT_MACHINE_ALLOW_SILICON | INTERACT_MACHINE_OPEN_SILICON
@@ -83,15 +83,15 @@
 		if(I.tool_behaviour == TOOL_SCREWDRIVER)
 			panel_open = !panel_open
 			I.play_tool_sound(src)
-			to_chat(user, span_notice("I [panel_open ? "remove":"attach"] the screws around the power connection."))
+			to_chat(user, "<span class='notice'>I [panel_open ? "remove":"attach"] the screws around the power connection.</span>")
 			return
 		else if(I.tool_behaviour == TOOL_WELDER && panel_open)
 			if(!I.tool_start_check(user, amount=0))
 				return
 
-			to_chat(user, span_notice("I start slicing the floorweld off \the [src]..."))
+			to_chat(user, "<span class='notice'>I start slicing the floorweld off \the [src]...</span>")
 			if(I.use_tool(src, user, 20, volume=100) && panel_open)
-				to_chat(user, span_notice("I slice the floorweld off \the [src]."))
+				to_chat(user, "<span class='notice'>I slice the floorweld off \the [src].</span>")
 				deconstruct()
 			return
 
@@ -106,7 +106,7 @@
 
 /obj/machinery/disposal/proc/place_item_in_disposal(obj/item/I, mob/user)
 	I.forceMove(src)
-	user.visible_message(span_notice("[user.name] places \the [I] into \the [src]."), span_notice("I place \the [I] into \the [src]."))
+	user.visible_message("<span class='notice'>[user.name] places \the [I] into \the [src].</span>", "<span class='notice'>I place \the [I] into \the [src].</span>")
 
 //mouse drop another mob or self
 /obj/machinery/disposal/MouseDrop_T(mob/living/target, mob/living/user)
@@ -126,21 +126,21 @@
 	if(target.buckled || target.has_buckled_mobs())
 		return
 	if(target.mob_size > MOB_SIZE_HUMAN)
-		to_chat(user, span_warning("[target] doesn't fit inside [src]!"))
+		to_chat(user, "<span class='warning'>[target] doesn't fit inside [src]!</span>")
 		return
 	add_fingerprint(user)
 	if(user == target)
-		user.visible_message(span_warning("[user] starts climbing into [src]."), span_notice("I start climbing into [src]..."))
+		user.visible_message("<span class='warning'>[user] starts climbing into [src].</span>", "<span class='notice'>I start climbing into [src]...</span>")
 	else
-		target.visible_message(span_danger("[user] starts putting [target] into [src]."), span_danger("[user] starts putting you into [src]!"))
+		target.visible_message("<span class='danger'>[user] starts putting [target] into [src].</span>", "<span class='danger'>[user] starts putting you into [src]!</span>")
 	if(do_mob(user, target, 20))
 		if (!loc)
 			return
 		target.forceMove(src)
 		if(user == target)
-			user.visible_message(span_warning("[user] climbs into [src]."), span_notice("I climb into [src]."))
+			user.visible_message("<span class='warning'>[user] climbs into [src].</span>", "<span class='notice'>I climb into [src].</span>")
 		else
-			target.visible_message(span_danger("[user] has placed [target] in [src]."), span_danger("[user] has placed you in [src]."))
+			target.visible_message("<span class='danger'>[user] has placed [target] in [src].</span>", "<span class='danger'>[user] has placed you in [src].</span>")
 			log_combat(user, target, "stuffed", addition="into [src]")
 			target.LAssailant = user
 		update_icon()
@@ -273,7 +273,7 @@
 	if(istype(I, /obj/item/storage/bag/trash))	//Not doing component overrides because this is a specific type.
 		var/obj/item/storage/bag/trash/T = I
 		var/datum/component/storage/STR = T.GetComponent(/datum/component/storage)
-		to_chat(user, span_warning("I empty the bag."))
+		to_chat(user, "<span class='warning'>I empty the bag.</span>")
 		for(var/obj/item/O in T.contents)
 			STR.remove_from_storage(O,src)
 		T.update_icon()
@@ -331,14 +331,14 @@
 			. = TRUE
 
 
-/obj/machinery/disposal/bin/hitby(atom/movable/AM, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum, d_type = "blunt")
+/obj/machinery/disposal/bin/hitby(atom/movable/AM, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum)
 	if(isitem(AM) && AM.CanEnterDisposals())
 		if(prob(75))
 			AM.forceMove(src)
-			visible_message(span_notice("[AM] lands in [src]."))
+			visible_message("<span class='notice'>[AM] lands in [src].</span>")
 			update_icon()
 		else
-			visible_message(span_notice("[AM] bounces off of [src]'s rim!"))
+			visible_message("<span class='notice'>[AM] bounces off of [src]'s rim!</span>")
 			return ..()
 	else
 		return ..()
@@ -430,7 +430,7 @@
 
 /obj/machinery/disposal/bin/get_remote_view_fullscreens(mob/user)
 	if(user.stat == DEAD || !(user.sight & (SEEOBJS|SEEMOBS)))
-		user.overlay_fullscreen("remote_view", /atom/movable/screen/fullscreen/impaired, 2)
+		user.overlay_fullscreen("remote_view", /obj/screen/fullscreen/impaired, 2)
 
 //Delivery Chute
 
@@ -475,7 +475,7 @@
 	else if(ismob(AM))
 		var/mob/M = AM
 		if(prob(2)) // to prevent mobs being stuck in infinite loops
-			to_chat(M, span_warning("I hit the edge of the chute."))
+			to_chat(M, "<span class='warning'>I hit the edge of the chute.</span>")
 			return
 		M.forceMove(src)
 	flush()

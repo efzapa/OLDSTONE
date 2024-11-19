@@ -48,10 +48,10 @@
 
 /obj/item/dnainjector/attack(mob/target, mob/user)
 	if(!user.IsAdvancedToolUser())
-		to_chat(user, span_warning("I don't have the dexterity to do this!"))
+		to_chat(user, "<span class='warning'>I don't have the dexterity to do this!</span>")
 		return
 	if(used)
-		to_chat(user, span_warning("This injector is used up!"))
+		to_chat(user, "<span class='warning'>This injector is used up!</span>")
 		return
 	if(ishuman(target))
 		var/mob/living/carbon/human/humantarget = target
@@ -60,20 +60,20 @@
 	log_combat(user, target, "attempted to inject", src)
 
 	if(target != user)
-		target.visible_message(span_danger("[user] is trying to inject [target] with [src]!"), \
-			span_danger("[user] is trying to inject you with [src]!"))
+		target.visible_message("<span class='danger'>[user] is trying to inject [target] with [src]!</span>", \
+			"<span class='danger'>[user] is trying to inject you with [src]!</span>")
 		if(!do_mob(user, target) || used)
 			return
-		target.visible_message(span_danger("[user] injects [target] with the syringe with [src]!"), \
-						span_danger("[user] injects you with the syringe with [src]!"))
+		target.visible_message("<span class='danger'>[user] injects [target] with the syringe with [src]!</span>", \
+						"<span class='danger'>[user] injects you with the syringe with [src]!</span>")
 
 	else
-		to_chat(user, span_notice("I inject myself with [src]."))
+		to_chat(user, "<span class='notice'>I inject myself with [src].</span>")
 
 	log_combat(user, target, "injected", src)
 
 	if(!inject(target, user))	//Now we actually do the heavy lifting.
-		to_chat(user, span_notice("It appears that [target] does not have compatible DNA."))
+		to_chat(user, "<span class='notice'>It appears that [target] does not have compatible DNA.</span>")
 
 	used = 1
 	icon_state = "dnainjector0"
@@ -445,7 +445,7 @@
 
 /obj/item/dnainjector/timed/inject(mob/living/carbon/M, mob/user)
 	if(M.stat == DEAD)	//prevents dead people from having their DNA changed
-		to_chat(user, span_notice("I can't modify [M]'s DNA while [M.p_theyre()] dead."))
+		to_chat(user, "<span class='notice'>I can't modify [M]'s DNA while [M.p_theyre()] dead.</span>")
 		return FALSE
 
 	if(M.has_dna() && !(HAS_TRAIT(M, TRAIT_BADDNA)))

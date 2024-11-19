@@ -94,7 +94,7 @@ SUBSYSTEM_DEF(timer)
 		if(ctime_timer.flags & TIMER_LOOP)
 			ctime_timer.spent = 0
 			ctime_timer.timeToRun = REALTIMEOFDAY + ctime_timer.wait
-			BINARY_INSERT(ctime_timer, clienttime_timers, datum/timedevent, timeToRun)
+			BINARY_INSERT(ctime_timer, clienttime_timers, /datum/timedevent, ctime_timer, timeToRun, COMPARE_KEY)
 		else
 			qdel(ctime_timer)
 
@@ -258,7 +258,7 @@ SUBSYSTEM_DEF(timer)
 	if (!length(alltimers))
 		return
 
-	sortTim(alltimers, GLOBAL_PROC_REF(cmp_timer))
+	sortTim(alltimers, PROC_REF(cmp_timer))
 
 	var/datum/timedevent/head = alltimers[1]
 
@@ -347,13 +347,13 @@ SUBSYSTEM_DEF(timer)
 			nextid++
 		SStimer.timer_id_dict[id] = src
 
-	name = "Timer: [id] (\ref[src]), TTR: [timeToRun], Flags: [jointext(bitfield2list(flags, list("TIMER_UNIQUE", "TIMER_OVERRIDE", "TIMER_CLIENT_TIME", "TIMER_STOPPABLE", "TIMER_NO_HASH_WAIT", "TIMER_LOOP")), ", ")], callBack: \ref[callBack], callBack.object: [callBack.object]\ref[callBack.object]([getcallingtype()]), callBack.delegate:[callBack.delegate]([callBack.arguments ? callBack.arguments.Join(", ") : ""])"
+	name = "Timer: [id] (\ref[src]), TTR: [timeToRun], Flags: [jointext(bitfield_to_list(flags, list("TIMER_UNIQUE", "TIMER_OVERRIDE", "TIMER_CLIENT_TIME", "TIMER_STOPPABLE", "TIMER_NO_HASH_WAIT", "TIMER_LOOP")), ", ")], callBack: \ref[callBack], callBack.object: [callBack.object]\ref[callBack.object]([getcallingtype()]), callBack.delegate:[callBack.delegate]([callBack.arguments ? callBack.arguments.Join(", ") : ""])"
 
 	if ((timeToRun < world.time || timeToRun < SStimer.head_offset) && !(flags & TIMER_CLIENT_TIME))
 		CRASH("Invalid timer state: Timer created that would require a backtrack to run (addtimer would never let this happen): [SStimer.get_timer_debug_string(src)]")
 
 	if (callBack.object != GLOBAL_PROC && !QDESTROYING(callBack.object))
-		LAZYADD(callBack.object.active_timers, src)
+		LAZYADD(callBack.object._active_timers, src)
 
 	bucketJoin()
 
@@ -362,9 +362,9 @@ SUBSYSTEM_DEF(timer)
 	if (flags & TIMER_UNIQUE && hash)
 		SStimer.hashes -= hash
 
-	if (callBack && callBack.object && callBack.object != GLOBAL_PROC && callBack.object.active_timers)
-		callBack.object.active_timers -= src
-		UNSETEMPTY(callBack.object.active_timers)
+	if (callBack && callBack.object && callBack.object != GLOBAL_PROC && callBack.object._active_timers)
+		callBack.object._active_timers -= src
+		UNSETEMPTY(callBack.object._active_timers)
 
 	callBack = null
 
@@ -423,7 +423,7 @@ SUBSYSTEM_DEF(timer)
 		L = SStimer.second_queue
 
 	if(L)
-		BINARY_INSERT(src, L, datum/timedevent, timeToRun)
+		BINARY_INSERT(src, L, /datum/timedevent, src, timeToRun, COMPARE_KEY)
 		return
 
 	//get the list of buckets

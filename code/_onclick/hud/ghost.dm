@@ -1,34 +1,34 @@
-/atom/movable/screen/ghost
+/obj/screen/ghost
 	icon = 'icons/mob/screen_ghost.dmi'
 
-/atom/movable/screen/ghost/MouseEntered()
+/obj/screen/ghost/MouseEntered()
 //	flick(icon_state + "_anim", src)
 	..()
 
-/atom/movable/screen/ghost/jumptomob
+/obj/screen/ghost/jumptomob
 	name = "Jump to mob"
 	icon_state = "jumptomob"
 
-/atom/movable/screen/ghost/jumptomob/Click()
+/obj/screen/ghost/jumptomob/Click()
 	var/mob/dead/observer/G = usr
 	G.jumptomob()
 
-/atom/movable/screen/ghost/orbit
+/obj/screen/ghost/orbit
 	name = "Orbit"
 	icon_state = "orbit"
 
-/atom/movable/screen/ghost/orbit/Click()
+/obj/screen/ghost/orbit/Click()
 	var/mob/dead/observer/G = usr
 	G.follow()
 //skull
-/atom/movable/screen/ghost/orbit/rogue
+/obj/screen/ghost/orbit/rogue
 	name = "AFTER LIFE"
 	icon = 'icons/mob/ghostspin.dmi'
 	icon_state = ""
 	screen_loc = "WEST-4,SOUTH+6"
 	nomouseover = FALSE
 
-/atom/movable/screen/ghost/orbit/rogue/Click(location, control, params)
+/obj/screen/ghost/orbit/rogue/Click(location, control, params)
 	var/mob/dead/observer/G = usr
 	var/paramslist = params2list(params)
 	if(paramslist["right"]) // screen objects don't do the normal Click() stuff so we'll cheat
@@ -43,21 +43,19 @@
 					return
 				if(alert("Travel with the boatman?", "", "Yes", "No") == "Yes")
 
-					// Check if the player's job is hiv+
-					var/datum/job/target_job = SSjob.GetJob(G.mind.assigned_role)
-					if(target_job)
-						if(target_job.job_reopens_slots_on_death)
-							target_job.current_positions = max(0, target_job.current_positions - 1)
-						if(target_job.same_job_respawn_delay)
-							// Store the current time for the player
-							GLOB.job_respawn_delays[G.ckey] = world.time + target_job.same_job_respawn_delay
+					// Check if the player's job is adventurer and reduce current_positions
+					var/datum/job/adventurer_job = SSjob.GetJob("Adventurer")
+					if(adventurer_job && G?.mind?.assigned_role == "Adventurer")
+						adventurer_job.current_positions = max(0, adventurer_job.current_positions - 1)
+						// Store the current time for the player
+						GLOB.adventurer_cooldowns[G?.ckey] = world.time
 
 					for(var/obj/effect/landmark/underworld/A in GLOB.landmarks_list)
 						var/mob/living/carbon/spirit/O = new /mob/living/carbon/spirit(A.loc)
 						O.livingname = G.name
 						O.ckey = G.ckey
 						SSdroning.area_entered(get_area(O), O.client)
-					G.client.verbs -= GLOB.ghost_verbs
+					verbs -= /client/proc/descend
 
 				return
 
@@ -72,102 +70,60 @@
 				O.livingname = G.name
 				O.ckey = G.ckey
 				SSdroning.area_entered(get_area(O), O.client)
-			G.client.verbs -= GLOB.ghost_verbs
+			verbs -= /client/proc/descend
 /*		if(world.time < G.ghostize_time + RESPAWNTIME)
 			var/ttime = round((G.ghostize_time + RESPAWNTIME - world.time) / 10)
 			var/list/thingsz = list("My connection to the world is still too strong.",\
 			"I'm not ready to leave...", "I'm not ready to travel with Charon.",\
 			"Don't make me leave!", "No... Not yet!", "Please, don't make me go yet...",\
 			"The shores are calling me but I cannot go...","My soul isn't ready yet...")
-			to_chat(G, span_warning("[pick(thingsz)] ([ttime])"))
+			to_chat(G, "<span class='warning'>[pick(thingsz)] ([ttime])</span>")
 			return */ //Disabling this since the underworld will exist
 
-/atom/movable/screen/ghost/reenter_corpse
+/obj/screen/ghost/reenter_corpse
 	name = "Reenter corpse"
 	icon_state = "reenter_corpse"
 
-/atom/movable/screen/ghost/reenter_corpse/Click()
+/obj/screen/ghost/reenter_corpse/Click()
 	var/mob/dead/observer/G = usr
-	G.client?.admin_ghost()
+	G.reenter_corpse()
 
-/atom/movable/screen/ghost/teleport
+/obj/screen/ghost/teleport
 	name = "Teleport"
 	icon_state = "teleport"
 
-/atom/movable/screen/ghost/teleport/Click()
+/obj/screen/ghost/teleport/Click()
 	var/mob/dead/observer/G = usr
 	G.dead_tele()
 
-/atom/movable/screen/ghost/moveup
-	name = "move up"
+/obj/screen/ghost/pai
+	name = "pAI Candidate"
 	icon_state = "pai"
 
-/atom/movable/screen/ghost/moveup/Click()
+/obj/screen/ghost/pai/Click()
 	var/mob/dead/observer/G = usr
-	G.ghost_up()
-
-/atom/movable/screen/ghost/movedown
-	name = "move down"
-	icon_state = "pai"
-
-/atom/movable/screen/ghost/bigassuselessbutton
-	name = "AFTER LIFE"
-	icon = 'icons/mob/ghostspin.dmi'
-	icon_state = ""
-	screen_loc = "WEST-4,SOUTH+6"
-	nomouseover = FALSE
-
-/atom/movable/screen/ghost/movedown/Click()
-	var/mob/dead/observer/G = usr
-	G.ghost_down()
+	G.register_pai()
 
 /datum/hud/ghost/New(mob/owner)
 	..()
-	var/atom/movable/screen/using
+	var/obj/screen/using
 
-	using =  new /atom/movable/screen/backhudl/ghost()
+	using =  new /obj/screen/backhudl/ghost()
 	using.hud = src
 	static_inventory += using
 
-	using = new /atom/movable/screen/grain
+	using = new /obj/screen/grain
 	using.hud = src
 	static_inventory += using
 
-	scannies = new /atom/movable/screen/scannies
+	scannies = new /obj/screen/scannies
 	scannies.hud = src
 	static_inventory += scannies
 	if(owner.client?.prefs?.crt == TRUE)
 		scannies.alpha = 70
 
-	using = new /atom/movable/screen/ghost/orbit/rogue()
+	using = new /obj/screen/ghost/orbit/rogue()
 	using.hud = src
-	static_inventory += using
-
-/datum/hud/adminghost/New(mob/owner)
-	..()
-	var/atom/movable/screen/using
-
-	using = new /atom/movable/screen/ghost/orbit(null, src)
-	using.screen_loc = ui_ghost_orbit
-	static_inventory += using
-
-	using = new /atom/movable/screen/ghost/reenter_corpse(null, src)
-	using.screen_loc = ui_ghost_reenter_corpse
-	static_inventory += using
-
-	using = new /atom/movable/screen/ghost/teleport(null, src)
-	using.screen_loc = ui_ghost_teleport
-	static_inventory += using
-
-	using = new /atom/movable/screen/ghost/moveup(null, src)
-	using.screen_loc = ui_ghost_moveup
-	static_inventory += using
-
-	using = new /atom/movable/screen/ghost/movedown(null, src)
-	using.screen_loc = ui_ghost_movedown
-	static_inventory += using
-
-	using = new /atom/movable/screen/ghost/bigassuselessbutton(null, src)
 	static_inventory += using
 
 /datum/hud/ghost/show_hud(version = 0, mob/viewmob)
@@ -188,17 +144,17 @@
 
 /datum/hud/eye/New(mob/owner)
 	..()
-	var/atom/movable/screen/using
+	var/obj/screen/using
 
-	using =  new /atom/movable/screen/backhudl/ghost()
+	using =  new /obj/screen/backhudl/ghost()
 	using.hud = src
 	static_inventory += using
 
-	using = new /atom/movable/screen/grain
+	using = new /obj/screen/grain
 	using.hud = src
 	static_inventory += using
 
-	scannies = new /atom/movable/screen/scannies
+	scannies = new /obj/screen/scannies
 	scannies.hud = src
 	static_inventory += scannies
 	if(owner.client?.prefs?.crt == TRUE)
@@ -222,17 +178,17 @@
 
 /datum/hud/obs/New(mob/owner)
 	..()
-	var/atom/movable/screen/using
+	var/obj/screen/using
 
-	using =  new /atom/movable/screen/backhudl/obs()
+	using =  new /obj/screen/backhudl/obs()
 	using.hud = src
 	static_inventory += using
 
-	using = new /atom/movable/screen/grain
+	using = new /obj/screen/grain
 	using.hud = src
 	static_inventory += using
 
-	scannies = new /atom/movable/screen/scannies
+	scannies = new /obj/screen/scannies
 	scannies.hud = src
 	static_inventory += scannies
 	if(owner.client?.prefs?.crt == TRUE)

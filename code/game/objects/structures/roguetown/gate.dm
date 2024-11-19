@@ -2,7 +2,7 @@ GLOBAL_LIST_EMPTY(biggates)
 
 /obj/structure/gate
 	name = "gate"
-	desc = "A steel, strong gate."
+	desc = ""
 	icon = 'icons/roguetown/misc/gate.dmi'
 	icon_state = "gate1"
 	density = TRUE
@@ -125,7 +125,7 @@ GLOBAL_LIST_EMPTY(biggates)
 
 /obj/structure/winch
 	name = "winch"
-	desc = "A gatekeeper's only, and most important responsibility."
+	desc = ""
 	icon = 'icons/roguetown/misc/structure.dmi'
 	icon_state = "winch"
 	density = TRUE
@@ -154,7 +154,7 @@ GLOBAL_LIST_EMPTY(biggates)
 /obj/structure/winch/attack_hand(mob/user)
 	. = ..()
 	if(!attached_gate)
-		to_chat(user, span_warning("The chain is not attached to anything."))
+		to_chat(user, "<span class='warning'>The chain is not attached to anything.</span>")
 		return
 	if(attached_gate.isSwitchingStates)
 		return
@@ -162,7 +162,7 @@ GLOBAL_LIST_EMPTY(biggates)
 		var/mob/living/L = user
 		L.changeNext_move(CLICK_CD_MELEE)
 		var/used_time = 105 - (L.STASTR * 10)
-		user.visible_message(span_warning("[user] cranks the winch."))
+		user.visible_message("<span class='warning'>[user] cranks the winch.</span>")
 		playsound(src, 'sound/foley/winch.ogg', 100, extrarange = 3)
 		if(do_after(user, used_time, target = user))
 			attached_gate.toggle()

@@ -1,12 +1,7 @@
 {
     "universal": {
-		"life": "lyfe",
 		"lantern": "lamptern",
 		"lucifer": "zizo",
-		"Beelzebub": "zizo",
-		"Abaddon": "eora",
-		"Belphegor": "eora",
-		"Asmodeus": "eora",
 		"satan": "zizo",
 		"ERP": "bush whacking",
 	    "day": "dae",
@@ -24,7 +19,7 @@
 		"cenat": "demon",
 		"mewing": "praying",
 		"mew": "pray",
-		"jesus": "gods",
+		"jesus": "divine",
 		"christ": "savior",
 		"allah": "gods",
 		"yahweh": "zizo",
@@ -63,6 +58,8 @@
 		"rizzard": "charmer",
 		"rizzler": "charmer",
 		"gyatt": "buttocks",
+		"sussy": "suspicious",
+		"sus": "suspicious",
 		"baka": "nimrod",
 		"ligma": "leprosy",
 		"griddy": "charm",
@@ -94,19 +91,9 @@
 		"bussing": "splendid",
 		"bussin": "splendid",
 		"pussy": "cunt-bitten coward",
-		"vibing": "relaxing",
+		"vibing": "selfsucking",
 		"weirdo": "weerdoe",
 		"adonai": "psydon",
-		"zombie": "zomble",
-		"skeleton": "skelelon",
-		"vampire": "vampyre",
-		"vampires": "vampyres",
-		"werewolf": "verewolf",
-		"werewolfs": "verewolfs",
-		"wolf": "volf",
-		"wolves": "volfs",
-		"lolth": "graggar",
-		"wolfpit": "volfpit",
-		"PQ": "reputation"
+		"praise psydon": "mourn the weeper"
 	}
 }

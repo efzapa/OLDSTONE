@@ -1,10 +1,10 @@
- /**
-  * StonedMC
-  *
-  * Designed to properly split up a given tick among subsystems
-  * Note: if you read parts of this code and think "why is it doing it that way"
-  * Odds are, there is a reason
-  *
+/**
+ * StonedMC
+ *
+ * Designed to properly split up a given tick among subsystems
+ * Note: if you read parts of this code and think "why is it doing it that way"
+ * Odds are, there is a reason
+ *
  **/
 
 //This is the ABSOLUTE ONLY THING that should init globally like this
@@ -95,7 +95,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 /datum/controller/master/Shutdown()
 	processing = FALSE
 	sortTim(subsystems, GLOBAL_PROC_REF(cmp_subsystem_init))
-	reverseRange(subsystems)
+	reverse_range(subsystems)
 	for(var/datum/controller/subsystem/ss in subsystems)
 		log_world("Shutting down [ss.name] subsystem...")
 		ss.Shutdown()
@@ -149,7 +149,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 				msg = "The [BadBoy.name] subsystem seems to be destabilizing the MC and will be offlined."
 				BadBoy.flags |= SS_NO_FIRE
 		if(msg)
-			to_chat(GLOB.admins, span_boldannounce("[msg]"))
+			to_chat(GLOB.admins, "<span class='boldannounce'>[msg]</span>")
 			log_world(msg)
 
 	if (istype(Master.subsystems))
@@ -159,7 +159,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 		current_runlevel = Master.current_runlevel
 		StartProcessing(10)
 	else
-		to_chat(world, span_boldannounce("The Master Controller is having some issues, we will need to re-initialize EVERYTHING"))
+		to_chat(world, "<span class='boldannounce'>The Master Controller is having some issues, we will need to re-initialize EVERYTHING</span>")
 		Initialize(20, TRUE)
 
 // Please don't stuff random bullshit here,
@@ -176,7 +176,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	if(init_sss)
 		init_subtypes(/datum/controller/subsystem, subsystems)
 #ifdef TESTING
-	to_chat(world, span_boldannounce("Initializing subsystems..."))
+	to_chat(world, "<span class='boldannounce'>Initializing subsystems...</span>")
 #endif
 	// Sort subsystems by init_order, so they initialize in the correct order.
 	sortTim(subsystems, GLOBAL_PROC_REF(cmp_subsystem_init))
@@ -199,7 +199,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	var/msg = "Initializations complete within [time] second[time == 1 ? "" : "s"]!"
 
 #ifdef TESTING
-	to_chat(world, span_boldannounce("[msg]"))
+	to_chat(world, "<span class='boldannounce'>[msg]</span>")
 #endif
 	log_world(msg)
 
@@ -622,3 +622,8 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 		processing = CONFIG_GET(number/mc_tick_rate/base_mc_tick_rate)
 	else if (client_count > CONFIG_GET(number/mc_tick_rate/high_pop_mc_mode_amount))
 		processing = CONFIG_GET(number/mc_tick_rate/high_pop_mc_tick_rate)
+
+/datum/controller/master/proc/OnConfigLoad()
+	for (var/thing in subsystems)
+		var/datum/controller/subsystem/SS = thing
+		SS.OnConfigLoad()

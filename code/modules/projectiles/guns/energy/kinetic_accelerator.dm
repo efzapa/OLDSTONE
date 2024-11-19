@@ -31,20 +31,20 @@
 	. = ..()
 	if(max_mod_capacity)
 		. += "<b>[get_remaining_mod_capacity()]%</b> mod capacity remaining."
-		. += span_info("I can use a <b>crowbar</b> to remove modules.")
+		. += "<span class='info'>I can use a <b>crowbar</b> to remove modules.</span>"
 		for(var/A in get_modkits())
 			var/obj/item/borg/upgrade/modkit/M = A
-			. += span_notice("There is \a [M] installed, using <b>[M.cost]%</b> capacity.")
+			. += "<span class='notice'>There is \a [M] installed, using <b>[M.cost]%</b> capacity.</span>"
 
 /obj/item/gun/energy/kinetic_accelerator/crowbar_act(mob/living/user, obj/item/I)
 	. = TRUE
 	if(modkits.len)
-		to_chat(user, span_notice("I pry the modifications out."))
+		to_chat(user, "<span class='notice'>I pry the modifications out.</span>")
 		I.play_tool_sound(src, 100)
 		for(var/obj/item/borg/upgrade/modkit/M in modkits)
 			M.uninstall(src)
 	else
-		to_chat(user, span_notice("There are no modifications currently installed."))
+		to_chat(user, "<span class='notice'>There are no modifications currently installed.</span>")
 
 /obj/item/gun/energy/kinetic_accelerator/attackby(obj/item/I, mob/user)
 	if(istype(I, /obj/item/borg/upgrade/modkit))
@@ -151,7 +151,7 @@
 	if(!suppressed)
 		playsound(src.loc, 'sound/blank.ogg', 60, TRUE)
 	else
-		to_chat(loc, span_warning("[src] silently charges up."))
+		to_chat(loc, "<span class='warning'>[src] silently charges up.</span>")
 	update_icon()
 	overheat = FALSE
 
@@ -248,7 +248,7 @@
 
 /obj/item/borg/upgrade/modkit/examine(mob/user)
 	. = ..()
-	. += span_notice("Occupies <b>[cost]%</b> of mod capacity.")
+	. += "<span class='notice'>Occupies <b>[cost]%</b> of mod capacity.</span>"
 
 /obj/item/borg/upgrade/modkit/attackby(obj/item/A, mob/user)
 	if(istype(A, /obj/item/gun/energy/kinetic_accelerator) && !issilicon(user))
@@ -266,10 +266,10 @@
 	. = TRUE
 	if(minebot_upgrade)
 		if(minebot_exclusive && !istype(KA.loc, /mob/living/simple_animal/hostile/mining_drone))
-			to_chat(user, span_notice("The modkit you're trying to install is only rated for minebot use."))
+			to_chat(user, "<span class='notice'>The modkit you're trying to install is only rated for minebot use.</span>")
 			return FALSE
 	else if(istype(KA.loc, /mob/living/simple_animal/hostile/mining_drone))
-		to_chat(user, span_notice("The modkit you're trying to install is not rated for minebot use."))
+		to_chat(user, "<span class='notice'>The modkit you're trying to install is not rated for minebot use.</span>")
 		return FALSE
 	if(denied_type)
 		var/number_of_denied = 0
@@ -284,13 +284,13 @@
 		if(.)
 			if(!user.transferItemToLoc(src, KA))
 				return
-			to_chat(user, span_notice("I install the modkit."))
+			to_chat(user, "<span class='notice'>I install the modkit.</span>")
 			playsound(loc, 'sound/blank.ogg', 100, TRUE)
 			KA.modkits += src
 		else
-			to_chat(user, span_notice("The modkit you're trying to install would conflict with an already installed modkit. Use a crowbar to remove existing modkits."))
+			to_chat(user, "<span class='notice'>The modkit you're trying to install would conflict with an already installed modkit. Use a crowbar to remove existing modkits.</span>")
 	else
-		to_chat(user, span_notice("I don't have room(<b>[KA.get_remaining_mod_capacity()]%</b> remaining, [cost]% needed) to install this modkit. Use a crowbar to remove existing modkits."))
+		to_chat(user, "<span class='notice'>I don't have room(<b>[KA.get_remaining_mod_capacity()]%</b> remaining, [cost]% needed) to install this modkit. Use a crowbar to remove existing modkits.</span>")
 		. = FALSE
 
 /obj/item/borg/upgrade/modkit/deactivate(mob/living/silicon/robot/R, user = usr)
@@ -403,7 +403,7 @@
 		for(var/mob/living/L in range(1, target_turf) - K.firer - target)
 			var/armor = L.run_armor_check(K.def_zone, K.flag, "", "", K.armor_penetration)
 			L.apply_damage(K.damage*modifier, K.damage_type, K.def_zone, armor)
-			to_chat(L, span_danger("You're struck by a [K.name]!"))
+			to_chat(L, "<span class='danger'>You're struck by a [K.name]!</span>")
 
 /obj/item/borg/upgrade/modkit/aoe/turfs
 	name = "mining explosion"

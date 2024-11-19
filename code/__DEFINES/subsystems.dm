@@ -25,40 +25,47 @@
 
 //! ## Timing subsystem
 /**
-  * Don't run if there is an identical unique timer active
-  *
-  * if the arguments to addtimer are the same as an existing timer, it doesn't create a new timer,
-  * and returns the id of the existing timer
-  */
-#define TIMER_UNIQUE			(1<<0)
+ * Don't run if there is an identical unique timer active
+ *
+ * if the arguments to addtimer are the same as an existing timer, it doesn't create a new timer,
+ * and returns the id of the existing timer
+ */
+#define TIMER_UNIQUE (1<<0)
 
 ///For unique timers: Replace the old timer rather then not start this one
-#define TIMER_OVERRIDE			(1<<1)
+#define TIMER_OVERRIDE (1<<1)
 
 /**
-  * Timing should be based on how timing progresses on clients, not the server.
-  *
-  * Tracking this is more expensive,
-  * should only be used in conjuction with things that have to progress client side, such as
-  * animate() or sound()
-  */
-#define TIMER_CLIENT_TIME		(1<<2)
+ * Timing should be based on how timing progresses on clients, not the server.
+ *
+ * Tracking this is more expensive,
+ * should only be used in conjuction with things that have to progress client side, such as
+ * animate() or sound()
+ */
+#define TIMER_CLIENT_TIME (1<<2)
 
 ///Timer can be stopped using deltimer()
-#define TIMER_STOPPABLE			(1<<3)
+#define TIMER_STOPPABLE (1<<3)
 
 ///prevents distinguishing identical timers with the wait variable
 ///
 ///To be used with TIMER_UNIQUE
-#define TIMER_NO_HASH_WAIT		(1<<4)
+#define TIMER_NO_HASH_WAIT (1<<4)
 
 ///Loops the timer repeatedly until qdeleted
 ///
 ///In most cases you want a subsystem instead, so don't use this unless you have a good reason
-#define TIMER_LOOP				(1<<5)
+#define TIMER_LOOP (1<<5)
+
+///Delete the timer on parent datum Destroy() and when deltimer'd
+#define TIMER_DELETE_ME (1<<6)
 
 ///Empty ID define
 #define TIMER_ID_NULL -1
+
+/// Used to trigger object removal from a processing list
+#define PROCESS_KILL 26
+
 
 //! ## Initialization subsystem
 
@@ -87,12 +94,36 @@
 
 ///type and all subtypes should always immediately call Initialize in New()
 #define INITIALIZE_IMMEDIATE(X) ##X/New(loc, ...){\
-    ..();\
-    if(!(flags_1 & INITIALIZED_1)) {\
-        args[1] = TRUE;\
-        SSatoms.InitAtom(src, args);\
-    }\
+	..();\
+	if(!(flags_1 & INITIALIZED_1)) {\
+		var/previous_initialized_value = SSatoms.initialized;\
+		SSatoms.initialized = INITIALIZATION_INNEW_MAPLOAD;\
+		args[1] = TRUE;\
+		SSatoms.InitAtom(src, FALSE, args);\
+		SSatoms.initialized = previous_initialized_value;\
+	}\
 }
+
+//! ### SS initialization hints
+/**
+ * Negative values incidate a failure or warning of some kind, positive are good.
+ * 0 and 1 are unused so that TRUE and FALSE are guarenteed to be invalid values.
+ */
+
+/// Subsystem failed to initialize entirely. Print a warning, log, and disable firing.
+#define SS_INIT_FAILURE -2
+
+/// The default return value which must be overriden. Will succeed with a warning.
+#define SS_INIT_NONE -1
+
+/// Subsystem initialized sucessfully.
+#define SS_INIT_SUCCESS 2
+
+/// If your system doesn't need to be initialized (by being disabled or something)
+#define SS_INIT_NO_NEED 3
+
+/// Succesfully initialized, BUT do not announce it to players (generally to hide game mechanics it would otherwise spoil)
+#define SS_INIT_NO_MESSAGE 4
 
 // Subsystem init_order, from highest priority to lowest priority
 // Subsystems shutdown in the reverse of the order they initialize in
@@ -104,14 +135,14 @@
 #define INIT_ORDER_BLACKBOX			94
 #define INIT_ORDER_SERVER_MAINT		93
 #define INIT_ORDER_INPUT			85
+#define INIT_ORDER_ADMIN_VERBS 84 // needs to be pretty high, admins cant do much without it
 #define INIT_ORDER_VIS				80
+#define INIT_ORDER_TRIUMPHS			78
 #define INIT_ORDER_ACHIEVEMENTS		77
 #define INIT_ORDER_MATERIALS		76
 #define INIT_ORDER_RESEARCH			75
 #define INIT_ORDER_EVENTS			70
 #define INIT_ORDER_JOBS				65
-#define INIT_ORDER_ROLE_CLASS_HANDLER 66
-#define INIT_ORDER_TRIUMPHS			67
 #define INIT_ORDER_QUIRKS			60
 #define INIT_ORDER_TICKER			55
 #define INIT_ORDER_MAPPING			50
@@ -141,7 +172,6 @@
 // Subsystem fire priority, from lowest to highest priority
 // If the subsystem isn't listed here it's either DEFAULT or PROCESS (if it's a processing subsystem child)
 
-#define FIRE_PRIORITY_ROLE_CLASS_HANDLER 10
 #define FIRE_PRIORITY_PING			10
 #define FIRE_PRIORITY_WET_FLOORS	10
 #define FIRE_PRIORITY_WATER_LEVEL	10

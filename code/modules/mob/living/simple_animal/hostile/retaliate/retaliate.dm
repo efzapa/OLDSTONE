@@ -7,7 +7,7 @@
 		if(enemies.len)
 			if(tame)
 				enemies = list()
-				src.visible_message(span_notice("[src] calms down."))
+				src.visible_message("<span class='notice'>[src] calms down.</span>")
 				LoseTarget()
 
 /mob/living/simple_animal/hostile/retaliate

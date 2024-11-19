@@ -8,7 +8,6 @@
 
 /obj/item/roguestatue/gold
 	name = "gold statue"
-	desc = "Made of heavy, gleaming gold!"
 	icon_state = "gstatue1"
 	smeltresult = /obj/item/ingot/gold
 	sellprice = 120
@@ -19,7 +18,6 @@
 
 /obj/item/roguestatue/gold/loot
 	name = "gold statuette"
-	desc = "Made of heavy, gleaming gold!"
 	icon_state = "lstatue1"
 	sellprice = 45
 
@@ -30,7 +28,6 @@
 
 /obj/item/roguestatue/silver
 	name = "silver statue"
-	desc = "Made of pure, shimmering silver!"
 	icon_state = "sstatue1"
 	smeltresult = /obj/item/ingot/silver
 	sellprice = 90
@@ -41,7 +38,6 @@
 
 /obj/item/roguestatue/steel
 	name = "steel statue"
-	desc = "An unyielding statue of resilient steel."
 	icon_state = "ststatue1"
 	smeltresult = /obj/item/ingot/steel
 	sellprice = 60
@@ -52,7 +48,6 @@
 
 /obj/item/roguestatue/iron
 	name = "iron statue"
-	desc = "A forged statue of cast iron!"
 	icon_state = "istatue1"
 	smeltresult = /obj/item/ingot/iron
 	sellprice = 40
@@ -67,7 +62,6 @@
 /obj/item/roguegear
 	icon = 'icons/roguetown/items/misc.dmi'
 	name = "cog"
-	desc = "A cog with teeth meticulously crafted for tight interlocking."
 	icon_state = "gear"
 	w_class = WEIGHT_CLASS_SMALL
 	smeltresult = null
@@ -81,7 +75,7 @@
 /obj/item/roguegear/attack_self(mob/user)
 	if(linking)
 		linking = null
-		to_chat(user, span_warning("Linking halted."))
+		to_chat(user, "<span class='warning'>Linking halted.</span>")
 		return
 
 /obj/item/roguegear/attack_obj(obj/O, mob/living/user)
@@ -90,19 +84,19 @@
 	var/obj/structure/S = O
 	if(linking)
 		if(linking == O)
-			to_chat(user, span_warning("You cannot link me to myself."))
+			to_chat(user, "<span class='warning'>You cannot link me to myself.</span>")
 			return
 		if(linking in S.redstone_attached)
-			to_chat(user, span_warning("Already linked."))
+			to_chat(user, "<span class='warning'>Already linked.</span>")
 			linking = null
 			return
 		S.redstone_attached |= linking
 		linking.redstone_attached |= S
 		linking = null
-		to_chat(user, span_notice("Link complete."))
+		to_chat(user, "<span class='notice'>Link complete.</span>")
 		return
 	else
 		linking = S
-		to_chat(user, span_info("Link beginning..."))
+		to_chat(user, "<span class='info'>Link beginning...</span>")
 		return
 	..()

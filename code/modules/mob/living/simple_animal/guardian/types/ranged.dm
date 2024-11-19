@@ -18,13 +18,13 @@
 	projectilesound = 'sound/blank.ogg'
 	ranged = 1
 	range = 13
-	playstyle_string = span_holoparasite("As a <b>ranged</b> type, you have only light damage resistance, but are capable of spraying shards of crystal at incredibly high speed. You can also deploy surveillance snares to monitor enemy movement. Finally, you can switch to scout mode, in which you can't attack, but can move without limit.")
-	magic_fluff_string = span_holoparasite("..And draw the Sentinel, an alien master of ranged combat.")
-	tech_fluff_string = span_holoparasite("Boot sequence complete. Ranged combat modules active. Holoparasite swarm online.")
-	carp_fluff_string = span_holoparasite("CARP CARP CARP! Caught one, it's a ranged carp. This fishy can watch people pee in the ocean.")
+	playstyle_string = "<span class='holoparasite'>As a <b>ranged</b> type, you have only light damage resistance, but are capable of spraying shards of crystal at incredibly high speed. You can also deploy surveillance snares to monitor enemy movement. Finally, you can switch to scout mode, in which you can't attack, but can move without limit.</span>"
+	magic_fluff_string = "<span class='holoparasite'>..And draw the Sentinel, an alien master of ranged combat.</span>"
+	tech_fluff_string = "<span class='holoparasite'>Boot sequence complete. Ranged combat modules active. Holoparasite swarm online.</span>"
+	carp_fluff_string = "<span class='holoparasite'>CARP CARP CARP! Caught one, it's a ranged carp. This fishy can watch people pee in the ocean.</span>"
 	see_invisible = SEE_INVISIBLE_LIVING
 	see_in_dark = 8
-	toggle_button_type = /atom/movable/screen/guardian/ToggleMode
+	toggle_button_type = /obj/screen/guardian/ToggleMode
 	var/list/snares = list()
 	var/toggle = FALSE
 
@@ -76,7 +76,7 @@
 			lighting_alpha = LIGHTING_PLANE_ALPHA_VISIBLE
 			msg = "You deactivate your night vision."
 
-	to_chat(src, span_notice("[msg]"))
+	to_chat(src, "<span class='notice'>[msg]</span>")
 
 
 /mob/living/simple_animal/hostile/guardian/ranged/verb/Snare()
@@ -97,7 +97,7 @@
 	set name = "Remove Surveillance Snare"
 	set category = "Guardian"
 	set desc = ""
-	var/picked_snare = input(src, "Pick which snare to remove", "Remove Snare") as null|anything in sortNames(src.snares)
+	var/picked_snare = input(src, "Pick which snare to remove", "Remove Snare") as null|anything in sort_names(src.snares)
 	if(picked_snare)
 		src.snares -= picked_snare
 		qdel(picked_snare)

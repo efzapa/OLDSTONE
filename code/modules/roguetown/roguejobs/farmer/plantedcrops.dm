@@ -1,7 +1,7 @@
 
 /obj/machinery/crop
 	name = "tilled dirt"
-	desc = "Dirt, ready to give life like a womb."
+	desc = ""
 	icon = 'icons/obj/hydroponics/equipment.dmi'
 	icon_state = "blank"
 	density = FALSE
@@ -25,6 +25,8 @@
 	var/lastcycle = 0
 	///If our plant doesn't have direct access to the sky, it can't grow (nor can weeds)
 	var/seesky = TRUE
+	///PQ gain per crop farmed, should be a very stupidly small amount
+	var/crop_pq = 0.01
 
 /obj/machinery/crop/Crossed(atom/movable/moveable_atom)
 	if(isliving(moveable_atom))
@@ -37,15 +39,15 @@
 /obj/machinery/crop/examine(mob/user)
 	. = ..()
 	if(growth >= 100)
-		. += span_notice("[src] is ready for harvest!")
+		. += "<span class='notice'>[src] is ready for harvest!</span>"
 	if(water < 25)
-		. += span_info("The ground is thirsty.")
+		. += "<span class='info'>The ground is thirsty.</span>"
 	if(food < 25)
-		. += span_info("The ground is hungry.")
+		. += "<span class='info'>The ground is hungry.</span>"
 	if(weeds >= 25)
-		. += span_warning("Weeds!")
+		. += "<span class='warning'>Weeds!</span>"
 	if(plant_hp <= 25)
-		. += span_warning("Brown and dying...")
+		. += "<span class='warning'>Brown and dying...</span>"
 
 /obj/machinery/crop/process()
 	if(QDELETED(src))
@@ -171,21 +173,21 @@
 	var/mob/living/current_farmer = user
 	var/datum/mind/farmer_mind = current_farmer.mind
 	var/exp_gained = 0
+	var/pq_gained = 0
 
 	if(istype(attacking_item, /obj/item/seeds))
-		to_chat(user, span_warning("Something is already growing here."))
+		to_chat(user, "<span class='warning'>Something is already growing here.</span>")
 		return
 
 	if(istype(attacking_item, /obj/item/rogueweapon/sickle))
 		if(!myseed)
 			return
 		if(plant_hp <= 0)
-			to_chat(user, span_warning("This crop has perished."))
+			to_chat(user, "<span class='warning'>This crop has perished.</span>")
 			return
 		if(growth < 100)
-			to_chat(user, span_warning("This crop is not ready to harvest."))
+			to_chat(user, "<span class='warning'>This crop is not ready to harvest.</span>")
 			return
-		user.visible_message(span_notice("[user] harvests [src] with [attacking_item]."))
 		for(var/i in 1 to myseed.yield)
 			if(plant_hp <= 0)
 				return
@@ -197,8 +199,12 @@
 			new myseed.product(src.loc)
 			myseed.yield -= 1
 			playsound(src,"plantcross", 100, FALSE)
+			user.visible_message("<span class='notice'>[user] harvests [src] with [attacking_item].</span>")
 			exp_gained = round(current_farmer.STAINT / initial(myseed.yield)) //So we don't gain a fuck ton of EXP if our plant happens to have multiple crops
 			farmer_mind.adjust_experience(/datum/skill/labor/farming, exp_gained)
+			pq_gained += crop_pq
+		if(pq_gained && user.ckey)
+			adjust_playerquality(pq_gained, user.ckey)
 		if(myseed.yield <= 0)
 			if(myseed.delonharvest)
 				qdel(src)
@@ -218,14 +224,14 @@
 		if(plant_hp <= 0)
 			playsound(src,'sound/items/seed.ogg', 100, FALSE)
 			new /obj/item/natural/fibers(src.loc)
-			user.visible_message(span_notice("[user] rips out [src] with [attacking_item]."))
+			user.visible_message("<span class='notice'>[user] rips out [src] with [attacking_item].</span>")
 			exp_gained = current_farmer.STAINT
 			farmer_mind.adjust_experience(/datum/skill/labor/farming, exp_gained)
 			qdel(src)
 			return
 		else if(weeds > 0)
 			playsound(src,'sound/items/seed.ogg', 100, FALSE)
-			user.visible_message(span_notice("[user] rips out some weeds with [attacking_item]."))
+			user.visible_message("<span class='notice'>[user] rips out some weeds with [attacking_item].</span>")
 			weeds = max(weeds - rand(1,50), 0)
 			update_seed_icon()
 			exp_gained = current_farmer.STAINT
@@ -235,7 +241,7 @@
 	//Following 3 are fertilizers
 	if(istype(attacking_item, /obj/item/natural/poo))
 		playsound(src,'sound/items/seed.ogg', 100, FALSE)
-		visible_message(span_notice("[user] confidently fertilizes the soil with [attacking_item]."))
+		visible_message("<span class='notice'>[user] confidently fertilizes the soil with [attacking_item].</span>")
 		qdel(attacking_item)
 		user.update_inv_hands()
 		food = 100
@@ -244,7 +250,7 @@
 		return
 	if(istype(attacking_item, /obj/item/ash) || istype(attacking_item, /obj/item/trash/applecore))
 		playsound(src,'sound/items/seed.ogg', 100, FALSE)
-		visible_message(span_notice("[user] confidently fertilizes the soil with [attacking_item]."))
+		visible_message("<span class='notice'>[user] confidently fertilizes the soil with [attacking_item].</span>")
 		food = min(food + 50, 100)
 		qdel(attacking_item)
 		user.update_inv_hands()
@@ -256,7 +262,7 @@
 		if(!S.fertamount)
 			return
 		playsound(src,'sound/items/seed.ogg', 100, FALSE)
-		visible_message(span_notice("[user] confidently fertilizes the soil with [attacking_item]."))
+		visible_message("<span class='notice'>[user] confidently fertilizes the soil with [attacking_item].</span>")
 		food = min(food + S.fertamount, 100)
 		qdel(attacking_item)
 		user.update_inv_hands()
@@ -265,12 +271,13 @@
 		return
 	..()
 
-/obj/machinery/crop/attack_hand(mob/living/user, params)
+/obj/machinery/crop/attack_hand(mob/user)
 	if(!isliving(user) || !user.mind)
 		return
 	var/mob/living/current_farmer = user
 	var/datum/mind/farmer_mind = current_farmer.mind
 	var/exp_gained = 0
+	var/pq_gained = 0
 
 	if(!myseed)
 		qdel(src)
@@ -283,25 +290,13 @@
 		exp_gained = current_farmer.STAINT
 		farmer_mind.adjust_experience(/datum/skill/labor/farming, exp_gained)
 		playsound(src,"plantcross", 100, FALSE)
-		user.visible_message(span_notice("[user] pulls out [src]."))
+		user.visible_message("<span class='notice'>[user] pulls out [src].</span>")
 		new /obj/item/natural/fibers(src.loc)
 		qdel(src)
 		name = initial(name)
 		update_seed_icon()
 		return
 	if(growth >= 100)
-		var/obj/item/offhand = user.get_inactive_held_item()//ghetto farming code starts here
-		var/success_chance = 10
-		if(offhand)
-			var/foundcut = FALSE
-			for(var/X in offhand.possible_item_intents)
-				var/datum/intent/D = new X
-				if(D.blade_class == BCLASS_CUT)
-					foundcut = TRUE
-					break
-			if(foundcut)
-				success_chance += 40
-				harvtime /= 2 //ghetto farming code ends here
 		for(var/i in 1 to myseed.yield)
 			if(plant_hp <= 0)
 				return
@@ -309,15 +304,19 @@
 				break
 			myseed.yield -= 1
 			playsound(src,"plantcross", 100, FALSE)
+			var/success_chance = 10
 			if(farmer_mind.get_skill_level(/datum/skill/labor/farming))
 				success_chance = 100
 			if(prob(success_chance))
 				new myseed.product(src.loc)
-				user.visible_message(span_info("[user] harvests something from [src]."))
+				user.visible_message("<span class='info'>[user] harvests something from [src].</span>")
 			else
-				user.visible_message(span_warning("[user] spoils something from [src]!"))
+				user.visible_message("<span class='warning'>[user] spoils something from [src]!</span>")
 			exp_gained = round(current_farmer.STAINT / initial(myseed.yield)) //So we don't gain a fuck ton of EXP if our plant happens to have multiple crops
 			farmer_mind.adjust_experience(/datum/skill/labor/farming, exp_gained)
+			pq_gained += crop_pq
+		if(pq_gained && user.ckey)
+			adjust_playerquality(pq_gained, user.ckey)
 		if(myseed.yield <= 0)
 			if(myseed.delonharvest)
 				qdel(src)
@@ -330,27 +329,18 @@
 				plant_hp = 0
 			update_seed_icon()
 
-/obj/machinery/crop/attack_right(mob/living/user, params)
+/obj/machinery/crop/attack_right(mob/user)
 	if(!isliving(user) || !user.mind)
 		return
 	var/mob/living/current_farmer = user
 	var/datum/mind/farmer_mind = current_farmer.mind
 	var/exp_gained = 0
 	var/deweed_time = max((50 - farmer_mind.get_skill_level(/datum/skill/labor/farming) * 5), 1)
-	var/obj/item/offhand = user.get_inactive_held_item()//ghetto farming code starts here
-	if(offhand)
-		var/foundscoop = FALSE
-		for(var/X in offhand.possible_item_intents)
-			if(X == /datum/intent/shovelscoop)
-				foundscoop = TRUE
-				break
-		if(foundscoop)
-			deweed_time /= 2 //ghetto farming code ends here
 
 	if(weeds <= 0 || !do_after(user, deweed_time, target = src))
 		return
 	playsound(src,"plantcross", 100, FALSE)
-	user.visible_message(span_notice("[user] rips out some weeds."))
+	user.visible_message("<span class='notice'>[user] rips out some weeds.</span>")
 	weeds = max(weeds - rand(1,30), 0)
 	exp_gained = current_farmer.STAINT
 	farmer_mind.adjust_experience(/datum/skill/labor/farming, exp_gained)

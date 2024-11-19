@@ -187,7 +187,6 @@ GLOBAL_VAR(restart_counter)
 	log_runtime(GLOB.revdata.get_log_message())
 
 /world/Topic(T, addr, master, key)
-	return // Disable topics altogether
 	TGS_TOPIC //redirect to server tools if necessary
 
 	var/static/list/topic_handlers = TopicHandlers()
@@ -219,7 +218,7 @@ GLOBAL_VAR(restart_counter)
 		if(PRcounts[id] > PR_ANNOUNCEMENTS_PER_ROUND)
 			return
 
-	var/final_composed = span_announce("PR: [announcement]")
+	var/final_composed = "<span class='announce'>PR: [announcement]</span>"
 	for(var/client/C in GLOB.clients)
 		C.AnnouncePR(final_composed)
 
@@ -249,16 +248,15 @@ GLOBAL_VAR(restart_counter)
 //		if (usr)
 //			log_admin("[key_name(usr)] Has requested an immediate world restart via client side debugging tools")
 //			message_admins("[key_name_admin(usr)] Has requested an immediate world restart via client side debugging tools")
-//		to_chat(world, span_boldannounce("Rebooting World immediately due to host request."))
+//		to_chat(world, "<span class='boldannounce'>Rebooting World immediately due to host request.</span>")
 //	else
-//	to_chat(world, span_boldannounce("<b><u><a href='byond://winset?command=.reconnect'>CLICK TO RECONNECT</a></u></b>"))
+//	to_chat(world, "<span class='boldannounce'><b><u><a href='byond://winset?command=.reconnect'>CLICK TO RECONNECT</a></u></b></span>")
 
 	var/round_end_sound = pick('sound/roundend/knave.ogg',
 	'sound/roundend/twohours.ogg',
 	'sound/roundend/rest.ogg',
 	'sound/roundend/gather.ogg',
-	'sound/roundend/dwarfs.ogg',
-	'sound/roundend/walter.ogg')
+	'sound/roundend/dwarfs.ogg')
 	for(var/client/thing in GLOB.clients)
 		if(!thing)
 			continue

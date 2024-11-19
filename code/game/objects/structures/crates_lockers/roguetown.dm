@@ -2,8 +2,8 @@
 	name = "chest"
 	desc = ""
 	icon = 'icons/roguetown/misc/structure.dmi'
-	icon_state = "chest3s"
-	base_icon_state = "chest3s"
+	icon_state = "chestweird2"
+	base_icon_state = "chestweird2"
 	drag_slowdown = 2
 	open_sound = 'sound/misc/chestopen.ogg'
 	close_sound = 'sound/misc/chestclose.ogg'
@@ -16,8 +16,8 @@
 	allow_dense = FALSE
 
 /obj/structure/closet/crate/chest/gold
-	icon_state = "chest3"
-	base_icon_state = "chest3"
+	icon_state = "chestweird1"
+	base_icon_state = "chestweird1"
 
 //obj/structure/closet/crate/chest/Initialize(mapload)
 //	. = ..()
@@ -56,7 +56,7 @@
 		/obj/item/riddleofsteel=2,
 		/obj/item/clothing/neck/roguetown/talkstone=2)
 	if(prob(70))
-		var/I = pickweight(loot)
+		var/I = pick_weight(loot)
 		new I(src)
 
 /obj/structure/closet/crate/roguecloset
@@ -97,7 +97,6 @@
 	keylock = TRUE
 	lockid = "lord"
 	locked = TRUE
-	masterkey = TRUE
 	base_icon_state = "closetlord"
 	icon_state = "closetlord"
 

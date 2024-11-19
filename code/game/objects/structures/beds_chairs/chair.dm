@@ -17,9 +17,9 @@
 
 /obj/structure/chair/examine(mob/user)
 	. = ..()
-//	. += span_notice("It's held together by a couple of <b>bolts</b>.")
+//	. += "<span class='notice'>It's held together by a couple of <b>bolts</b>.</span>"
 //	if(!has_buckled_mobs())
-//		. += span_notice("Drag your sprite to sit in it.")
+//		. += "<span class='notice'>Drag your sprite to sit in it.</span>"
 
 /obj/structure/chair/Initialize()
 	. = ..()
@@ -244,7 +244,7 @@
 			return
 		if(!usr.canUseTopic(src, BE_CLOSE, ismonkey(usr)))
 			return
-		usr.visible_message(span_notice("[usr] grabs \the [src.name]."), span_notice("I grab \the [src.name]."))
+		usr.visible_message("<span class='notice'>[usr] grabs \the [src.name].</span>", "<span class='notice'>I grab \the [src.name].</span>")
 		var/obj/item/C = new item_chair(loc)
 		item_chair = null
 		C.set_custom_materials(custom_materials)
@@ -279,7 +279,7 @@
 	var/obj/structure/chair/origin_type = /obj/structure/chair
 
 /obj/item/chair/suicide_act(mob/living/carbon/user)
-	user.visible_message(span_suicide("[user] begins hitting [user.p_them()]self with \the [src]! It looks like [user.p_theyre()] trying to commit suicide!"))
+	user.visible_message("<span class='suicide'>[user] begins hitting [user.p_them()]self with \the [src]! It looks like [user.p_theyre()] trying to commit suicide!</span>")
 	playsound(src,hitsound,50,TRUE)
 	return BRUTELOSS
 
@@ -294,17 +294,17 @@
 /obj/item/chair/proc/plant(mob/user)
 	var/turf/T = get_turf(loc)
 	if(!isfloorturf(T))
-		to_chat(user, span_warning("I need ground to plant this on!"))
+		to_chat(user, "<span class='warning'>I need ground to plant this on!</span>")
 		return
 	for(var/obj/A in T)
 		if(istype(A, /obj/structure/chair))
-			to_chat(user, span_warning("There is already a chair here!"))
+			to_chat(user, "<span class='warning'>There is already a chair here!</span>")
 			return
 		if(A.density && !(A.flags_1 & ON_BORDER_1))
-			to_chat(user, span_warning("There is already something here!"))
+			to_chat(user, "<span class='warning'>There is already something here!</span>")
 			return
 
-	user.visible_message(span_notice("[user] rights \the [src.name]."), span_notice("I right \the [name]."))
+	user.visible_message("<span class='notice'>[user] rights \the [src.name].</span>", "<span class='notice'>I right \the [name].</span>")
 	var/obj/structure/chair/C = new origin_type(get_turf(loc))
 	C.set_custom_materials(custom_materials)
 	TransferComponents(C)
@@ -329,7 +329,7 @@
 /*
 /obj/item/chair/hit_reaction(mob/living/carbon/human/owner, atom/movable/hitby, attack_text = "the attack", final_block_chance = 0, damage = 0, attack_type = MELEE_ATTACK)
 	if(attack_type == UNARMED_ATTACK && prob(hit_reaction_chance))
-		owner.visible_message(span_danger("[owner] fends off [attack_text] with [src]!"))
+		owner.visible_message("<span class='danger'>[owner] fends off [attack_text] with [src]!</span>")
 		return 1
 	return 0
 */
@@ -338,7 +338,7 @@
 	if(!proximity)
 		return
 	if(prob(break_chance))
-		user.visible_message(span_warning("[src] is smashed to pieces!"))
+		user.visible_message("<span class='warning'>[src] is smashed to pieces!</span>")
 		if(iscarbon(target))
 			var/mob/living/carbon/C = target
 			if(C.health < C.maxHealth*0.5)
@@ -420,12 +420,12 @@
 	if(!istype(user) || !user.canUseTopic(src, BE_CLOSE, ismonkey(user)))
 		return
 	if(!(datum_flags & PROCESSING_FAST))
-		user.visible_message(span_notice("[user] spins [src] around, and the last vestiges of Ratvarian technology keeps it spinning FOREVER."), \
-		span_notice("Automated spinny chairs. The pinnacle of ancient Ratvarian technology."))
+		user.visible_message("<span class='notice'>[user] spins [src] around, and the last vestiges of Ratvarian technology keeps it spinning FOREVER.</span>", \
+		"<span class='notice'>Automated spinny chairs. The pinnacle of ancient Ratvarian technology.</span>")
 		START_PROCESSING(SSfastprocess, src)
 	else
-		user.visible_message(span_notice("[user] stops [src]'s uncontrollable spinning."), \
-		span_notice("I grab [src] and stop its wild spinning."))
+		user.visible_message("<span class='notice'>[user] stops [src]'s uncontrollable spinning.</span>", \
+		"<span class='notice'>I grab [src] and stop its wild spinning.</span>")
 		STOP_PROCESSING(SSfastprocess, src)
 
 /obj/structure/chair/mime
@@ -467,9 +467,9 @@
 
 /obj/structure/chair/plastic/proc/snap_check(mob/living/carbon/Mob)
 	if (Mob.nutrition >= NUTRITION_LEVEL_FAT)
-		to_chat(Mob, span_warning("The chair begins to pop and crack, you're too heavy!"))
+		to_chat(Mob, "<span class='warning'>The chair begins to pop and crack, you're too heavy!</span>")
 		if(do_after(Mob, 60, 1, Mob, 0))
-			Mob.visible_message(span_notice("The plastic chair snaps under [Mob]'s weight!"))
+			Mob.visible_message("<span class='notice'>The plastic chair snaps under [Mob]'s weight!</span>")
 			qdel(src)
 
 /obj/item/chair/plastic

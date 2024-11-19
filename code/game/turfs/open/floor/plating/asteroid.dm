@@ -39,7 +39,7 @@
 	if(!dug)
 		return TRUE
 	if(user)
-		to_chat(user, span_warning("Looks like someone has dug here already!"))
+		to_chat(user, "<span class='warning'>Looks like someone has dug here already!</span>")
 
 /turf/open/floor/plating/asteroid/try_replace_tile(obj/item/stack/tile/T, mob/user, params)
 	return
@@ -63,12 +63,12 @@
 			if(!isturf(user.loc))
 				return
 
-			to_chat(user, span_notice("I start digging..."))
+			to_chat(user, "<span class='notice'>I start digging...</span>")
 
 			if(W.use_tool(src, user, 40, volume=50))
 				if(!can_dig(user))
 					return TRUE
-				to_chat(user, span_notice("I dig a hole."))
+				to_chat(user, "<span class='notice'>I dig a hole.</span>")
 				getDug()
 				SSblackbox.record_feedback("tally", "pick_used_mining", 1, W.type)
 				return TRUE
@@ -264,14 +264,14 @@ GLOBAL_LIST_INIT(megafauna_spawn_list, list(/mob/living/simple_animal/hostile/me
 	if(prob(30))
 		if(istype(loc, /area/mine/explored) || !istype(loc, /area/lavaland/surface/outdoors/unexplored))
 			return
-		var/randumb = pickweight(mob_spawn_list)
+		var/randumb = pick_weight(mob_spawn_list)
 		while(randumb == SPAWN_MEGAFAUNA)
 			if(istype(loc, /area/lavaland/surface/outdoors/unexplored/danger)) //this is danger. it's boss time.
-				var/maybe_boss = pickweight(megafauna_spawn_list)
+				var/maybe_boss = pick_weight(megafauna_spawn_list)
 				if(megafauna_spawn_list[maybe_boss])
 					randumb = maybe_boss
 			else //this is not danger, don't spawn a boss, spawn something else
-				randumb = pickweight(mob_spawn_list)
+				randumb = pick_weight(mob_spawn_list)
 
 		for(var/thing in urange(12, T)) //prevents mob clumps
 			if(!ishostile(thing) && !istype(thing, /obj/structure/spawner))
@@ -295,7 +295,7 @@ GLOBAL_LIST_INIT(megafauna_spawn_list, list(/mob/living/simple_animal/hostile/me
 	if(prob(12))
 		if(istype(loc, /area/mine/explored) || istype(loc, /area/lavaland/surface/outdoors/explored))
 			return
-		var/randumb = pickweight(flora_spawn_list)
+		var/randumb = pick_weight(flora_spawn_list)
 		for(var/obj/structure/flora/ash/F in range(4, T)) //Allows for growing patches, but not ridiculous stacks of flora
 			if(!istype(F, randumb))
 				return
@@ -305,7 +305,7 @@ GLOBAL_LIST_INIT(megafauna_spawn_list, list(/mob/living/simple_animal/hostile/me
 	if(prob(2))
 		if(istype(loc, /area/mine/explored) || istype(loc, /area/lavaland/surface/outdoors/explored))
 			return
-		var/randumb = pickweight(terrain_spawn_list)
+		var/randumb = pick_weight(terrain_spawn_list)
 		for(var/obj/structure/geyser/F in range(7, T))
 			if(istype(F, randumb))
 				return
@@ -331,7 +331,7 @@ GLOBAL_LIST_INIT(megafauna_spawn_list, list(/mob/living/simple_animal/hostile/me
 
 /turf/open/floor/plating/asteroid/snow/burn_tile()
 	if(!burnt)
-		visible_message(span_danger("[src] melts away!."))
+		visible_message("<span class='danger'>[src] melts away!.</span>")
 		slowdown = 0
 		burnt = TRUE
 		icon_state = "snow_dug"

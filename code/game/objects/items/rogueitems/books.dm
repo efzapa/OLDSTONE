@@ -81,7 +81,7 @@
 
 /obj/item/book/rogue/read(mob/user)
 	if(!open)
-		to_chat(user, span_info("Open me first."))
+		to_chat(user, "<span class='info'>Open me first.</span>")
 		return FALSE
 	. = ..()
 
@@ -114,13 +114,13 @@
 /obj/item/book/rogue/secret/ledger/attackby(obj/item/I, mob/user, params)
 	if(istype(I, /obj/item/paper/scroll/cargo))
 		if(!open)
-			to_chat(user, span_info("Open me first."))
+			to_chat(user, "<span class='info'>Open me first.</span>")
 			return FALSE
 		var/obj/item/paper/scroll/cargo/C = I
 		if(C.orders.len > 4)
-			to_chat(user, span_warning("Too much order."))
+			to_chat(user, "<span class='warning'>Too much order.</span>")
 			return
-		var/picked_cat = input(user, "Categories", "Shipping Ledger") as null|anything in sortList(SSshuttle.supply_cats)
+		var/picked_cat = input(user, "Categories", "Shipping Ledger") as null|anything in sort_list(SSshuttle.supply_cats)
 		if(!picked_cat)
 			testing("yeye")
 			return
@@ -129,7 +129,7 @@
 			var/datum/supply_pack/PA = SSshuttle.supply_packs[pack]
 			if(PA.group == picked_cat)
 				pax += PA
-		var/picked_pack = input(user, "Shipments", "Shipping Ledger") as null|anything in sortList(pax)
+		var/picked_pack = input(user, "Shipments", "Shipping Ledger") as null|anything in sort_list(pax)
 		if(!picked_pack)
 			return
 		var/namer = user.name
@@ -144,13 +144,13 @@
 		return
 	if(istype(I, /obj/item/paper/scroll))
 		if(!open)
-			to_chat(user, span_info("Open me first."))
+			to_chat(user, "<span class='info'>Open me first.</span>")
 			return FALSE
 		var/obj/item/paper/scroll/P = I
 		if(P.info)
-			to_chat(user, span_warning("Something is written here already."))
+			to_chat(user, "<span class='warning'>Something is written here already.</span>")
 			return
-		var/picked_cat = input(user, "Categories", "Shipping Ledger") as null|anything in sortList(SSshuttle.supply_cats)
+		var/picked_cat = input(user, "Categories", "Shipping Ledger") as null|anything in sort_list(SSshuttle.supply_cats)
 		if(!picked_cat)
 			return
 		var/list/pax = list()
@@ -158,7 +158,7 @@
 			var/datum/supply_pack/PA = SSshuttle.supply_packs[pack]
 			if(PA.group == picked_cat)
 				pax += PA
-		var/picked_pack = input(user, "Shipments", "Shipping Ledger") as null|anything in sortList(pax)
+		var/picked_pack = input(user, "Shipments", "Shipping Ledger") as null|anything in sort_list(pax)
 		if(!picked_pack)
 			return
 		var/obj/item/paper/scroll/cargo/C = new(user.loc)
@@ -185,7 +185,7 @@
 
 /obj/item/book/rogue/bibble/read(mob/user)
 	if(!open)
-		to_chat(user, span_info("Open me first."))
+		to_chat(user, "<span class='info'>Open me first.</span>")
 		return FALSE
 	if(!user.client || !user.hud_used)
 		return
@@ -204,21 +204,21 @@
 /obj/item/book/rogue/bibble/attack(mob/living/M, mob/user)
 	if(user.mind && user.mind.assigned_role == "Priest")
 		if(!user.can_read(src))
-			to_chat(user, span_warning("I don't understand these scribbly black lines."))
+			to_chat(user, "<span class='warning'>I don't understand these scribbly black lines.</span>")
 			return
 		M.apply_status_effect(/datum/status_effect/buff/blessed)
 		M.add_stress(/datum/stressevent/blessed)
-		user.visible_message(span_notice("[user] blesses [M]."))
+		user.visible_message("<span class='notice'>[user] blesses [M].</span>")
 		playsound(user, 'sound/magic/bless.ogg', 100, FALSE)
 		return
 
 /datum/status_effect/buff/blessed
 	id = "blessed"
-	alert_type = /atom/movable/screen/alert/status_effect/buff/blessed
+	alert_type = /obj/screen/alert/status_effect/buff/blessed
 	effectedstats = list("fortune" = 1)
 	duration = 20 MINUTES
 
-/atom/movable/screen/alert/status_effect/buff/blessed
+/obj/screen/alert/status_effect/buff/blessed
 	name = "Blessed"
 	desc = ""
 	icon_state = "buff"
@@ -232,7 +232,7 @@
 	bookfile = "law.json"
 
 /obj/item/book/rogue/cooking
-	name = "Tastes Fit For The Lord" 
+	name = "Tastes Fit For The Lord"
 	desc = ""
 	icon_state ="book_0"
 	base_icon_state = "book"
@@ -259,7 +259,7 @@
 		return
 	..()
 	user.update_inv_hands()
-	to_chat(user, span_notice("You feel laughter echo in your head."))
+	to_chat(user, "<span class='notice'>You feel laughter echo in your head.</span>")
 
 //player made books
 /obj/item/book/rogue/tales1
@@ -367,207 +367,3 @@
 	icon_state ="book8_0"
 	base_icon_state = "book8"
 	bookfile = "tales14.json"
-
-/obj/item/book/rogue/playerbook
-	var/player_book_text
-	var/player_book_title
-	var/player_book_author
-	var/player_book_icon
-	var/player_book_author_ckey
-	var/is_in_round_player_generated
-	var/list/player_book_titles
-	var/list/player_book_content
-	var/list/book_icons = list(
-	"Sickly green with embossed bronze" = "book8",
-	"White with embossed obsidian" = "book7",
-	"Black with embossed quartz" = "book6",
-	"Blue with embossed ruby" = "book5",
-	"Green with embossed amethyst" = "book4",
-	"Purple with embossed emerald" = "book3",
-	"Red with embossed sapphire" = "book2",
-	"Brown with embossed gold" = "book1",
-	"Brown without embossed material" = "basic_book")
-	name = "unknown title"
-	desc = "by an unknown author"
-	icon_state = "basic_book_0"
-	base_icon_state = "basic_book"
-	override_find_book = TRUE
-	
-/obj/item/book/rogue/playerbook/Initialize(loc, in_round_player_generated, var/mob/living/in_round_player_mob, text)
-	. = ..()
-	is_in_round_player_generated = in_round_player_generated
-	if(is_in_round_player_generated)
-		player_book_text = text
-		while(!player_book_author_ckey) // doesn't have to be this, but better than defining a bool.
-			player_book_title = dd_limittext(capitalize(sanitize_hear_message(input(in_round_player_mob, "What title do you want to give the book? (max 42 characters)", "Title", "Unknown"))), MAX_NAME_LEN)	
-			player_book_author = "[dd_limittext(sanitize_hear_message(input(in_round_player_mob, "What do you want the author text to be? (max 42 characters)", "Author", "")), MAX_NAME_LEN)]"
-			player_book_icon = book_icons[input(in_round_player_mob, "Choose a book style", "Book Style") as anything in book_icons]
-			player_book_author_ckey = in_round_player_mob.ckey
-			if(alert("Confirm?:\nTitle: [player_book_title]\nAuthor: [player_book_author]\nBook Cover: [player_book_icon]", "", "Yes", "No") == "No")
-				player_book_author_ckey = null
-		message_admins("[player_book_author_ckey]([in_round_player_mob.real_name]) has generated the player book: [player_book_title]")
-	else
-		player_book_titles = SSlibrarian.pull_player_book_titles()
-		player_book_content = SSlibrarian.file2playerbook(pick(player_book_titles))
-		player_book_title = player_book_content["book_title"]
-		player_book_author = player_book_content["author"]
-		player_book_author_ckey = player_book_content["author_ckey"]
-		player_book_icon = player_book_content["icon"]
-		player_book_text = player_book_content["text"]
-		// no longer required.
-		player_book_titles = null
-		player_book_content = null
-
-	name = "[player_book_title]"
-	desc = "By [player_book_author]"
-	icon_state = "[player_book_icon]_0"
-	base_icon_state = "[player_book_icon]"
-	pages = list("<b3><h3>Title: [player_book_title]<br>Author: [player_book_author]</b><h3>[player_book_text]")
-
-/obj/item/manuscript
-	name = "2 page manuscript"
-	desc = "A 2 page written piece, with aspirations of becoming a book."
-	icon = 'icons/roguetown/items/misc.dmi'
-	icon_state = "manuscript"
-	dir = 2
-	resistance_flags = FLAMMABLE
-	var/number_of_pages = 2
-	var/compiled_pages = null
-	var/list/page_texts = list()
-	var/qdel_source = FALSE
-
-/obj/item/manuscript/attackby(obj/item/I, mob/living/user)
-	// why is a book crafting kit using the craft system, but crafting a book isn't? Well the crafting system for *some reason* is made in such a way as to make reworking it to allow you to put reqs vars in the crafted item near *impossible.*
-	if(istype(I, /obj/item/book_crafting_kit))
-		qdel(I)
-		var/obj/item/book/rogue/playerbook/PB = new /obj/item/book/rogue/playerbook(get_turf(loc), TRUE, user, compiled_pages)
-		if(user.Adjacent(PB))
-			PB.add_fingerprint(user)
-			user.put_in_hands(PB)
-		return qdel(src)
-
-	if(!istype(I, /obj/item/paper))
-		return
-	var/obj/item/paper/P = I
-	if(!(P.info))
-		to_chat(user, "the paper needs to contain text to be added to a manuscript!")
-		return
-	if(number_of_pages == 8)
-		to_chat(user, "The manuscript pile cannot surpass 8 pages!")
-		return
-
-	++number_of_pages
-	name = "[number_of_pages] page manuscript"
-	desc = "A [number_of_pages] page written piece, with aspirations of becoming a book."
-	page_texts += P.info
-	compiled_pages += "<p>[P.info]</p>"
-	qdel(P)
-
-	update_icon()
-	return ..()
-
-/obj/item/manuscript/examine(mob/user)
-	. = ..()
-	. += "<a href='?src=[REF(src)];read=1'>Read</a>"
-
-/obj/item/manuscript/Topic(href, href_list)
-	..()
-
-	if(!usr)
-		return
-
-	if(href_list["close"])
-		var/mob/user = usr
-		if(user?.client && user.hud_used)
-			if(user.hud_used.reads)
-				user.hud_used.reads.destroy_read()
-			user << browse(null, "window=reading")
-
-	var/literate = usr.is_literate()
-	if(!usr.canUseTopic(src, BE_CLOSE, literate))
-		return
-
-	if(href_list["read"])
-		read(usr)
-
-/obj/item/manuscript/attack_self(mob/user)
-	read(user)
-
-/obj/item/manuscript/proc/read(mob/user)
-	user << browse_rsc('html/book.png')
-	if(!user.client || !user.hud_used)
-		return
-	if(!user.hud_used.reads)
-		return
-	if(!user.can_read(src))
-		return
-	if(in_range(user, src) || isobserver(user))
-		var/dat = {"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
-					<html><head><style type=\"text/css\">
-					body { background-image:url('book.png');background-repeat: repeat; }</style></head><body scroll=yes>"}
-		for(var/I in page_texts)
-			dat += "<p>[I]</p>"
-		dat += "<br>"
-		dat += "<a href='?src=[REF(src)];close=1' style='position:absolute;right:50px'>Close</a>"
-		dat += "</body></html>"
-		user << browse(dat, "window=reading;size=1000x700;can_close=1;can_minimize=0;can_maximize=0;can_resize=0;titlebar=0")
-		onclose(user, "reading", src)
-	else
-		return span_warning("I'm too far away to read it.")
-
-/obj/item/manuscript/update_icon()
-	. = ..()
-	switch(number_of_pages)
-		if(2)
-			dir = SOUTH
-		if(3)
-			dir = NORTH
-		if(4)
-			dir = EAST
-		if(5)
-			dir = WEST
-		if(6)
-			dir = SOUTHEAST
-		if(7)
-			dir = SOUTHWEST
-		if(8)
-			dir = NORTHWEST
-
-/obj/item/manuscript/fire_act(added, maxstacks)
-	..()
-	if(!(resistance_flags & FIRE_PROOF))
-		add_overlay("paper_onfire_overlay")
-
-/obj/item/manuscript/attack_hand(mob/user)
-	if(istype(user, /mob/living) && src.loc == user)
-		var/mob/living/L = user
-		var/obj/item/paper/P = new /obj/item/paper(get_turf(src.loc))
-		L.put_in_active_hand(P)
-		L.put_in_inactive_hand(src)
-		P.icon_state = "paperwrite"
-		P.info = page_texts[length(page_texts)]
-		page_texts -= page_texts[length(page_texts)]
-		--number_of_pages
-		if(number_of_pages == 1)
-			var/obj/item/paper/P_two = new /obj/item/paper(get_turf(src.loc))
-			P_two.icon_state = "paperwrite"
-			P_two.info = page_texts[length(page_texts)]
-			qdel_source = TRUE
-			. = ..()
-			src.loc = get_turf(src.loc)
-			L.put_in_hands(P_two)
-			qdel(src)
-			return
-		else
-			update_icon()
-			name = "[number_of_pages] page manuscript"
-			desc = "A [number_of_pages] page written piece, with aspirations of becoming a book."
-			return
-
-	. = ..()
-
-/obj/item/book_crafting_kit
-	name = "book crafting kit"
-	desc = "Apply on a written manuscript to create a book"
-	icon = 'icons/roguetown/items/misc.dmi'
-	icon_state = "book_crafting_kit"

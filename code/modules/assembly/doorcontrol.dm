@@ -11,7 +11,7 @@
 /obj/item/assembly/control/examine(mob/user)
 	. = ..()
 	if(id)
-		. += span_notice("Its channel ID is '[id]'.")
+		. += "<span class='notice'>Its channel ID is '[id]'.</span>"
 
 /obj/item/assembly/control/activate()
 	var/openclose

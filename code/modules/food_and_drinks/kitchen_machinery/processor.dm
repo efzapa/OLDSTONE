@@ -24,7 +24,7 @@
 /obj/machinery/processor/examine(mob/user)
 	. = ..()
 	if(in_range(user, src) || isobserver(user))
-		. += span_notice("The status display reads: Outputting <b>[rating_amount]</b> item(s) at <b>[rating_speed*100]%</b> speed.")
+		. += "<span class='notice'>The status display reads: Outputting <b>[rating_amount]</b> item(s) at <b>[rating_speed*100]%</b> speed.</span>"
 
 /obj/machinery/processor/proc/process_food(datum/food_processor_process/recipe, atom/movable/what)
 	if (recipe.output && loc && !QDELETED(src))
@@ -45,7 +45,7 @@
 
 /obj/machinery/processor/attackby(obj/item/O, mob/user, params)
 	if(processing)
-		to_chat(user, span_warning("[src] is in the process of processing!"))
+		to_chat(user, "<span class='warning'>[src] is in the process of processing!</span>")
 		return TRUE
 	if(default_deconstruction_screwdriver(user, "processor", "processor1", O))
 		return
@@ -69,42 +69,42 @@
 					loaded++
 
 		if(loaded)
-			to_chat(user, span_notice("I insert [loaded] items into [src]."))
+			to_chat(user, "<span class='notice'>I insert [loaded] items into [src].</span>")
 		return
 
 	var/datum/food_processor_process/P = select_recipe(O)
 	if(P)
-		user.visible_message(span_notice("[user] put [O] into [src]."), \
-			span_notice("I put [O] into [src]."))
+		user.visible_message("<span class='notice'>[user] put [O] into [src].</span>", \
+			"<span class='notice'>I put [O] into [src].</span>")
 		user.transferItemToLoc(O, src, TRUE)
 		return 1
 	else
 		if(user.used_intent.type != INTENT_HARM)
-			to_chat(user, span_warning("That probably won't blend!"))
+			to_chat(user, "<span class='warning'>That probably won't blend!</span>")
 			return 1
 		else
 			return ..()
 
 /obj/machinery/processor/interact(mob/user)
 	if(processing)
-		to_chat(user, span_warning("[src] is in the process of processing!"))
+		to_chat(user, "<span class='warning'>[src] is in the process of processing!</span>")
 		return TRUE
 	if(user.used_intent.type == INTENT_GRAB && ismob(user.pulling) && select_recipe(user.pulling))
 		if(user.grab_state < GRAB_AGGRESSIVE)
-			to_chat(user, span_warning("I need a better grip to do that!"))
+			to_chat(user, "<span class='warning'>I need a better grip to do that!</span>")
 			return
 		var/mob/living/pushed_mob = user.pulling
-		visible_message(span_warning("[user] stuffs [pushed_mob] into [src]!"))
+		visible_message("<span class='warning'>[user] stuffs [pushed_mob] into [src]!</span>")
 		pushed_mob.forceMove(src)
 		user.stop_pulling()
 		return
 	if(contents.len == 0)
-		to_chat(user, span_warning("[src] is empty!"))
+		to_chat(user, "<span class='warning'>[src] is empty!</span>")
 		return TRUE
 	processing = TRUE
-	user.visible_message(span_notice("[user] turns on [src]."), \
-		span_notice("I turn on [src]."), \
-		span_hear("I hear a food processor."))
+	user.visible_message("<span class='notice'>[user] turns on [src].</span>", \
+		"<span class='notice'>I turn on [src].</span>", \
+		"<span class='hear'>I hear a food processor.</span>")
 	playsound(src.loc, 'sound/blank.ogg', 50, TRUE)
 	use_power(500)
 	var/total_time = 0
@@ -125,7 +125,7 @@
 		process_food(P, O)
 	pixel_x = initial(pixel_x) //return to its spot after shaking
 	processing = FALSE
-	visible_message(span_notice("\The [src] finishes processing."))
+	visible_message("<span class='notice'>\The [src] finishes processing.</span>")
 
 /obj/machinery/processor/verb/eject()
 	set hidden = 1
@@ -142,7 +142,7 @@
 
 /obj/machinery/processor/container_resist(mob/living/user)
 	user.forceMove(drop_location())
-	user.visible_message(span_notice("[user] crawls free of the processor!"))
+	user.visible_message("<span class='notice'>[user] crawls free of the processor!</span>")
 
 /obj/machinery/processor/proc/empty()
 	for (var/obj/O in src)
@@ -190,7 +190,7 @@
 	if (!P)
 		return
 
-	visible_message(span_notice("[picked_slime] is sucked into [src]."))
+	visible_message("<span class='notice'>[picked_slime] is sucked into [src].</span>")
 	picked_slime.forceMove(src)
 
 /obj/machinery/processor/slime/process_food(datum/food_processor_process/recipe, atom/movable/what)
@@ -199,7 +199,7 @@
 		var/C = S.cores
 		if(S.stat != DEAD)
 			S.forceMove(drop_location())
-			S.visible_message(span_notice("[C] crawls free of the processor!"))
+			S.visible_message("<span class='notice'>[C] crawls free of the processor!</span>")
 			return
 		for(var/i in 1 to (C+rating_amount-1))
 			var/atom/movable/item = new S.coretype(drop_location())

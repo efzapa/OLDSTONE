@@ -36,7 +36,7 @@
 			for(var/path in possible_shapes)
 				var/mob/living/simple_animal/A = path
 				animal_list[initial(A.name)] = path
-			var/new_shapeshift_type = input(M, "Choose Your Animal Form!", "It's Morphing Time!", null) as null|anything in sortList(animal_list)
+			var/new_shapeshift_type = input(M, "Choose Your Animal Form!", "It's Morphing Time!", null) as null|anything in sort_list(animal_list)
 			if(shapeshift_type)
 				return
 			shapeshift_type = new_shapeshift_type
@@ -56,7 +56,7 @@
 /obj/effect/proc_holder/spell/targeted/shapeshift/proc/Shapeshift(mob/living/caster)
 	var/obj/shapeshift_holder/H = locate() in caster
 	if(H)
-		to_chat(caster, span_warning("You're already shapeshifted!"))
+		to_chat(caster, "<span class='warning'>You're already shapeshifted!</span>")
 		return
 
 	var/mob/living/shape = new shapeshift_type(caster.loc)

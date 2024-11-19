@@ -15,8 +15,6 @@
 
 	ambushable = 1
 
-	voice_pitch = 1.3 //humans have higher pitch because wormy voices are funny, you sound normal at 13 STR and deep above that
-
 	var/footstep_type = FOOTSTEP_MOB_HUMAN
 
 	var/last_sound //last emote so we have no doubles
@@ -95,7 +93,7 @@
 
 	var/list/possibleclass
 	var/advsetup = 0
-
+	var/advpicking
 
 //	var/alignment = ALIGNMENT_TN
 
@@ -111,7 +109,7 @@
 	var/buried = FALSE // Whether the body is buried or not.
 	var/funeral = FALSE // Whether the body has received rites or not.
 
-	var/datum/devotion/devotion = null // Used for cleric_holder for priests
+	var/cleric = null // Used for cleric_holder for priests
 
 	possible_rmb_intents = list(/datum/rmb_intent/feint,\
 	/datum/rmb_intent/aimed,\

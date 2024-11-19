@@ -55,20 +55,20 @@
 /obj/machinery/microwave/examine(mob/user)
 	. = ..()
 	if(!operating)
-		. += span_notice("Alt-click [src] to turn it on.")
+		. += "<span class='notice'>Alt-click [src] to turn it on.</span>"
 
 	if(!in_range(user, src) && !issilicon(user) && !isobserver(user))
-		. += span_warning("You're too far away to examine [src]'s contents and display!")
+		. += "<span class='warning'>You're too far away to examine [src]'s contents and display!</span>"
 		return
 	if(operating)
-		. += span_notice("\The [src] is operating.")
+		. += "<span class='notice'>\The [src] is operating.</span>"
 		return
 
 	if(length(ingredients))
 		if(issilicon(user))
-			. += span_notice("\The [src] camera shows:")
+			. += "<span class='notice'>\The [src] camera shows:</span>"
 		else
-			. += span_notice("\The [src] contains:")
+			. += "<span class='notice'>\The [src] contains:</span>"
 		var/list/items_counts = new
 		for(var/i in ingredients)
 			if(istype(i, /obj/item/stack))
@@ -78,14 +78,14 @@
 				var/atom/movable/AM = i
 				items_counts[AM.name]++
 		for(var/O in items_counts)
-			. += span_notice("- [items_counts[O]]x [O].")
+			. += "<span class='notice'>- [items_counts[O]]x [O].</span>"
 	else
-		. += span_notice("\The [src] is empty.")
+		. += "<span class='notice'>\The [src] is empty.</span>"
 
 	if(!(stat & (NOPOWER|BROKEN)))
 		. += "<span class='notice'>The status display reads:</span>\n"+\
 		"<span class='notice'>- Capacity: <b>[max_n_of_items]</b> items.</span>\n"+\
-		span_notice("- Cook time reduced by <b>[(efficiency - 1) * 25]%</b>.")
+		"<span class='notice'>- Cook time reduced by <b>[(efficiency - 1) * 25]%</b>.</span>"
 
 /obj/machinery/microwave/update_icon()
 	if(broken)
@@ -118,19 +118,19 @@
 
 	if(broken > 0)
 		if(broken == 2 && O.tool_behaviour == TOOL_WIRECUTTER) // If it's broken and they're using a screwdriver
-			user.visible_message(span_notice("[user] starts to fix part of \the [src]."), span_notice("I start to fix part of \the [src]..."))
+			user.visible_message("<span class='notice'>[user] starts to fix part of \the [src].</span>", "<span class='notice'>I start to fix part of \the [src]...</span>")
 			if(O.use_tool(src, user, 20))
-				user.visible_message(span_notice("[user] fixes part of \the [src]."), span_notice("I fix part of \the [src]."))
+				user.visible_message("<span class='notice'>[user] fixes part of \the [src].</span>", "<span class='notice'>I fix part of \the [src].</span>")
 				broken = 1 // Fix it a bit
 		else if(broken == 1 && O.tool_behaviour == TOOL_WELDER) // If it's broken and they're doing the wrench
-			user.visible_message(span_notice("[user] starts to fix part of \the [src]."), span_notice("I start to fix part of \the [src]..."))
+			user.visible_message("<span class='notice'>[user] starts to fix part of \the [src].</span>", "<span class='notice'>I start to fix part of \the [src]...</span>")
 			if(O.use_tool(src, user, 20))
-				user.visible_message(span_notice("[user] fixes \the [src]."), span_notice("I fix \the [src]."))
+				user.visible_message("<span class='notice'>[user] fixes \the [src].</span>", "<span class='notice'>I fix \the [src].</span>")
 				broken = 0
 				update_icon()
 				return FALSE //to use some fuel
 		else
-			to_chat(user, span_warning("It's broken!"))
+			to_chat(user, "<span class='warning'>It's broken!</span>")
 			return TRUE
 		return
 
@@ -139,24 +139,24 @@
 		if(clean_spray.reagents.has_reagent(/datum/reagent/space_cleaner, clean_spray.amount_per_transfer_from_this))
 			clean_spray.reagents.remove_reagent(/datum/reagent/space_cleaner, clean_spray.amount_per_transfer_from_this,1)
 			playsound(loc, 'sound/blank.ogg', 50, TRUE, -6)
-			user.visible_message(span_notice("[user] has cleaned \the [src]."), span_notice("I clean \the [src]."))
+			user.visible_message("<span class='notice'>[user] has cleaned \the [src].</span>", "<span class='notice'>I clean \the [src].</span>")
 			dirty = 0
 			update_icon()
 		else
-			to_chat(user, span_warning("I need more space cleaner!"))
+			to_chat(user, "<span class='warning'>I need more space cleaner!</span>")
 		return TRUE
 
 	if(istype(O, /obj/item/soap))
 		var/obj/item/soap/P = O
-		user.visible_message(span_notice("[user] starts to clean \the [src]."), span_notice("I start to clean \the [src]..."))
+		user.visible_message("<span class='notice'>[user] starts to clean \the [src].</span>", "<span class='notice'>I start to clean \the [src]...</span>")
 		if(do_after(user, P.cleanspeed, target = src))
-			user.visible_message(span_notice("[user] has cleaned \the [src]."), span_notice("I clean \the [src]."))
+			user.visible_message("<span class='notice'>[user] has cleaned \the [src].</span>", "<span class='notice'>I clean \the [src].</span>")
 			dirty = 0
 			update_icon()
 		return TRUE
 
 	if(dirty == 100) // The microwave is all dirty so can't be used!
-		to_chat(user, span_warning("\The [src] is dirty!"))
+		to_chat(user, "<span class='warning'>\The [src] is dirty!</span>")
 		return TRUE
 
 	if(istype(O, /obj/item/storage/bag/tray))
@@ -164,25 +164,25 @@
 		var/loaded = 0
 		for(var/obj/item/reagent_containers/food/snacks/S in T.contents)
 			if(ingredients.len >= max_n_of_items)
-				to_chat(user, span_warning("\The [src] is full, you can't put anything in!"))
+				to_chat(user, "<span class='warning'>\The [src] is full, you can't put anything in!</span>")
 				return TRUE
 			if(SEND_SIGNAL(T, COMSIG_TRY_STORAGE_TAKE, S, src))
 				loaded++
 				ingredients += S
 		if(loaded)
-			to_chat(user, span_notice("I insert [loaded] items into \the [src]."))
+			to_chat(user, "<span class='notice'>I insert [loaded] items into \the [src].</span>")
 		return
 
 	if(O.w_class <= WEIGHT_CLASS_NORMAL && !istype(O, /obj/item/storage) && user.used_intent.type == INTENT_HELP)
 		if(ingredients.len >= max_n_of_items)
-			to_chat(user, span_warning("\The [src] is full, you can't put anything in!"))
+			to_chat(user, "<span class='warning'>\The [src] is full, you can't put anything in!</span>")
 			return TRUE
 		if(!user.transferItemToLoc(O, src))
-			to_chat(user, span_warning("\The [O] is stuck to your hand!"))
+			to_chat(user, "<span class='warning'>\The [O] is stuck to your hand!</span>")
 			return FALSE
 
 		ingredients += O
-		user.visible_message(span_notice("[user] has added \a [O] to \the [src]."), span_notice("I add [O] to \the [src]."))
+		user.visible_message("<span class='notice'>[user] has added \a [O] to \the [src].</span>", "<span class='notice'>I add [O] to \the [src].</span>")
 		return
 
 	..()
@@ -203,7 +203,7 @@
 		if(isAI(user))
 			examine(user)
 		else
-			to_chat(user, span_warning("\The [src] is empty."))
+			to_chat(user, "<span class='warning'>\The [src] is empty.</span>")
 		return
 
 	var/choice = show_radial_menu(user, src, isAI(user) ? ai_radial_options : radial_options, require_near = !issilicon(user))
@@ -253,7 +253,7 @@
 	start()
 
 /obj/machinery/microwave/proc/turn_on()
-	visible_message(span_notice("\The [src] turns on."), null, span_hear("I hear a microwave humming."))
+	visible_message("<span class='notice'>\The [src] turns on.</span>", null, "<span class='hear'>I hear a microwave humming.</span>")
 	operating = TRUE
 
 	set_light(1.5)
@@ -261,7 +261,7 @@
 	update_icon()
 
 /obj/machinery/microwave/proc/spark()
-	visible_message(span_warning("Sparks fly around [src]!"))
+	visible_message("<span class='warning'>Sparks fly around [src]!</span>")
 	var/datum/effect_system/spark_spread/s = new
 	s.set_up(2, 1, src)
 	s.start()
@@ -334,7 +334,7 @@
 	loop(MICROWAVE_NORMAL, 10)
 
 /obj/machinery/microwave/proc/muck_finish()
-	visible_message(span_warning("\The [src] gets covered in muck!"))
+	visible_message("<span class='warning'>\The [src] gets covered in muck!</span>")
 
 	dirty = 100
 	dirty_anim_playing = FALSE

@@ -40,9 +40,9 @@
 		if(W.get_sharpness() && W.force > 0)
 			if(W.hitsound)
 				playsound(get_turf(src),  W.hitsound, 100, FALSE, FALSE)
-			user.visible_message(span_notice("[user] begins to cut down [src] with [W]."),span_notice("I begin to cut down [src] with [W]."), span_hear("I hear the sound of sawing."))
+			user.visible_message("<span class='notice'>[user] begins to cut down [src] with [W].</span>","<span class='notice'>I begin to cut down [src] with [W].</span>", "<span class='hear'>I hear the sound of sawing.</span>")
 			if(do_after(user, 1000/W.force, target = src)) //5 seconds with 20 force, 8 seconds with a hatchet, 20 seconds with a shard.
-				user.visible_message(span_notice("[user] fells [src] with the [W]."),span_notice("I fell [src] with the [W]."), span_hear("I hear the sound of a tree falling."))
+				user.visible_message("<span class='notice'>[user] fells [src] with the [W].</span>","<span class='notice'>I fell [src] with the [W].</span>", "<span class='hear'>I hear the sound of a tree falling.</span>")
 				playsound(get_turf(src), 'sound/blank.ogg', 100 , FALSE, FALSE)
 				for(var/i=1 to log_amount)
 					new /obj/item/grown/log/tree(get_turf(src))
@@ -102,9 +102,9 @@
 		return
 
 	if(took_presents[user.ckey] && !unlimited)
-		to_chat(user, span_warning("There are no presents with your name on."))
+		to_chat(user, "<span class='warning'>There are no presents with your name on.</span>")
 		return
-	to_chat(user, span_warning("After a bit of rummaging, you locate a gift with your name on it!"))
+	to_chat(user, "<span class='warning'>After a bit of rummaging, you locate a gift with your name on it!</span>")
 
 	if(!unlimited)
 		took_presents[user.ckey] = TRUE
@@ -340,7 +340,10 @@
 /obj/item/twohanded/required/kirbyplants/Initialize()
 	. = ..()
 	AddComponent(/datum/component/tactical)
-	addtimer(CALLBACK(src, TYPE_PROC_REF(/datum, AddComponent), /datum/component/beauty, 500), 0)
+	addtimer(CALLBACK(src, PROC_REF(make_pretty)), 50 SECONDS)
+
+/obj/item/twohanded/required/kirbyplants/proc/make_pretty()
+	AddComponent(/datum/component/beauty, 500)
 
 /obj/item/twohanded/required/kirbyplants/random
 	icon = 'icons/obj/flora/_flora.dmi'

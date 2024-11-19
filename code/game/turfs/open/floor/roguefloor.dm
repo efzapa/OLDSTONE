@@ -43,17 +43,6 @@
 /turf/open/floor/rogue/ruinedwood/chevron
 	icon_state = "weird2"
 
-/turf/open/floor/rogue/ruinedwood/platform
-	name = "platform"
-	desc = "A destructible platform."
-	damage_deflection = 8
-	break_sound = 'sound/combat/hits/onwood/destroywalldoor.ogg'
-	attacked_sound = list('sound/combat/hits/onwood/woodimpact (1).ogg','sound/combat/hits/onwood/woodimpact (2).ogg')
-
-/turf/open/floor/rogue/ruinedwood/platform/turf_destruction(damage_flag)
-	. = ..()
-	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
-
 /turf/open/floor/rogue/twig
 	icon_state = "twig"
 	footstep = FOOTSTEP_GRASS
@@ -67,17 +56,9 @@
 	dir = pick(GLOB.cardinals)
 	. = ..()
 
-/turf/open/floor/rogue/twig/platform
-	name = "platform"
-	desc = "A destructible platform."
-	damage_deflection = 6
-	max_integrity = 200
-	break_sound = 'sound/combat/hits/onwood/destroywalldoor.ogg'
-	attacked_sound = list('sound/combat/hits/onwood/woodimpact (1).ogg','sound/combat/hits/onwood/woodimpact (2).ogg')
-
-/turf/open/floor/rogue/twig/platform/turf_destruction(damage_flag)
+/turf/open/floor/rogue/twig/OnCrafted(dirin)
 	. = ..()
-	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
+	dir = dirin
 
 /turf/open/floor/rogue/wood
 	smooth_icon = 'icons/turf/floors/wood.dmi'
@@ -131,16 +112,9 @@
 	. = ..()
 	icon_state = "roofg"
 
-/turf/open/floor/rogue/rooftop/green/corner1
-	icon_state = "roofgc1-arw"
-
-/turf/open/floor/rogue/rooftop/green/corner1/Initialize()
-	. = ..()
-	icon_state = "roofgc1"
-
 /turf/open/floor/rogue/grass
 	name = "grass"
-	desc = "Grass, sodden with mud and bogwater." 
+	desc = ""
 	icon_state = "grass"
 	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_GRASS
@@ -158,7 +132,7 @@
 
 /turf/open/floor/rogue/dirt/ambush
 	name = "dirt"
-	desc = "The dirt is pocked with the scars of countless wars."
+	desc = ""
 	icon_state = "dirt"
 	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_GRASS
@@ -176,7 +150,7 @@
 
 /turf/open/floor/rogue/dirt
 	name = "dirt"
-	desc = "The dirt is pocked with the scars of countless wars."
+	desc = ""
 	icon_state = "dirt"
 	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_GRASS
@@ -193,7 +167,7 @@
 	var/obj/structure/closet/dirthole/holie
 	var/obj/machinery/crop/planted_crop
 	var/dirt_amt = 3
-
+/*
 /turf/open/floor/rogue/dirt/get_slowdown(mob/user)
 	var/returned = slowdown
 	for(var/obj/item/I in user.held_items)
@@ -203,7 +177,7 @@
 				if(!L.cmode)
 					returned = max(returned-2, 0)
 	return returned
-
+*/
 
 /turf/open/floor/rogue/dirt/attack_right(mob/user)
 	if(isliving(user))
@@ -212,7 +186,7 @@
 			return
 		var/obj/item/I = new /obj/item/natural/dirtclod(src)
 		if(L.put_in_active_hand(I))
-			L.visible_message(span_warning("[L] picks up some dirt."))
+			L.visible_message("<span class='warning'>[L] picks up some dirt.</span>")
 			dirt_amt--
 			if(dirt_amt <= 0)
 				src.ChangeTurf(/turf/open/floor/rogue/dirt/road, flags = CHANGETURF_INHERIT_AIR)
@@ -311,7 +285,7 @@
 
 /turf/open/floor/rogue/dirt/road
 	name = "dirt"
-	desc = "The dirt is pocked with the scars of countless steps."
+	desc = ""
 	icon_state = "road"
 	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_SAND
@@ -409,7 +383,7 @@
 
 /turf/open/floor/rogue/underworld/road
 	name = "ash"
-	desc = "Smells like burnt wood."
+	desc = ""
 	icon_state = "ash"
 	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_SAND
@@ -427,7 +401,7 @@
 
 /turf/open/floor/rogue/volcanic
 	name = "dirt"
-	desc = "The dirt is pocked with the scars of countless steps."
+	desc = ""
 	icon_state = "lavafloor"
 	layer = MID_TURF_LAYER
 	footstep = FOOTSTEP_SAND
@@ -476,18 +450,6 @@
 	icon_state = "paving"
 /turf/open/floor/rogue/blocks/paving/vert
 	icon_state = "paving-t"
-
-/turf/open/floor/rogue/blocks/platform
-	name = "platform"
-	desc = "A destructible platform."
-	damage_deflection = 10
-	max_integrity = 800
-	break_sound = 'sound/combat/hits/onstone/stonedeath.ogg'
-	attacked_sound = list('sound/combat/hits/onstone/wallhit.ogg', 'sound/combat/hits/onstone/wallhit2.ogg', 'sound/combat/hits/onstone/wallhit3.ogg')
-
-/turf/open/floor/rogue/blocks/platform/turf_destruction(damage_flag)
-	. = ..()
-	ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 
 /turf/open/floor/rogue/greenstone
 	icon_state = "greenstone"

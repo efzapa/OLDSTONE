@@ -11,7 +11,6 @@ GLOBAL_LIST(admin_objective_list) //Prefilled admin assignable objective list
 	var/completed = 0					//currently only used for custom objectives.
 	var/martyr_compatible = 0			//If the objective is compatible with martyr objective, i.e. if you can still do it while dead.
 	var/triumph_count = 1
-	var/flavor = "Objective" //so it appear as "goal", "dream", "aspiration", etc
 
 /datum/objective/New(text)
 	if(text)
@@ -37,7 +36,7 @@ GLOBAL_LIST(admin_objective_list) //Prefilled admin assignable objective list
 	if(target && target.current)
 		def_value = target.current
 
-	var/mob/new_target = input(admin,"Select target:", "Objective target", def_value) as null|anything in sortNames(possible_targets)
+	var/mob/new_target = input(admin,"Select target:", "Objective target", def_value) as null|anything in sort_names(possible_targets)
 	if (!new_target)
 		return
 
@@ -347,7 +346,7 @@ GLOBAL_LIST(admin_objective_list) //Prefilled admin assignable objective list
 	for(var/mob/living/player in GLOB.player_list)
 		if((get_area(player) in SSshuttle.emergency.shuttle_areas) && player.mind && player.stat != DEAD && ishuman(player))
 			var/mob/living/carbon/human/H = player
-			if(H.dna.species.id != "humen")
+			if(H.dna.species.id != "human")
 				return FALSE
 	return TRUE
 
@@ -527,7 +526,7 @@ GLOBAL_LIST_EMPTY(possible_items)
 				if(M.current.mind.assigned_role in possible_item.excludefromjob)
 					continue check_items
 			approved_targets += possible_item
-	return set_target(safepick(approved_targets))
+	return set_target(pick(approved_targets))
 
 /datum/objective/steal/proc/set_target(datum/objective_item/item)
 	if(item)
@@ -542,7 +541,7 @@ GLOBAL_LIST_EMPTY(possible_items)
 
 /datum/objective/steal/admin_edit(mob/admin)
 	var/list/possible_items_all = GLOB.possible_items
-	var/new_target = input(admin,"Select target:", "Objective target", steal_target) as null|anything in sortNames(possible_items_all)+"custom"
+	var/new_target = input(admin,"Select target:", "Objective target", steal_target) as null|anything in sort_names(possible_items_all)+"custom"
 	if (!new_target)
 		return
 
@@ -846,10 +845,10 @@ GLOBAL_LIST_EMPTY(possible_items_special)
 /datum/objective/destroy/admin_edit(mob/admin)
 	var/list/possible_targets = active_ais(1)
 	if(possible_targets.len)
-		var/mob/new_target = input(admin,"Select target:", "Objective target") as null|anything in sortNames(possible_targets)
+		var/mob/new_target = input(admin,"Select target:", "Objective target") as null|anything in sort_names(possible_targets)
 		target = new_target.mind
 	else
-		to_chat(admin, span_boldwarning("No active AIs with minds."))
+		to_chat(admin, "<span class='boldwarning'>No active AIs with minds.</span>")
 	update_explanation_text()
 
 /datum/objective/destroy/internal
@@ -1089,7 +1088,7 @@ GLOBAL_LIST_EMPTY(possible_items_special)
 /proc/generate_admin_objective_list()
 	GLOB.admin_objective_list = list()
 
-	var/list/allowed_types = sortList(list(
+	var/list/allowed_types = sort_list(list(
 		/datum/objective/assassinate,
 		/datum/objective/maroon,
 		/datum/objective/debrain,

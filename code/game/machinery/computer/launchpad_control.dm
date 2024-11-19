@@ -17,7 +17,7 @@
 	. = ..()
 
 /obj/machinery/computer/launchpad/attack_paw(mob/user)
-	to_chat(user, span_warning("I are too primitive to use this computer!"))
+	to_chat(user, "<span class='warning'>I are too primitive to use this computer!</span>")
 	return
 
 /obj/machinery/computer/launchpad/attackby(obj/item/W, mob/user, params)
@@ -29,9 +29,9 @@
 			if(LAZYLEN(launchpads) < maximum_pads)
 				launchpads |= M.buffer
 				M.buffer = null
-				to_chat(user, span_notice("I upload the data from the [W.name]'s buffer."))
+				to_chat(user, "<span class='notice'>I upload the data from the [W.name]'s buffer.</span>")
 			else
-				to_chat(user, span_warning("[src] cannot handle any more connections!"))
+				to_chat(user, "<span class='warning'>[src] cannot handle any more connections!</span>")
 	else
 		return ..()
 
@@ -43,10 +43,10 @@
 
 /obj/machinery/computer/launchpad/proc/teleport(mob/user, obj/machinery/launchpad/pad, sending)
 	if(QDELETED(pad))
-		to_chat(user, span_warning("ERROR: Launchpad not responding. Check launchpad integrity."))
+		to_chat(user, "<span class='warning'>ERROR: Launchpad not responding. Check launchpad integrity.</span>")
 		return
 	if(!pad.isAvailable())
-		to_chat(user, span_warning("ERROR: Launchpad not operative. Make sure the launchpad is ready and powered."))
+		to_chat(user, "<span class='warning'>ERROR: Launchpad not operative. Make sure the launchpad is ready and powered.</span>")
 		return
 	pad.doteleport(user, sending)
 

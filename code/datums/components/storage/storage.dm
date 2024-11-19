@@ -48,8 +48,8 @@
 
 	var/display_numerical_stacking = FALSE			//stack things of the same type and show as a single object with a number.
 
-	var/atom/movable/screen/storage/boxes					//storage display object
-	var/atom/movable/screen/close/closer						//close button object
+	var/obj/screen/storage/boxes					//storage display object
+	var/obj/screen/close/closer						//close button object
 
 	var/allow_big_nesting = FALSE					//allow storage objects of the same or greater size.
 
@@ -68,9 +68,6 @@
 	//End
 
 	var/not_while_equipped = FALSE
-
-	//Vrell - Used for repair bypass clicks
-	var/being_repaired = FALSE
 
 /datum/component/storage/Initialize(datum/component/storage/concrete/master)
 	if(!isatom(parent))
@@ -202,7 +199,7 @@
 
 /datum/component/storage/proc/attack_self(datum/source, mob/M)
 	if(locked)
-//		to_chat(M, span_warning("[parent] seems to be locked!"))
+//		to_chat(M, "<span class='warning'>[parent] seems to be locked!</span>")
 		return FALSE
 	if((M.get_active_held_item() == parent) && allow_quick_empty)
 		quick_empty(M)
@@ -212,7 +209,7 @@
 		return FALSE
 	. = COMPONENT_NO_ATTACK
 	if(locked)
-//		to_chat(M, span_warning("[parent] seems to be locked!"))
+//		to_chat(M, "<span class='warning'>[parent] seems to be locked!</span>")
 		return FALSE
 	var/obj/item/I = O
 	if(collection_mode == COLLECT_ONE)
@@ -226,7 +223,7 @@
 		things = typecache_filter_list(things, typecacheof(I.type))
 	var/len = length(things)
 	if(!len)
-		to_chat(M, span_warning("I failed to pick up anything with [parent]!"))
+		to_chat(M, "<span class='warning'>I failed to pick up anything with [parent]!</span>")
 		return
 //	var/datum/progressbar/progress = new(M, len, I.loc)
 //	var/list/rejections = list()
@@ -247,7 +244,7 @@
 //				progress.update(progress.goal - things.len)
 //				return TRUE
 //	qdel(progress)
-//	to_chat(M, span_notice("I put everything I could [insert_preposition] [parent]."))
+//	to_chat(M, "<span class='notice'>I put everything I could [insert_preposition] [parent].</span>")
 
 /datum/component/storage/proc/handle_mass_item_insertion(list/things, datum/component/storage/src_object, mob/user, datum/progressbar/progress)
 	var/atom/source_real_location = src_object.real_location()
@@ -298,10 +295,10 @@
 	if(!M.canUseStorage() || !A.Adjacent(M) || M.incapacitated())
 		return
 	if(locked)
-//		to_chat(M, span_warning("[parent] seems to be locked!"))
+//		to_chat(M, "<span class='warning'>[parent] seems to be locked!</span>")
 		return FALSE
 	A.add_fingerprint(M)
-//	to_chat(M, span_notice("I start dumping out [parent]."))
+//	to_chat(M, "<span class='notice'>I start dumping out [parent].</span>")
 //	var/turf/T = get_turf(A)
 	var/list/things = contents()
 	playsound(A, "rustle", 50, FALSE, -5)
@@ -530,7 +527,7 @@
 	var/atom/dump_destination = dest_object.get_dumping_location()
 	if(A.Adjacent(M) && dump_destination && M.Adjacent(dump_destination))
 		if(locked)
-//			to_chat(M, span_warning("[parent] seems to be locked!"))
+//			to_chat(M, "<span class='warning'>[parent] seems to be locked!</span>")
 			return FALSE
 		if(dump_destination.storage_contents_dump_act(src, M))
 			playsound(A, "rustle", 50, TRUE, -5)
@@ -547,21 +544,6 @@
 //	. = TRUE //no afterattack
 	if(iscyborg(M))
 		return
-	//Vrell - Adding a block here to allow sewing/hammering to repair containers. Clicking while trying to sew will bypass this requirement.
-	if(isitem(parent))
-		if(istype(I, /obj/item/rogueweapon/hammer))
-			var/obj/item/storage/this_item = parent
-			//Vrell - since hammering is instant, i gotta find another option than the double click thing that needle has for a bypass.
-			//Thankfully, IIRC, no hammerable containers can hold a hammer, so not an issue ATM. For that same reason, this here is largely semi future-proofing.
-			if(this_item.anvilrepair != null && this_item.max_integrity && !this_item.obj_broken && (this_item.obj_integrity < this_item.max_integrity) && isturf(this_item.loc))
-				return FALSE
-		if(istype(I, /obj/item/needle))
-			var/obj/item/needle/sewer = I
-			var/obj/item/storage/this_item = parent
-			if(sewer.can_repair && this_item.sewrepair && this_item.max_integrity && !this_item.obj_broken && this_item.obj_integrity < this_item.max_integrity && M.mind.get_skill_level(/datum/skill/misc/sewing) >= this_item.required_repair_skill && this_item.ontable() && !being_repaired)
-				being_repaired = TRUE
-				return FALSE
-	being_repaired = FALSE
 	if(!can_be_inserted(I, FALSE, M))
 		var/atom/real_location = real_location()
 		if(real_location.contents.len >= max_items) //don't use items on the backpack if they don't fit
@@ -594,7 +576,7 @@
 		handle_show_valid_items(source, user)
 
 /datum/component/storage/proc/handle_show_valid_items(datum/source, user)
-	to_chat(user, span_notice("[source] can hold: [can_hold_description]"))
+	to_chat(user, "<span class='notice'>[source] can hold: [can_hold_description]</span>")
 
 /datum/component/storage/proc/mousedrop_onto(datum/source, atom/over_object, mob/M)
 	set waitfor = FALSE
@@ -638,15 +620,15 @@
 	// this must come before the screen objects only block, dunno why it wasn't before
 	if(over_object == M)
 		user_show_to_mob(M)
-	if(!istype(over_object, /atom/movable/screen))
+	if(!istype(over_object, /obj/screen))
 		if(allow_dump_out)
 			dump_content_at(over_object, M)
 			return
 	if(A.loc != M)
 		return
 //	playsound(A, "rustle", 50, TRUE, -5)
-	if(istype(over_object, /atom/movable/screen/inventory/hand))
-		var/atom/movable/screen/inventory/hand/H = over_object
+	if(istype(over_object, /obj/screen/inventory/hand))
+		var/obj/screen/inventory/hand/H = over_object
 		M.putItemFromInventoryInHandIfPossible(A, H.held_index)
 		return
 	A.add_fingerprint(M)
@@ -657,7 +639,7 @@
 		return FALSE
 	A.add_fingerprint(M)
 	if((locked || !allow_look_inside) && !force)
-//		to_chat(M, span_warning("[parent] seems to be locked!"))
+//		to_chat(M, "<span class='warning'>[parent] seems to be locked!</span>")
 		return FALSE
 	if(force || M.CanReach(parent, view_only = TRUE))
 		show_to(M)
@@ -695,49 +677,49 @@
 	if(locked)
 		if(M && !stop_messages)
 			host.add_fingerprint(M)
-//			to_chat(M, span_warning("[host] seems to be locked!"))
+//			to_chat(M, "<span class='warning'>[host] seems to be locked!</span>")
 		return FALSE
 	if(real_location.contents.len >= max_items)
 		if(!stop_messages)
-			to_chat(M, span_warning("[host] is full, make some space!"))
+			to_chat(M, "<span class='warning'>[host] is full, make some space!</span>")
 		return FALSE //Storage item is full
 	if(length(can_hold))
 		if(!is_type_in_typecache(I, can_hold))
 			if(!stop_messages)
-				to_chat(M, span_warning("[host] cannot hold [I]!"))
+				to_chat(M, "<span class='warning'>[host] cannot hold [I]!</span>")
 			return FALSE
 	if(is_type_in_typecache(I, cant_hold)) //Check for specific items which this container can't hold.
 		if(!stop_messages)
-			to_chat(M, span_warning("[host] cannot hold [I]!"))
+			to_chat(M, "<span class='warning'>[host] cannot hold [I]!</span>")
 		return FALSE
 	if(I.w_class > max_w_class && !is_type_in_typecache(I, exception_hold))
 		if(!stop_messages)
-			to_chat(M, span_warning("[I] is too big for [host]!"))
+			to_chat(M, "<span class='warning'>[I] is too big for [host]!</span>")
 		return FALSE
 	var/datum/component/storage/biggerfish = real_location.loc.GetComponent(/datum/component/storage)
 	if(biggerfish && biggerfish.max_w_class < max_w_class)//return false if we are inside of another container, and that container has a smaller max_w_class than us (like if we're a bag in a box)
 		if(!stop_messages)
-			to_chat(M, span_warning("[I] can't fit in [host] while [real_location.loc] is in the way!"))
+			to_chat(M, "<span class='warning'>[I] can't fit in [host] while [real_location.loc] is in the way!</span>")
 		return FALSE
 	var/sum_w_class = I.w_class
 	for(var/obj/item/_I in real_location)
 		sum_w_class += _I.w_class //Adds up the combined w_classes which will be in the storage item if the item is added to it.
 	if(sum_w_class > max_combined_w_class)
 		if(!stop_messages)
-			to_chat(M, span_warning("[I] won't fit in [host], make some space!"))
+			to_chat(M, "<span class='warning'>[I] won't fit in [host], make some space!</span>")
 		return FALSE
 	if(isitem(host))
 		var/obj/item/IP = host
 		var/datum/component/storage/STR_I = I.GetComponent(/datum/component/storage)
 		if((I.w_class >= IP.w_class) && STR_I && !allow_big_nesting)
 			if(!stop_messages)
-				to_chat(M, span_warning("[IP] cannot hold [I] as it's a storage item of the same size!"))
+				to_chat(M, "<span class='warning'>[IP] cannot hold [I] as it's a storage item of the same size!</span>")
 			return FALSE //To prevent the stacking of same sized storage items.
 		if(IP.StorageBlock(I, M))
 			return FALSE
 	if(HAS_TRAIT(I, TRAIT_NODROP)) //SHOULD be handled in unEquip, but better safe than sorry.
 		if(!stop_messages)
-			to_chat(M, span_warning("\the [I] is stuck to your hand, you can't put it in \the [host]!"))
+			to_chat(M, "<span class='warning'>\the [I] is stuck to your hand, you can't put it in \the [host]!</span>")
 		return FALSE
 	var/datum/component/storage/concrete/master = master()
 	if(!istype(master))
@@ -768,11 +750,11 @@
 		playsound(parent, "rustle", 50, TRUE, -5)
 	for(var/mob/viewing in viewers(user, null))
 		if(M == viewing)
-			to_chat(usr, span_notice("I tuck [I] [insert_preposition]to [parent]."))
+			to_chat(usr, "<span class='notice'>I tuck [I] [insert_preposition]to [parent].</span>")
 		else if(in_range(M, viewing)) //If someone is standing close enough, they can tell what it is...
-			viewing.show_message(span_notice("[M] tucks [I] [insert_preposition]to [parent]."), MSG_VISUAL)
+			viewing.show_message("<span class='notice'>[M] tucks [I] [insert_preposition]to [parent].</span>", MSG_VISUAL)
 		else
-			viewing.show_message(span_notice("[M] tucks something [insert_preposition]to [parent]."), MSG_VISUAL)
+			viewing.show_message("<span class='notice'>[M] tucks something [insert_preposition]to [parent].</span>", MSG_VISUAL)
 
 /datum/component/storage/proc/update_icon()
 	if(isobj(parent))
@@ -870,7 +852,7 @@
 	if(A.Adjacent(user))
 		. = COMPONENT_NO_ATTACK_HAND
 		if(locked || !allow_look_inside)
-//			to_chat(user, span_warning("[parent] seems to be locked!"))
+//			to_chat(user, "<span class='warning'>[parent] seems to be locked!</span>")
 			return
 		else
 			show_to(user)
@@ -916,7 +898,7 @@
 	if(A.loc == user)
 		. = COMPONENT_NO_ATTACK_HAND
 		if(locked)
-//			to_chat(user, span_warning("[parent] seems to be locked!"))
+//			to_chat(user, "<span class='warning'>[parent] seems to be locked!</span>")
 			return
 		else
 			show_to(user)
@@ -943,7 +925,7 @@
 	if(!isliving(user) || !user.CanReach(parent))
 		return
 	if(locked)
-		to_chat(user, span_warning("[parent] seems to be locked!"))
+		to_chat(user, "<span class='warning'>[parent] seems to be locked!</span>")
 		return
 
 	var/atom/A = parent
@@ -960,9 +942,9 @@
 		A.add_fingerprint(user)
 		remove_from_storage(I, get_turf(user))
 		if(!user.put_in_hands(I))
-			to_chat(user, span_notice("I fumble for [I] and it falls on the floor."))
+			to_chat(user, "<span class='notice'>I fumble for [I] and it falls on the floor.</span>")
 			return
-		user.visible_message(span_warning("[user] draws [I] from [parent]!"), span_notice("I draw [I] from [parent]."))
+		user.visible_message("<span class='warning'>[user] draws [I] from [parent]!</span>", "<span class='notice'>I draw [I] from [parent].</span>")
 		return
 
 /datum/component/storage/proc/action_trigger(datum/signal_source, datum/action/source)
@@ -973,8 +955,8 @@
 	collection_mode = (collection_mode+1)%3
 	switch(collection_mode)
 		if(COLLECT_SAME)
-			to_chat(user, span_notice("[parent] now picks up all items of a single type at once."))
+			to_chat(user, "<span class='notice'>[parent] now picks up all items of a single type at once.</span>")
 		if(COLLECT_EVERYTHING)
-			to_chat(user, span_notice("[parent] now picks up all items in a tile at once."))
+			to_chat(user, "<span class='notice'>[parent] now picks up all items in a tile at once.</span>")
 		if(COLLECT_ONE)
-			to_chat(user, span_notice("[parent] now picks up one item at a time."))
+			to_chat(user, "<span class='notice'>[parent] now picks up one item at a time.</span>")

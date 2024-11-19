@@ -66,8 +66,7 @@
 		original_name = name // can't use initial because of random posters
 		name = "poster - [name]"
 		desc = ""
-
-	addtimer(CALLBACK(src, TYPE_PROC_REF(/datum, AddComponent), /datum/component/beauty, 300), 0)
+	AddComponent(/datum/component/beauty, 300)
 
 /obj/structure/sign/poster/proc/randomise(base_type)
 	var/list/poster_types = subtypesof(base_type)
@@ -92,10 +91,10 @@
 	if(I.tool_behaviour == TOOL_WIRECUTTER)
 		I.play_tool_sound(src, 100)
 		if(ruined)
-			to_chat(user, span_notice("I remove the remnants of the poster."))
+			to_chat(user, "<span class='notice'>I remove the remnants of the poster.</span>")
 			qdel(src)
 		else
-			to_chat(user, span_notice("I carefully remove the poster from the wall."))
+			to_chat(user, "<span class='notice'>I carefully remove the poster from the wall.</span>")
 			roll_and_drop(user.loc)
 
 /obj/structure/sign/poster/attack_hand(mob/user)
@@ -104,7 +103,7 @@
 		return
 	if(ruined)
 		return
-	visible_message(span_notice("[user] rips [src] in a single, decisive motion!") )
+	visible_message("<span class='notice'>[user] rips [src] in a single, decisive motion!</span>" )
 	playsound(src.loc, 'sound/blank.ogg', 100, TRUE)
 
 	var/obj/structure/sign/poster/ripped/R = new(loc)
@@ -123,7 +122,7 @@
 //separated to reduce code duplication. Moved here for ease of reference and to unclutter r_wall/attackby()
 /turf/closed/wall/proc/place_poster(obj/item/poster/P, mob/user)
 	if(!P.poster_structure)
-		to_chat(user, span_warning("[P] has no poster... inside it? Inform a coder!"))
+		to_chat(user, "<span class='warning'>[P] has no poster... inside it? Inform a coder!</span>")
 		return
 
 	// Deny placing posters on currently-diagonal walls, although the wall may change in the future.
@@ -136,14 +135,14 @@
 	var/stuff_on_wall = 0
 	for(var/obj/O in contents) //Let's see if it already has a poster on it or too much stuff
 		if(istype(O, /obj/structure/sign/poster))
-			to_chat(user, span_warning("The wall is far too cluttered to place a poster!"))
+			to_chat(user, "<span class='warning'>The wall is far too cluttered to place a poster!</span>")
 			return
 		stuff_on_wall++
 		if(stuff_on_wall == 3)
-			to_chat(user, span_warning("The wall is far too cluttered to place a poster!"))
+			to_chat(user, "<span class='warning'>The wall is far too cluttered to place a poster!</span>")
 			return
 
-	to_chat(user, span_notice("I start placing the poster on the wall...")	)
+	to_chat(user, "<span class='notice'>I start placing the poster on the wall...</span>"	)
 
 	var/obj/structure/sign/poster/D = P.poster_structure
 
@@ -158,10 +157,10 @@
 			return
 
 		if(iswallturf(src) && user && user.loc == temp_loc)	//Let's check if everything is still there
-			to_chat(user, span_notice("I place the poster!"))
+			to_chat(user, "<span class='notice'>I place the poster!</span>")
 			return
 
-	to_chat(user, span_notice("The poster falls down!"))
+	to_chat(user, "<span class='notice'>The poster falls down!</span>")
 	D.roll_and_drop(temp_loc)
 
 // Various possible posters follow

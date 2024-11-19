@@ -22,12 +22,12 @@
 		return
 	var/msg
 	if(!can_cast(user))
-		msg = span_warning("I can no longer cast [name]!")
+		msg = "<span class='warning'>I can no longer cast [name]!</span>"
 		remove_ranged_ability(msg)
 		return
 	if(active)
 		if(deactive_msg)
-			msg = span_notice("[deactive_msg]")
+			msg = "<span class='notice'>[deactive_msg]</span>"
 		if(charge_type == "recharge")
 			var/refund_percent = current_amount/projectile_amount
 			charge_counter = charge_max * refund_percent
@@ -37,7 +37,7 @@
 		on_deactivation(user)
 	else
 		if(active_msg)
-			msg = span_notice("[active_msg] <B>Left-click to shoot it at a target!</B>")
+			msg = "<span class='notice'>[active_msg] <B>Left-click to shoot it at a target!</B></span>"
 		current_amount = projectile_amount
 		active = TRUE
 		add_ranged_ability(user, msg, TRUE)
@@ -59,7 +59,7 @@
 	if(..())
 		return FALSE
 	var/ran_out = (current_amount <= 0)
-	if(!can_cast(caller) || !cast_check(!ran_out, ranged_ability_user))
+	if(!cast_check(!ran_out, ranged_ability_user))
 		remove_ranged_ability()
 		return FALSE
 	var/list/targets = list(target)

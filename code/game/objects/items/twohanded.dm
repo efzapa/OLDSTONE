@@ -43,9 +43,9 @@
 		user.update_inv_hands()
 	if(show_message)
 		if(iscyborg(user))
-			to_chat(user, span_notice("I free up your module."))
+			to_chat(user, "<span class='notice'>I free up your module.</span>")
 		else
-			to_chat(user, span_notice("I are now carrying [src] with one hand."))
+			to_chat(user, "<span class='notice'>I are now carrying [src] with one hand.</span>")
 	var/obj/item/twohanded/offhand/O = user.get_inactive_held_item()
 	if(O && istype(O))
 		O.unwield()
@@ -55,13 +55,13 @@
 	if(wielded)
 		return
 	if(ismonkey(user))
-		to_chat(user, span_warning("It's too heavy for you to wield fully."))
+		to_chat(user, "<span class='warning'>It's too heavy for you to wield fully.</span>")
 		return
 	if(user.get_inactive_held_item())
-		to_chat(user, span_warning("I need your other hand to be empty!"))
+		to_chat(user, "<span class='warning'>I need your other hand to be empty!</span>")
 		return
 	if(user.get_num_arms() < 2)
-		to_chat(user, span_warning("I don't have enough intact hands."))
+		to_chat(user, "<span class='warning'>I don't have enough intact hands.</span>")
 		return
 	wielded = 1
 	if(force_wielded)
@@ -69,9 +69,9 @@
 	name = "[name] (Wielded)"
 	update_icon()
 	if(iscyborg(user))
-		to_chat(user, span_notice("I dedicate your module to [src]."))
+		to_chat(user, "<span class='notice'>I dedicate your module to [src].</span>")
 	else
-		to_chat(user, span_notice("I grab [src] with both hands."))
+		to_chat(user, "<span class='notice'>I grab [src] with both hands.</span>")
 	var/obj/item/twohanded/offhand/O = new(user) ////Let's reserve his other hand~
 	O.name = "[name] - offhand"
 	O.desc = ""
@@ -160,7 +160,7 @@
 /obj/item/twohanded/required/mob_can_equip(mob/M, mob/equipper, slot, disable_warning = 0)
 	if(wielded && !slot_flags)
 		if(!disable_warning)
-			to_chat(M, span_warning("[src] is too cumbersome to carry with anything but your hands!"))
+			to_chat(M, "<span class='warning'>[src] is too cumbersome to carry with anything but your hands!</span>")
 		return 0
 	return ..()
 
@@ -169,7 +169,7 @@
 	if(get_dist(src,user) > 1)
 		return
 	if(H != null)
-		to_chat(user, span_notice("[src] is too cumbersome to carry in one hand!"))
+		to_chat(user, "<span class='notice'>[src] is too cumbersome to carry in one hand!</span>")
 		return
 	if(loc != user)
 		wield(user)
@@ -202,7 +202,7 @@
 	if(!wielded)
 		return
 	if(show_message)
-		to_chat(user, span_notice("I drop [src]."))
+		to_chat(user, "<span class='notice'>I drop [src].</span>")
 	..(user, FALSE)
 
 /*
@@ -224,7 +224,7 @@
 	hitsound = 'sound/blank.ogg'
 	sharpness = IS_SHARP
 	max_integrity = 200
-	armor = list("blunt" = 0, "slash" = 0, "stab" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 100, "acid" = 30)
+	armor = list("melee" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 100, "acid" = 30)
 	resistance_flags = FIRE_PROOF
 
 /obj/item/twohanded/fireaxe/Initialize()
@@ -236,7 +236,7 @@
 	return
 
 /obj/item/twohanded/fireaxe/suicide_act(mob/user)
-	user.visible_message(span_suicide("[user] axes [user.p_them()]self from head to toe! It looks like [user.p_theyre()] trying to commit suicide!"))
+	user.visible_message("<span class='suicide'>[user] axes [user.p_them()]self from head to toe! It looks like [user.p_theyre()] trying to commit suicide!</span>")
 	return (BRUTELOSS)
 
 /obj/item/twohanded/fireaxe/afterattack(atom/A, mob/user, proximity)
@@ -274,7 +274,7 @@
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	block_chance = 75
 	max_integrity = 200
-	armor = list("blunt" = 0, "slash" = 0, "stab" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 100, "acid" = 70)
+	armor = list("melee" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 100, "acid" = 70)
 	resistance_flags = FIRE_PROOF
 	var/hacked = FALSE
 	var/brightness_on = 6 //TWICE AS BRIGHT AS A REGULAR ESWORD
@@ -282,7 +282,7 @@
 
 /obj/item/twohanded/dualsaber/suicide_act(mob/living/carbon/user)
 	if(wielded)
-		user.visible_message(span_suicide("[user] begins spinning way too fast! It looks like [user.p_theyre()] trying to commit suicide!"))
+		user.visible_message("<span class='suicide'>[user] begins spinning way too fast! It looks like [user.p_theyre()] trying to commit suicide!</span>")
 
 		var/obj/item/bodypart/head/myhead = user.get_bodypart(BODY_ZONE_HEAD)//stole from chainsaw code
 		var/obj/item/organ/brain/B = user.getorganslot(ORGAN_SLOT_BRAIN)
@@ -297,12 +297,12 @@
 					myhead.drop_limb()
 				sleep(3)
 			else
-				user.visible_message(span_suicide("[user] panics and starts choking to death!"))
+				user.visible_message("<span class='suicide'>[user] panics and starts choking to death!</span>")
 				return OXYLOSS
 
 
 	else
-		user.visible_message(span_suicide("[user] begins beating [user.p_them()]self to death with \the [src]'s handle! It probably would've been cooler if [user.p_they()] turned it on first!"))
+		user.visible_message("<span class='suicide'>[user] begins beating [user.p_them()]self to death with \the [src]'s handle! It probably would've been cooler if [user.p_they()] turned it on first!</span>")
 	return BRUTELOSS
 
 /obj/item/twohanded/dualsaber/Initialize()
@@ -333,7 +333,7 @@
 /obj/item/twohanded/dualsaber/attack(mob/target, mob/living/carbon/human/user)
 	if(user.has_dna())
 		if(user.dna.check_mutation(HULK))
-			to_chat(user, span_warning("I grip the blade too hard and accidentally close it!"))
+			to_chat(user, "<span class='warning'>I grip the blade too hard and accidentally close it!</span>")
 			unwield()
 			return
 	..()
@@ -347,7 +347,7 @@
 	dance_rotate(user, CALLBACK(user, TYPE_PROC_REF(/mob, dance_flip)))
 
 /obj/item/twohanded/dualsaber/proc/impale(mob/living/user)
-	to_chat(user, span_warning("I twirl around a bit before losing your balance and impaling myself on [src]."))
+	to_chat(user, "<span class='warning'>I twirl around a bit before losing your balance and impaling myself on [src].</span>")
 	if (force_wielded)
 		user.take_bodypart_damage(20,25,check_armor = TRUE)
 	else
@@ -361,7 +361,7 @@
 /obj/item/twohanded/dualsaber/wield(mob/living/carbon/M) //Specific wield () hulk checks due to reflection chance for balance issues and switches hitsounds.
 	if(M.has_dna())
 		if(M.dna.check_mutation(HULK))
-			to_chat(M, span_warning("I lack the grace to wield this!"))
+			to_chat(M, "<span class='warning'>I lack the grace to wield this!</span>")
 			return
 	..()
 	if(wielded)
@@ -400,7 +400,7 @@
 		var/mob/living/carbon/C = user
 		if(C.wear_mask)
 			in_mouth = ", barely missing [user.p_their()] nose"
-	. = span_warning("[user] swings [user.p_their()] [name][in_mouth]. [user.p_they(TRUE)] light[user.p_s()] [user.p_their()] [A.name] in the process.")
+	. = "<span class='warning'>[user] swings [user.p_their()] [name][in_mouth]. [user.p_they(TRUE)] light[user.p_s()] [user.p_their()] [A.name] in the process.</span>"
 	playsound(loc,  pick(hitsound), get_clamped_volume(), TRUE, -1)
 	add_fingerprint(user)
 	// Light your candles while spinning around the room
@@ -422,11 +422,11 @@
 	if(W.tool_behaviour == TOOL_MULTITOOL)
 		if(!hacked)
 			hacked = TRUE
-			to_chat(user, span_warning("2XRNBW_ENGAGE"))
+			to_chat(user, "<span class='warning'>2XRNBW_ENGAGE</span>")
 			saber_color = "rainbow"
 			update_icon()
 		else
-			to_chat(user, span_warning("It's starting to look like a triple rainbow - no, nevermind."))
+			to_chat(user, "<span class='warning'>It's starting to look like a triple rainbow - no, nevermind.</span>")
 	else
 		return ..()
 
@@ -451,7 +451,7 @@
 	attack_verb = list("attacked", "poked", "jabbed", "torn", "gored")
 	sharpness = IS_SHARP
 	max_integrity = 200
-	armor = list("blunt" = 0, "slash" = 0, "stab" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 50, "acid" = 30)
+	armor = list("melee" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 50, "acid" = 30)
 	var/war_cry = "AAAAARGH!!!"
 	var/icon_prefix = "spearglass"
 
@@ -460,7 +460,7 @@
 	AddComponent(/datum/component/butchering, 100, 70) //decent in a pinch, but pretty bad.
 
 /obj/item/twohanded/spear/suicide_act(mob/living/carbon/user)
-	user.visible_message(span_suicide("[user] begins to sword-swallow \the [src]! It looks like [user.p_theyre()] trying to commit suicide!"))
+	user.visible_message("<span class='suicide'>[user] begins to sword-swallow \the [src]! It looks like [user.p_theyre()] trying to commit suicide!</span>")
 	return BRUTELOSS
 
 /obj/item/twohanded/spear/Initialize()
@@ -511,7 +511,7 @@
 	..()
 
 /obj/item/twohanded/spear/explosive/suicide_act(mob/living/carbon/user)
-	user.visible_message(span_suicide("[user] begins to sword-swallow \the [src]! It looks like [user.p_theyre()] trying to commit suicide!"))
+	user.visible_message("<span class='suicide'>[user] begins to sword-swallow \the [src]! It looks like [user.p_theyre()] trying to commit suicide!</span>")
 	user.say("[war_cry]", forced="spear warcry")
 	explosive.forceMove(user)
 	explosive.prime()
@@ -521,7 +521,7 @@
 
 /obj/item/twohanded/spear/explosive/examine(mob/user)
 	. = ..()
-	. += span_notice("Alt-click to set your war cry.")
+	. += "<span class='notice'>Alt-click to set your war cry.</span>"
 
 /obj/item/twohanded/spear/explosive/update_icon()
 	icon_state = "spearbomb[wielded]"
@@ -573,13 +573,13 @@
 
 /obj/item/twohanded/required/chainsaw/suicide_act(mob/living/carbon/user)
 	if(on)
-		user.visible_message(span_suicide("[user] begins to tear [user.p_their()] head off with [src]! It looks like [user.p_theyre()] trying to commit suicide!"))
+		user.visible_message("<span class='suicide'>[user] begins to tear [user.p_their()] head off with [src]! It looks like [user.p_theyre()] trying to commit suicide!</span>")
 		playsound(src, 'sound/blank.ogg', 100, TRUE)
 		var/obj/item/bodypart/head/myhead = user.get_bodypart(BODY_ZONE_HEAD)
 		if(myhead)
 			myhead.dismember()
 	else
-		user.visible_message(span_suicide("[user] smashes [src] into [user.p_their()] neck, destroying [user.p_their()] esophagus! It looks like [user.p_theyre()] trying to commit suicide!"))
+		user.visible_message("<span class='suicide'>[user] smashes [src] into [user.p_their()] neck, destroying [user.p_their()] esophagus! It looks like [user.p_theyre()] trying to commit suicide!</span>")
 		playsound(src, 'sound/blank.ogg', 100, TRUE)
 	return(BRUTELOSS)
 
@@ -605,8 +605,7 @@
 
 /obj/item/twohanded/required/chainsaw/get_dismemberment_chance()
 	if(wielded)
-		return ..()
-	return 0
+		. = ..()
 
 /obj/item/twohanded/required/chainsaw/doomslayer
 	name = "THE GREAT COMMUNICATOR"
@@ -616,7 +615,7 @@
 
 /obj/item/twohanded/required/chainsaw/doomslayer/hit_reaction(mob/living/carbon/human/owner, atom/movable/hitby, attack_text = "the attack", final_block_chance = 0, damage = 0, attack_type = MELEE_ATTACK)
 	if(attack_type == PROJECTILE_ATTACK)
-		owner.visible_message(span_danger("Ranged attacks just make [owner] angrier!"))
+		owner.visible_message("<span class='danger'>Ranged attacks just make [owner] angrier!</span>")
 		playsound(src, pick('sound/blank.ogg'), 75, TRUE)
 		return 1
 	return 0
@@ -659,7 +658,7 @@
 	hitsound = 'sound/blank.ogg'
 	sharpness = IS_SHARP
 	max_integrity = 200
-	armor = list("blunt" = 0, "slash" = 0, "stab" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 100, "acid" = 30)
+	armor = list("melee" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 100, "acid" = 30)
 	resistance_flags = FIRE_PROOF
 
 /obj/item/twohanded/pitchfork/demonic
@@ -690,15 +689,15 @@
 	icon_state = "pitchfork[wielded]"
 
 /obj/item/twohanded/pitchfork/suicide_act(mob/user)
-	user.visible_message(span_suicide("[user] impales [user.p_them()]self in [user.p_their()] abdomen with [src]! It looks like [user.p_theyre()] trying to commit suicide!"))
+	user.visible_message("<span class='suicide'>[user] impales [user.p_them()]self in [user.p_their()] abdomen with [src]! It looks like [user.p_theyre()] trying to commit suicide!</span>")
 	return (BRUTELOSS)
 
 /obj/item/twohanded/pitchfork/demonic/pickup(mob/living/user)
 	. = ..()
 	if(isliving(user) && user.mind && user.owns_soul() && !is_devil(user))
 		var/mob/living/U = user
-		U.visible_message(span_warning("As [U] picks [src] up, [U]'s arms briefly catch fire."), \
-			span_warning("\"As you pick up [src] your arms ignite, reminding you of all your past sins.\""))
+		U.visible_message("<span class='warning'>As [U] picks [src] up, [U]'s arms briefly catch fire.</span>", \
+			"<span class='warning'>\"As you pick up [src] your arms ignite, reminding you of all your past sins.\"</span>")
 		if(ishuman(U))
 			var/mob/living/carbon/human/H = U
 			H.apply_damage(rand(force/2, force), BURN, pick(BODY_ZONE_L_ARM, BODY_ZONE_R_ARM))
@@ -707,7 +706,7 @@
 
 /obj/item/twohanded/pitchfork/demonic/attack(mob/target, mob/living/carbon/human/user)
 	if(user.mind && user.owns_soul() && !is_devil(user))
-		to_chat(user, span_warning("[src] burns in your hands."))
+		to_chat(user, "<span class='warning'>[src] burns in your hands.</span>")
 		user.apply_damage(rand(force/2, force), BURN, pick(BODY_ZONE_L_ARM, BODY_ZONE_R_ARM))
 	..()
 
@@ -717,7 +716,7 @@
 		return
 	if(iswallturf(target))
 		var/turf/closed/wall/W = target
-		user.visible_message(span_danger("[user] blasts \the [target] with \the [src]!"))
+		user.visible_message("<span class='danger'>[user] blasts \the [target] with \the [src]!</span>")
 		playsound(target, 'sound/blank.ogg', 100, TRUE)
 		W.break_wall()
 		W.ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
@@ -753,11 +752,11 @@
 	if(wielded || attack_type != PROJECTILE_ATTACK)
 		if(prob(final_block_chance))
 			if(attack_type == PROJECTILE_ATTACK)
-				owner.visible_message(span_danger("[owner] deflects [attack_text] with [src]!"))
+				owner.visible_message("<span class='danger'>[owner] deflects [attack_text] with [src]!</span>")
 				playsound(src, pick('sound/blank.ogg'), 75, TRUE)
 				return 1
 			else
-				owner.visible_message(span_danger("[owner] parries [attack_text] with [src]!"))
+				owner.visible_message("<span class='danger'>[owner] parries [attack_text] with [src]!</span>")
 				return 1
 	return 0
 
@@ -815,7 +814,7 @@
 		return
 	RegisterSignal(user, COMSIG_MOVABLE_MOVED, PROC_REF(unwield))
 	listeningTo = user
-	user.visible_message(span_notice("[user] holds [src] up to [user.p_their()] eyes."), span_notice("I hold [src] up to your eyes."))
+	user.visible_message("<span class='notice'>[user] holds [src] up to [user.p_their()] eyes.</span>", "<span class='notice'>I hold [src] up to your eyes.</span>")
 	item_state = "binoculars_wielded"
 	user.regenerate_icons()
 	if(!user?.client)
@@ -840,7 +839,7 @@
 	. = ..()
 	UnregisterSignal(listeningTo, COMSIG_MOVABLE_MOVED)
 	listeningTo = null
-	user.visible_message(span_notice("[user] lowers [src]."), span_notice("I lower [src]."))
+	user.visible_message("<span class='notice'>[user] lowers [src].</span>", "<span class='notice'>I lower [src].</span>")
 	item_state = "binoculars"
 	user.regenerate_icons()
 	if(user && user.client)

@@ -66,13 +66,7 @@ class BannedNeighbor:
 
     def matches(self, identified: Content, neighbor: Content):
         if self.identical:
-            if identified.path != neighbor.path:
-                return False
-
-            if identified.var_edits != neighbor.var_edits:
-                return False
-
-            return True
+            return neighbor == identified
 
         if self.typepath is not None:
             if self.typepath.matches_path(neighbor.path):
@@ -266,8 +260,9 @@ class Lint:
                         coordinate_texts.append(f"and {leftover_coordinates} more")
 
                     for failure in failures:
+                        if self.help is not None:
+                            failure.message += f"\n  {self.help}"
                         failure.coordinates = ', '.join(coordinate_texts)
-                        failure.help = self.help
                         failure.pop_id = pop
                         all_failures.append(failure)
 

@@ -83,7 +83,6 @@
 	verb_yell = "psychically screams"
 	melee_damage_lower = 2
 	melee_damage_upper = 4
-	d_type = "blunt"
 	obj_damage = 20
 	environment_smash = ENVIRONMENT_SMASH_STRUCTURES
 	attack_verb_continuous = "hits"
@@ -117,7 +116,7 @@
 	is_zombie = 1
 	if(H.wear_armor)
 		var/obj/item/clothing/suit/armor/A = H.wear_armor
-		maxHealth += A.armor.blunt //That zombie's got armor, I want armor!
+		maxHealth += A.armor.melee //That zombie's got armor, I want armor!
 	maxHealth += 40
 	health = maxHealth
 	name = "blob zombie"
@@ -125,7 +124,6 @@
 	mob_biotypes |= MOB_HUMANOID
 	melee_damage_lower += 8
 	melee_damage_upper += 11
-	d_type = "slash"
 	movement_type = GROUND
 	death_cloud_size = 0
 	icon = H.icon
@@ -135,7 +133,7 @@
 	H.forceMove(src)
 	oldguy = H
 	update_icons()
-	visible_message(span_warning("The corpse of [H.name] suddenly rises!"))
+	visible_message("<span class='warning'>The corpse of [H.name] suddenly rises!</span>")
 
 /mob/living/simple_animal/hostile/blob/blobspore/death(gibbed)
 	// On death, create a small smoke of harmful gas (s-Acid)
@@ -206,7 +204,6 @@
 	damage_coeff = list(BRUTE = 0.5, BURN = 1, TOX = 1, CLONE = 1, STAMINA = 0, OXY = 1)
 	melee_damage_lower = 20
 	melee_damage_upper = 20
-	d_type = "blunt"
 	obj_damage = 60
 	attack_verb_continuous = "slams"
 	attack_verb_simple = "slam"

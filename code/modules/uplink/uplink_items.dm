@@ -125,9 +125,9 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 	if(ishuman(user) && istype(A, /obj/item))
 		var/mob/living/carbon/human/H = user
 		if(H.put_in_hands(A))
-			to_chat(H, span_boldnotice("[A] materializes into your hands!"))
+			to_chat(H, "<span class='boldnotice'>[A] materializes into your hands!</span>")
 			return A
-	to_chat(user, span_boldnotice("[A] materializes onto the floor!"))
+	to_chat(user, "<span class='boldnotice'>[A] materializes onto the floor!</span>")
 	return A
 
 //Discounts (dynamically filled above)
@@ -1338,7 +1338,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 		return
 	U.failsafe_code = U.generate_code()
 	var/code = "[islist(U.failsafe_code) ? english_list(U.failsafe_code) : U.failsafe_code]"
-	to_chat(user, span_warning("The new failsafe code for this uplink is now : [code]."))
+	to_chat(user, "<span class='warning'>The new failsafe code for this uplink is now : [code].</span>")
 	if(user.mind)
 		user.mind.store_memory("Failsafe code for [U.parent] : [code]")
 	return U.parent //For log icon
@@ -1640,7 +1640,6 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 	cost = 6
 	restricted_roles = list("Geneticist", "Chief Medical Officer")
 
-/*
 /datum/uplink_item/role_restricted/brainwash_disk
 	name = "Brainwashing Surgery Program"
 	desc = "A disk containing the procedure to perform a brainwashing surgery, allowing you to implant an objective onto a target. \
@@ -1648,7 +1647,6 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 	item = /obj/item/disk/surgery/brainwashing
 	restricted_roles = list("Medical Doctor", "Chief Medical Officer", "Roboticist")
 	cost = 5
-*/
 
 /datum/uplink_item/role_restricted/clown_bomb
 	name = "Clown Bomb"

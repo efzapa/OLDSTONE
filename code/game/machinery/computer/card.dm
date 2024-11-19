@@ -62,7 +62,7 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 /obj/machinery/computer/card/examine(mob/user)
 	. = ..()
 	if(inserted_scan_id || inserted_modify_id)
-		. += span_notice("Alt-click to eject the ID card.")
+		. += "<span class='notice'>Alt-click to eject the ID card.</span>"
 
 /obj/machinery/computer/card/attackby(obj/I, mob/user, params)
 	if(isidcard(I))
@@ -148,22 +148,22 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 		else
 			id_eject(user, target)
 
-	user.visible_message(span_notice("[user] inserts \the [card_to_insert] into \the [src]."),
-						span_notice("I insert \the [card_to_insert] into \the [src]."))
+	user.visible_message("<span class='notice'>[user] inserts \the [card_to_insert] into \the [src].</span>",
+						"<span class='notice'>I insert \the [card_to_insert] into \the [src].</span>")
 	playsound(src, 'sound/blank.ogg', 50, FALSE)
 	updateUsrDialog()
 	return TRUE
 
 /obj/machinery/computer/card/proc/id_eject(mob/user, obj/target)
 	if(!target)
-		to_chat(user, span_warning("That slot is empty!"))
+		to_chat(user, "<span class='warning'>That slot is empty!</span>")
 		return FALSE
 	else
 		target.forceMove(drop_location())
 		if(!issilicon(user) && Adjacent(user))
 			user.put_in_hands(target)
-		user.visible_message(span_notice("[user] gets \the [target] from \the [src]."), \
-							span_notice("I get \the [target] from \the [src]."))
+		user.visible_message("<span class='notice'>[user] gets \the [target] from \the [src].</span>", \
+							"<span class='notice'>I get \the [target] from \the [src].</span>")
 		playsound(src, 'sound/blank.ogg', 50, FALSE)
 		updateUsrDialog()
 		return TRUE
@@ -188,7 +188,7 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 	var/list/dat = list()
 	if (mode == 1) // accessing crew manifest
 		dat += "<tt><b>Crew Manifest:</b><br>Please use security record computer to modify entries.<br><br>"
-		for(var/datum/data/record/t in sortRecord(GLOB.data_core.general))
+		for(var/datum/data/record/t in sort_record(GLOB.data_core.general))
 			dat += {"[t.fields["name"]] - [t.fields["rank"]]<br>"}
 		dat += "<a href='?src=[REF(src)];choice=print'>Print</a><br><br><a href='?src=[REF(src)];choice=mode;mode_target=0'>Access ID modification console.</a><br></tt>"
 
@@ -424,7 +424,7 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 						if(region_access)
 							authenticated = 1
 			else if ((!( authenticated ) && issilicon(usr)) && (!inserted_modify_id))
-				to_chat(usr, span_warning("I can't modify an ID without an ID inserted to modify! Once one is in the modify slot on the computer, you can log in."))
+				to_chat(usr, "<span class='warning'>I can't modify an ID without an ID inserted to modify! Once one is in the modify slot on the computer, you can log in.</span>")
 		if ("logout")
 			region_access = null
 			head_subordinates = null
@@ -461,7 +461,7 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 							updateUsrDialog()
 							break
 					if(!jobdatum)
-						to_chat(usr, span_alert("No log exists for this job."))
+						to_chat(usr, "<span class='alert'>No log exists for this job.</span>")
 						updateUsrDialog()
 						return
 					if(inserted_modify_id.registered_account)
@@ -476,7 +476,7 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 				inserted_modify_id.assignment = "Unassigned"
 				playsound(src, 'sound/blank.ogg', 50, FALSE)
 			else
-				to_chat(usr, span_alert("I are not authorized to demote this position."))
+				to_chat(usr, "<span class='alert'>I are not authorized to demote this position.</span>")
 		if ("reg")
 			if (authenticated)
 				var/t2 = inserted_modify_id
@@ -486,7 +486,7 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 						inserted_modify_id.registered_name = newName
 						playsound(src, 'sound/blank.ogg', 50, FALSE)
 					else
-						to_chat(usr, span_alert("Invalid name entered."))
+						to_chat(usr, "<span class='alert'>Invalid name entered.</span>")
 						updateUsrDialog()
 						return
 		if ("mode")
@@ -545,12 +545,12 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 					SSjob.prioritized_jobs -= j
 					priority = FALSE
 				else if(j.total_positions <= j.current_positions)
-					to_chat(usr, span_notice("[j.title] has had all positions filled. Open up more slots before prioritizing it."))
+					to_chat(usr, "<span class='notice'>[j.title] has had all positions filled. Open up more slots before prioritizing it.</span>")
 					updateUsrDialog()
 					return
 				else
 					SSjob.prioritized_jobs += j
-				to_chat(usr, span_notice("[j.title] has been successfully [priority ? "prioritized" : "unprioritized"]. Potential employees will notice your request."))
+				to_chat(usr, "<span class='notice'>[j.title] has been successfully [priority ? "prioritized" : "unprioritized"]. Potential employees will notice your request.</span>")
 				playsound(src, 'sound/blank.ogg', 50, FALSE)
 
 		if ("print")
@@ -559,7 +559,7 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 				sleep(50)
 				var/obj/item/paper/P = new /obj/item/paper( loc )
 				var/t1 = "<B>Crew Manifest:</B><BR>"
-				for(var/datum/data/record/t in sortRecord(GLOB.data_core.general))
+				for(var/datum/data/record/t in sort_record(GLOB.data_core.general))
 					t1 += t.fields["name"] + " - " + t.fields["rank"] + "<br>"
 				P.info = t1
 				P.name = "paper- 'Crew Manifest'"

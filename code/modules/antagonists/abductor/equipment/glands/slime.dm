@@ -13,7 +13,7 @@
 	owner.grant_language(/datum/language/slime)
 
 /obj/item/organ/heart/gland/slime/activate()
-	to_chat(owner, span_warning("I feel nauseated!"))
+	to_chat(owner, "<span class='warning'>I feel nauseated!</span>")
 	owner.vomit(20)
 
 	var/mob/living/simple_animal/slime/Slime = new(get_turf(owner), "grey")

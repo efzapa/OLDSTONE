@@ -6,26 +6,10 @@
 	var/list/stored_experience
 
 /datum/species/werewolf
-	name = "verewolf"
+	name = "werewolf"
 	id = "werewolf"
 	species_traits = list(NO_UNDERWEAR,NOEYESPRITES)
-	inherent_traits = list(
-		TRAIT_STRONGBITE,
-		TRAIT_ZJUMP,
-		TRAIT_NOFALLDAMAGE1,
-		TRAIT_NOROGSTAM,
-		TRAIT_BASHDOORS,
-		TRAIT_SHOCKIMMUNE,
-		TRAIT_STEELHEARTED,
-		TRAIT_BREADY,
-		TRAIT_TOXIMMUNE,
-		TRAIT_ORGAN_EATER,
-		TRAIT_NASTY_EATER,
-		TRAIT_NOSTINK,
-		TRAIT_CRITICAL_RESISTANCE,
-		TRAIT_IGNOREDAMAGESLOWDOWN,
-		TRAIT_IGNORESLOWDOWN
-	)
+	inherent_traits = list(TRAIT_NOFATSTAM,TRAIT_RESISTHEAT,TRAIT_RESISTCOLD,TRAIT_RESISTHIGHPRESSURE,TRAIT_RESISTLOWPRESSURE,TRAIT_CHUNKYFINGERS,TRAIT_RADIMMUNE,TRAIT_NODISMEMBER)
 	inherent_biotypes = MOB_HUMANOID
 	armor = 30
 	no_equip = list(SLOT_SHIRT, SLOT_HEAD, SLOT_WEAR_MASK, SLOT_ARMOR, SLOT_GLOVES, SLOT_SHOES, SLOT_PANTS, SLOT_CLOAK, SLOT_BELT, SLOT_BACK_R, SLOT_BACK_L, SLOT_S_STORE)
@@ -44,7 +28,7 @@
 
 /datum/species/werewolf/regenerate_icons(mob/living/carbon/human/H)
 	H.icon = 'icons/roguetown/mob/monster/werewolf.dmi'
-	H.base_intents = list(INTENT_HELP, INTENT_DISARM, INTENT_GRAB)
+	H.base_intents = list(INTENT_HELP, INTENT_DISARM, INTENT_GRAB, /datum/intent/unarmed/wwolf)
 	if(H.gender == MALE)
 		H.icon_state = "wwolf_m"
 	else
@@ -91,4 +75,4 @@
 	return TRUE
 
 /datum/species/werewolf/random_name(gender,unique,lastname)
-	return "VEREWOLF"
+	return "WEREVOLF"

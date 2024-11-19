@@ -1,20 +1,16 @@
 /datum/job/roguetown/shepherd
 	title = "Confessor"
-	flag = CONFESSOR
+	flag = MONK
 	department_flag = CHURCHMEN
 	faction = "Station"
 	total_positions = 0
 	spawn_positions = 0
 
-	allowed_sexes = list(MALE)
-	allowed_races = list(
-		"Humen",
-		"Elf",
-		"Half-Elf",
-		"Dwarf",
-		"Aasimar",
+	allowed_races = list("Humen",
+	"Humen",
+	"Half-Elf"
 	)
-	allowed_patrons = ALL_DIVINE_PATRONS
+	allowed_sexes = list("male")
 	tutorial = "Confessors are shady agents of the church hired to spy on the populace and keep them moral. As the most fanatical members of the clergy, their main concern is assisting the local Puritan with their work in extracting confessions of sin as well as hunting night beasts and cultists that hide in plain sight."
 
 	outfit = /datum/outfit/job/roguetown/shepherd
@@ -22,8 +18,7 @@
 	whitelist_req = TRUE
 	display_order = JDO_SHEPHERD
 	give_bank_account = 3
-	min_pq = 0
-	max_pq = null
+	min_pq = -4
 
 /datum/outfit/job/roguetown/shepherd
 	name = "Confessor"
@@ -49,7 +44,7 @@
 		H.mind.adjust_skillrank(/datum/skill/misc/sneaking, 4, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/misc/stealing, 2, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/swords, 1, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/maces, 4, TRUE)
+		H.mind.adjust_skillrank(/datum/skill/combat/axesmaces, 4, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/bows, 2, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/crossbows, 3, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/whipsflails, 3, TRUE)

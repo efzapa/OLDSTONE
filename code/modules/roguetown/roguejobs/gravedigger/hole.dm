@@ -1,7 +1,6 @@
 
 /obj/structure/closet/dirthole
 	name = "hole"
-	desc = "Just a small hole..."
 	icon_state = "hole1"
 	icon = 'icons/turf/roguefloor.dmi'
 	var/stage = 1
@@ -19,13 +18,11 @@
 	layer = 2.8
 
 /obj/structure/closet/dirthole/grave
-	desc = "A hole big enough for a coffin."
 	stage = 3
 	faildirt = 3
 	icon_state = "grave"
 
 /obj/structure/closet/dirthole/closed
-	desc = "A mound of dirt with something below."
 	stage = 4
 	faildirt = 3
 	climb_offset = 10
@@ -53,9 +50,9 @@
 
 /obj/structure/closet/dirthole/closed/loot/examine(mob/user)
 	. = ..()
-	if(HAS_TRAIT(user, TRAIT_SOUL_EXAMINE))
+	if(HAS_TRAIT(user, RTRAIT_NOSTINK))
 		if(lootroll == 1)
-			. += span_warning("Better let this one sleep.")
+			. += "<span class='warning'>Better let this one sleep.</span>"
 
 /obj/structure/closet/dirthole/insertion_allowed(atom/movable/AM)
 	if(istype(AM, /obj/structure/closet/crate/chest) || istype(AM, /obj/structure/closet/burial_shroud))
@@ -122,7 +119,7 @@
 //								playsound(mastert,'sound/items/dig_shovel.ogg', 100, TRUE)
 //								mastert.ChangeTurf(T.type, flags = CHANGETURF_INHERIT_AIR)
 //								return
-			to_chat(user, span_warning("I can't dig myself any deeper."))
+			to_chat(user, "<span class='warning'>I can't dig myself any deeper.</span>")
 			return
 		var/used_str = 10
 		if(iscarbon(user))
@@ -156,20 +153,20 @@
 
 /datum/status_effect/debuff/cursed
 	id = "cursed"
-	alert_type = /atom/movable/screen/alert/status_effect/debuff/cursed
+	alert_type = /obj/screen/alert/status_effect/debuff/cursed
 	effectedstats = list("fortune" = -3)
 	duration = 10 MINUTES
 
-/atom/movable/screen/alert/status_effect/debuff/cursed
+/obj/screen/alert/status_effect/debuff/cursed
 	name = "Cursed"
-	desc = "I feel... unlucky."
+	desc = ""
 	icon_state = "debuff"
 
 /obj/structure/closet/dirthole/MouseDrop_T(atom/movable/O, mob/living/user)
 	var/turf/T = get_turf(src)
 	if(istype(O, /obj/structure/closet/crate/coffin))
 		O.forceMove(T)
-	if(!istype(O) || O.anchored || istype(O, /atom/movable/screen))
+	if(!istype(O) || O.anchored || istype(O, /obj/screen))
 		return
 	if(!istype(user) || user.incapacitated() || !(user.mobility_flags & MOBILITY_STAND))
 		return
@@ -189,14 +186,14 @@
 		return
 	var/list/targets = list(O, src)
 	add_fingerprint(user)
-	user.visible_message(span_warning("[user] [actuallyismob ? "tries to ":""]stuff [O] into [src]."), \
-				 	 	span_warning("I [actuallyismob ? "try to ":""]stuff [O] into [src]."), \
-				 	 	span_hear("I hear clanging."))
+	user.visible_message("<span class='warning'>[user] [actuallyismob ? "tries to ":""]stuff [O] into [src].</span>", \
+				 	 	"<span class='warning'>I [actuallyismob ? "try to ":""]stuff [O] into [src].</span>", \
+				 	 	"<span class='hear'>I hear clanging.</span>")
 	if(actuallyismob)
 		if(do_after_mob(user, targets, 40))
-			user.visible_message(span_notice("[user] stuffs [O] into [src]."), \
-							 	 span_notice("I stuff [O] into [src]."), \
-							 	 span_hear("I hear a loud bang."))
+			user.visible_message("<span class='notice'>[user] stuffs [O] into [src].</span>", \
+							 	 "<span class='notice'>I stuff [O] into [src].</span>", \
+							 	 "<span class='hear'>I hear a loud bang.</span>")
 			var/mob/living/L = O
 			if(!issilicon(L))
 				L.Paralyze(40)
@@ -235,7 +232,7 @@
 			var/mob/living/carbon/human/B = A
 			B.buried = FALSE
 	..()
-
+	
 /obj/structure/closet/dirthole/open(mob/living/user)
 	if(opened)
 		return
@@ -280,17 +277,13 @@
 						if(prob(5))
 							new /obj/item/natural/worms/grubs(T)
 						else
-							new /obj/item/natural/worms/leech(T)
+							new /obj/item/natural/worms/leeches(T)
 					else
 						new /obj/item/natural/worms(T)
 		else
-			if((locate(/obj/structure/flora/newtree) in view(1)) && !(locate(/obj/item/grown/log/tree/stick) in T))
-				if(prob(33))
-					new /obj/item/grown/log/tree/stick(T)
-			else
-				if(!(locate(/obj/item/natural/stone) in T))
-					if(prob(33))
-						new /obj/item/natural/stone(T)
+			if(!(locate(/obj/item/natural/stone) in T))
+				if(prob(23))
+					new /obj/item/natural/stone(T)
 	return ..()
 
 /obj/structure/closet/dirthole/Destroy()

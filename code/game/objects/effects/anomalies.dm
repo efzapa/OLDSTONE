@@ -76,7 +76,7 @@
 
 /obj/effect/anomaly/attackby(obj/item/I, mob/user, params)
 	if(I.tool_behaviour == TOOL_ANALYZER)
-		to_chat(user, span_notice("Analyzing... [src]'s unstable field is fluctuating along frequency [format_frequency(aSignal.frequency)], code [aSignal.code]."))
+		to_chat(user, "<span class='notice'>Analyzing... [src]'s unstable field is fluctuating along frequency [format_frequency(aSignal.frequency)], code [aSignal.code].</span>")
 
 ///////////////////////
 
@@ -188,7 +188,7 @@
 		do_teleport(AM, locate(AM.x, AM.y, AM.z), 8, channel = TELEPORT_CHANNEL_BLUESPACE)
 
 /obj/effect/anomaly/bluespace/detonate()
-	var/turf/T = safepick(get_area_turfs(impact_area))
+	var/turf/T = pick(get_area_turfs(impact_area))
 	if(T)
 			// Calculate new position (searches through beacons in world)
 		var/obj/item/beacon/chosen

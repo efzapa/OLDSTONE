@@ -20,29 +20,29 @@ SUBSYSTEM_DEF(server_maint)
 
 /datum/controller/subsystem/server_maint/fire(resumed = FALSE)
 	if(!resumed)
-		if(listclearnulls(GLOB.clients))
+		if(list_clear_nulls(GLOB.clients))
 			log_world("Found a null in clients list!")
 		src.currentrun = GLOB.clients.Copy()
 
 		switch (cleanup_ticker) // do only one of these at a time, once per 5 fires
 			if (0)
-				if(listclearnulls(GLOB.player_list))
+				if(list_clear_nulls(GLOB.player_list))
 					log_world("Found a null in player_list!")
 				cleanup_ticker++
 			if (5)
-				if(listclearnulls(GLOB.mob_list))
+				if(list_clear_nulls(GLOB.mob_list))
 					log_world("Found a null in mob_list!")
 				cleanup_ticker++
 			if (10)
-				if(listclearnulls(GLOB.alive_mob_list))
+				if(list_clear_nulls(GLOB.alive_mob_list))
 					log_world("Found a null in alive_mob_list!")
 				cleanup_ticker++
 			if (15)
-				if(listclearnulls(GLOB.suicided_mob_list))
+				if(list_clear_nulls(GLOB.suicided_mob_list))
 					log_world("Found a null in suicided_mob_list!")
 				cleanup_ticker++
 			if (20)
-				if(listclearnulls(GLOB.dead_mob_list))
+				if(list_clear_nulls(GLOB.dead_mob_list))
 					log_world("Found a null in dead_mob_list!")
 				cleanup_ticker++
 			if (25)
@@ -64,7 +64,7 @@ SUBSYSTEM_DEF(server_maint)
 			var/cmob = C.mob
 			if (!isnewplayer(cmob) || !SSticker.queued_players.Find(cmob))
 				log_access("AFK: [key_name(C)]")
-				to_chat(C, span_danger("I have been inactive for more than [DisplayTimeText(afk_period)] and have been disconnected.</span><br><span class='danger'>I may reconnect via the button in the file menu or by <b><u><a href='byond://winset?command=.reconnect'>clicking here to reconnect</a></u></b>."))
+				to_chat(C, "<span class='danger'>I have been inactive for more than [DisplayTimeText(afk_period)] and have been disconnected.</span><br><span class='danger'>I may reconnect via the button in the file menu or by <b><u><a href='byond://winset?command=.reconnect'>clicking here to reconnect</a></u></b>.</span>")
 				QDEL_IN(C, 1) //to ensure they get our message before getting disconnected
 				continue
 
@@ -75,7 +75,7 @@ SUBSYSTEM_DEF(server_maint)
 			return
 
 /datum/controller/subsystem/server_maint/Shutdown()
-//	kick_clients_in_lobby(span_boldannounce("The round came to an end with you in the lobby."), TRUE) //second parameter ensures only afk clients are kicked
+//	kick_clients_in_lobby("<span class='boldannounce'>The round came to an end with you in the lobby.</span>", TRUE) //second parameter ensures only afk clients are kicked
 	var/server = CONFIG_GET(string/server)
 	for(var/thing in GLOB.clients)
 		if(!thing)

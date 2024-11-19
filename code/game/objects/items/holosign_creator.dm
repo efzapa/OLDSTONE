@@ -26,12 +26,12 @@
 		var/turf/T = get_turf(target)
 		var/obj/structure/holosign/H = locate(holosign_type) in T
 		if(H)
-			to_chat(user, span_notice("I use [src] to deactivate [H]."))
+			to_chat(user, "<span class='notice'>I use [src] to deactivate [H].</span>")
 			qdel(H)
 		else
 			if(!is_blocked_turf(T, TRUE)) //can't put holograms on a tile that has dense stuff
 				if(holocreator_busy)
-					to_chat(user, span_notice("[src] is busy creating a hologram."))
+					to_chat(user, "<span class='notice'>[src] is busy creating a hologram.</span>")
 					return
 				if(signs.len < max_signs)
 					playsound(src.loc, 'sound/blank.ogg', 20, TRUE)
@@ -46,9 +46,9 @@
 						if(is_blocked_turf(T, TRUE)) //don't try to sneak dense stuff on our tile during the wait.
 							return
 					H = new holosign_type(get_turf(target), src)
-					to_chat(user, span_notice("I create \a [H] with [src]."))
+					to_chat(user, "<span class='notice'>I create \a [H] with [src].</span>")
 				else
-					to_chat(user, span_notice("[src] is projecting at max capacity!"))
+					to_chat(user, "<span class='notice'>[src] is projecting at max capacity!</span>")
 
 /obj/item/holosign_creator/attack(mob/living/carbon/human/M, mob/user)
 	return
@@ -57,7 +57,7 @@
 	if(signs.len)
 		for(var/H in signs)
 			qdel(H)
-		to_chat(user, span_notice("I clear all active holograms."))
+		to_chat(user, "<span class='notice'>I clear all active holograms.</span>")
 
 /obj/item/holosign_creator/janibarrier
 	name = "custodial holobarrier projector"
@@ -111,7 +111,7 @@
 		var/mob/living/silicon/robot/R = user
 
 		if(shock)
-			to_chat(user, span_notice("I clear all active holograms, and reset your projector to normal."))
+			to_chat(user, "<span class='notice'>I clear all active holograms, and reset your projector to normal.</span>")
 			holosign_type = /obj/structure/holosign/barrier/cyborg
 			creation_time = 5
 			if(signs.len)
@@ -120,7 +120,7 @@
 			shock = 0
 			return
 		else if(R.emagged&&!shock)
-			to_chat(user, span_warning("I clear all active holograms, and overload your energy projector!"))
+			to_chat(user, "<span class='warning'>I clear all active holograms, and overload your energy projector!</span>")
 			holosign_type = /obj/structure/holosign/barrier/cyborg/hacked
 			creation_time = 30
 			if(signs.len)
@@ -132,8 +132,8 @@
 			if(signs.len)
 				for(var/H in signs)
 					qdel(H)
-				to_chat(user, span_notice("I clear all active holograms."))
+				to_chat(user, "<span class='notice'>I clear all active holograms.</span>")
 	if(signs.len)
 		for(var/H in signs)
 			qdel(H)
-		to_chat(user, span_notice("I clear all active holograms."))
+		to_chat(user, "<span class='notice'>I clear all active holograms.</span>")

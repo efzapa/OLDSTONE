@@ -17,14 +17,36 @@
 	  */
 	var/gc_destroyed
 
-	/// Active timers with this datum as the target
-	var/list/active_timers
-	/// Status traits attached to this datum
-	var/list/status_traits
+	/// Open uis owned by this datum
+	/// Lazy, since this case is semi rare
+	var/list/open_uis
 
-	/// Components attached to this datum
-	/// Lazy associated list in the structure of `type:component/list of components`
-	var/list/datum_components
+	/// Active timers with this datum as the target
+	var/list/_active_timers
+	/// Status traits attached to this datum
+	var/list/_status_traits
+
+	/**
+	  * Components attached to this datum
+	  *
+	  * Lazy associated list in the structure of `type -> component/list of components`
+	  */
+	var/list/_datum_components
+	/**
+	  * Any datum registered to receive signals from this datum is in this list
+	  *
+	  * Lazy associated list in the structure of `signal -> registree/list of registrees`
+	  */
+	var/list/_listen_lookup
+	/// Lazy associated list in the structure of `target -> list(signal -> proctype)` that are run when the datum receives that signal
+	var/list/list/_signal_procs
+
+	/// Datum level flags
+	var/datum_flags = NONE
+
+	/// A weak reference to another datum
+	var/datum/weakref/weak_reference
+
 	/// Any datum registered to receive signals from this datum is in this list
 	/// Lazy associated list in the structure of `signal:registree/list of registrees`
 	var/list/comp_lookup
@@ -33,12 +55,6 @@
 	/// Is this datum capable of sending signals?
 	/// Set to true when a signal has been registered
 	var/signal_enabled = FALSE
-
-	/// Datum level flags
-	var/datum_flags = NONE
-
-	/// A weak reference to another datum
-	var/datum/weakref/weak_reference
 
 		/*
 	* Lazy associative list of currently active cooldowns.
@@ -88,18 +104,18 @@
 	datum_flags &= ~DF_USE_TAG //In case something tries to REF us
 	weak_reference = null	//ensure prompt GCing of weakref.
 
-	var/list/timers = active_timers
-	active_timers = null
-	for(var/thing in timers)
-		var/datum/timedevent/timer = thing
-		if (timer.spent)
-			continue
-		qdel(timer)
+	if(_active_timers)
+		var/list/timers = _active_timers
+		_active_timers = null
+		for(var/datum/timedevent/timer as anything in timers)
+			if (timer.spent && !(timer.flags & TIMER_DELETE_ME))
+				continue
+			qdel(timer)
 
 	//BEGIN: ECS SHIT
 	signal_enabled = FALSE
 
-	var/list/dc = datum_components
+	var/list/dc = _datum_components
 	if(dc)
 		var/all_components = dc[/datum/component]
 		if(length(all_components))

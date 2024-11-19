@@ -20,12 +20,12 @@
 
 /obj/item/assembly/infra/ComponentInitialize()
 	. = ..()
-	AddComponent(
-		/datum/component/simple_rotation,
-		ROTATION_ALTCLICK | ROTATION_CLOCKWISE | ROTATION_COUNTERCLOCKWISE | ROTATION_FLIP | ROTATION_VERBS,
-		null,
-		null,
-		CALLBACK(src,PROC_REF(after_rotation))
+	AddComponent( \
+		/datum/component/simple_rotation, \
+		ROTATION_ALTCLICK | ROTATION_CLOCKWISE | ROTATION_COUNTERCLOCKWISE | ROTATION_FLIP | ROTATION_VERBS, \
+		null, \
+		null, \
+		CALLBACK(src,PROC_REF(after_rotation)) \
 		)
 
 /obj/item/assembly/infra/proc/after_rotation()
@@ -39,7 +39,7 @@
 
 /obj/item/assembly/infra/examine(mob/user)
 	. = ..()
-	. += span_notice("The infrared trigger is [on?"on":"off"].")
+	. += "<span class='notice'>The infrared trigger is [on?"on":"off"].</span>"
 
 /obj/item/assembly/infra/activate()
 	if(!..())

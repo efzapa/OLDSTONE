@@ -31,7 +31,7 @@
 
 	integrity_failure = 0.5
 	max_integrity = 100
-	armor = list("blunt" = 60, "slash" = 55, "stab" = 50, "bullet" = 20, "laser" = 20, "energy" = 100, "bomb" = 0, "bio" = 100, "rad" = 100, "fire" = 0, "acid" = 0)
+	armor = list("melee" = 0, "bullet" = 20, "laser" = 20, "energy" = 100, "bomb" = 0, "bio" = 100, "rad" = 100, "fire" = 0, "acid" = 0)
 
 	// Important hardware (must be installed for computer to work)
 
@@ -173,7 +173,7 @@
 
 /obj/item/modular_computer/MouseDrop(obj/over_object, src_location, over_location)
 	var/mob/M = usr
-	if((!istype(over_object, /atom/movable/screen)) && usr.canUseTopic(src, BE_CLOSE))
+	if((!istype(over_object, /obj/screen)) && usr.canUseTopic(src, BE_CLOSE))
 		return attack_self(M)
 	return ..()
 
@@ -193,19 +193,19 @@
 
 /obj/item/modular_computer/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		to_chat(user, span_warning("\The [src] was already emagged."))
+		to_chat(user, "<span class='warning'>\The [src] was already emagged.</span>")
 		return 0
 	else
 		obj_flags |= EMAGGED
-		to_chat(user, span_notice("I emag \the [src]. It's screen briefly shows a \"OVERRIDE ACCEPTED: New software downloads available.\" message."))
+		to_chat(user, "<span class='notice'>I emag \the [src]. It's screen briefly shows a \"OVERRIDE ACCEPTED: New software downloads available.\" message.</span>")
 		return 1
 
 /obj/item/modular_computer/examine(mob/user)
 	. = ..()
 	if(obj_integrity <= integrity_failure * max_integrity)
-		. += span_danger("It is heavily damaged!")
+		. += "<span class='danger'>It is heavily damaged!</span>"
 	else if(obj_integrity < max_integrity)
-		. += span_warning("It is damaged.")
+		. += "<span class='warning'>It is damaged.</span>"
 
 	. += get_modular_computer_parts_examine(user)
 
@@ -236,9 +236,9 @@
 	var/issynth = issilicon(user) // Robots and AIs get different activation messages.
 	if(obj_integrity <= integrity_failure * max_integrity)
 		if(issynth)
-			to_chat(user, span_warning("I send an activation signal to \the [src], but it responds with an error code. It must be damaged."))
+			to_chat(user, "<span class='warning'>I send an activation signal to \the [src], but it responds with an error code. It must be damaged.</span>")
 		else
-			to_chat(user, span_warning("I press the power button, but the computer fails to boot up, displaying variety of errors before shutting down again."))
+			to_chat(user, "<span class='warning'>I press the power button, but the computer fails to boot up, displaying variety of errors before shutting down again.</span>")
 		return
 
 	// If we have a recharger, enable it automatically. Lets computer without a battery work.
@@ -248,17 +248,17 @@
 
 	if(all_components[MC_CPU] && use_power()) // use_power() checks if the PC is powered
 		if(issynth)
-			to_chat(user, span_notice("I send an activation signal to \the [src], turning it on."))
+			to_chat(user, "<span class='notice'>I send an activation signal to \the [src], turning it on.</span>")
 		else
-			to_chat(user, span_notice("I press the power button and start up \the [src]."))
+			to_chat(user, "<span class='notice'>I press the power button and start up \the [src].</span>")
 		enabled = 1
 		update_icon()
 		ui_interact(user)
 	else // Unpowered
 		if(issynth)
-			to_chat(user, span_warning("I send an activation signal to \the [src] but it does not respond."))
+			to_chat(user, "<span class='warning'>I send an activation signal to \the [src] but it does not respond.</span>")
 		else
-			to_chat(user, span_warning("I press the power button but \the [src] does not respond."))
+			to_chat(user, "<span class='warning'>I press the power button but \the [src] does not respond.</span>")
 
 // Process currently calls handle_power(), may be expanded in future if more things are added.
 /obj/item/modular_computer/process()
@@ -384,7 +384,7 @@
 		P.kill_program(forced = TRUE)
 		idle_threads.Remove(P)
 	if(loud)
-		physical.visible_message(span_notice("\The [src] shuts down."))
+		physical.visible_message("<span class='notice'>\The [src] shuts down.</span>")
 	enabled = 0
 	update_icon()
 
@@ -403,38 +403,38 @@
 
 	if(W.tool_behaviour == TOOL_WRENCH)
 		if(all_components.len)
-			to_chat(user, span_warning("Remove all components from \the [src] before disassembling it."))
+			to_chat(user, "<span class='warning'>Remove all components from \the [src] before disassembling it.</span>")
 			return
 		new /obj/item/stack/sheet/metal( get_turf(src.loc), steel_sheet_cost )
-		physical.visible_message(span_notice("\The [src] has been disassembled by [user]."))
+		physical.visible_message("<span class='notice'>\The [src] has been disassembled by [user].</span>")
 		relay_qdel()
 		qdel(src)
 		return
 
 	if(W.tool_behaviour == TOOL_WELDER)
 		if(obj_integrity == max_integrity)
-			to_chat(user, span_warning("\The [src] does not require repairs."))
+			to_chat(user, "<span class='warning'>\The [src] does not require repairs.</span>")
 			return
 
 		if(!W.tool_start_check(user, amount=1))
 			return
 
-		to_chat(user, span_notice("I begin repairing damage to \the [src]..."))
+		to_chat(user, "<span class='notice'>I begin repairing damage to \the [src]...</span>")
 		if(W.use_tool(src, user, 20, volume=50, amount=1))
 			obj_integrity = max_integrity
-			to_chat(user, span_notice("I repair \the [src]."))
+			to_chat(user, "<span class='notice'>I repair \the [src].</span>")
 		return
 
 	if(W.tool_behaviour == TOOL_SCREWDRIVER)
 		if(!all_components.len)
-			to_chat(user, span_warning("This device doesn't have any components installed."))
+			to_chat(user, "<span class='warning'>This device doesn't have any components installed.</span>")
 			return
 		var/list/component_names = list()
 		for(var/h in all_components)
 			var/obj/item/computer_hardware/H = all_components[h]
 			component_names.Add(H.name)
 
-		var/choice = input(user, "Which component do you want to uninstall?", "Computer maintenance", null) as null|anything in sortList(component_names)
+		var/choice = input(user, "Which component do you want to uninstall?", "Computer maintenance", null) as null|anything in sort_list(component_names)
 
 		if(!choice)
 			return

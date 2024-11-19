@@ -375,7 +375,7 @@
 		return
 
 	if(!user.IsAdvancedToolUser())
-		to_chat(user, span_warning("I don't have the dexterity to do this!"))
+		to_chat(user, "<span class='warning'>I don't have the dexterity to do this!</span>")
 		return 1
 	user.set_machine(src)
 	song.interact(user)

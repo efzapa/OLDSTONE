@@ -30,7 +30,7 @@
 
 /obj/machinery/plumbing/examine(mob/user)
 	. = ..()
-	. += span_notice("The maximum volume display reads: <b>[reagents.maximum_volume] units</b>.")
+	. += "<span class='notice'>The maximum volume display reads: <b>[reagents.maximum_volume] units</b>.</span>"
 
 /obj/machinery/plumbing/wrench_act(mob/living/user, obj/item/I)
 	..()

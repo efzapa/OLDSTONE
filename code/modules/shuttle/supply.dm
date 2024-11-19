@@ -23,12 +23,13 @@ GLOBAL_LIST_INIT(blacklisted_cargo_types, typecacheof(list(
 		/obj/item/shared_storage,
 		/obj/structure/extraction_point,
 		/obj/machinery/syndicatebomb,
+		/obj/item/hilbertshotel,
 		/obj/item/swapper,
 		/obj/docking_port,
 		/obj/machinery/launchpad,
 		/obj/machinery/disposal,
-		/obj/structure/disposalpipe
-
+		/obj/structure/disposalpipe,
+		/obj/item/hilbertshotel
 	)))
 
 /obj/docking_port/mobile/supply
@@ -132,10 +133,6 @@ GLOBAL_LIST_INIT(blacklisted_cargo_types, typecacheof(list(
 		var/spawnedcoins = round(budget / 10)
 		if(spawnedcoins >= 1)
 			for(var/i in 1 to spawnedcoins)
-				budget -= 50
-				new /obj/item/roguecoin/xybrium(moneybox)
-		if(spawnedcoins >= 1)
-			for(var/i in 1 to spawnedcoins)
 				budget -= 10
 				new /obj/item/roguecoin/gold(moneybox)
 		spawnedcoins = round(budget / 5)
@@ -209,7 +206,7 @@ GLOBAL_LIST_INIT(blacklisted_cargo_types, typecacheof(list(
 			if(QDELETED(AM))
 				continue
 			var/list/contents = AM.GetAllContents()
-			for(var/i in reverseRange(contents))
+			for(var/i in reverse_range(contents))
 				var/atom/movable/thing = i
 				if(QDELETED(thing))
 					continue
@@ -227,20 +224,20 @@ GLOBAL_LIST_INIT(blacklisted_cargo_types, typecacheof(list(
 			if(!AM.anchored || istype(AM, /obj/mecha))
 				if(istype(AM, /obj/item/paper/scroll/cargo))
 					var/obj/item/paper/scroll/cargo/C = AM
-					if(C.signedjob in list("Priest", "Court Magician", "Merchant", "King", "Guard Captain"))
+					if(C.signedjob in list("Priest", "Court Magician", "Merchant", "King", "Sheriff"))
 						for(var/datum/supply_order/SO in C.orders)
 							SSshuttle.shoppinglist += SO
 							C.orders -= SO
 						qdel(C)
 						continue
 				var/list/contents = AM.GetAllContents()
-				for(var/i in reverseRange(contents))
+				for(var/i in reverse_range(contents))
 					var/atom/movable/thing = i
 					if(QDELETED(thing))
 						continue
 					if(istype(thing, /obj/item/paper/scroll/cargo))
 						var/obj/item/paper/scroll/cargo/C = AM
-						if(C.signedjob in list("Priest", "Court Magician", "Merchant", "King", "Guard Captain"))
+						if(C.signedjob in list("Priest", "Court Magician", "Merchant", "King", "Sheriff"))
 							for(var/datum/supply_order/SO in C.orders)
 								SSshuttle.shoppinglist += SO
 								C.orders -= SO

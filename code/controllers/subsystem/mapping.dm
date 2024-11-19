@@ -12,7 +12,6 @@ SUBSYSTEM_DEF(mapping)
 	var/map_voted = FALSE
 
 	var/list/map_templates = list()
-	var/list/map_load_marks = list() //The game scans thru the map and looks for marks, then adds them to this list for caching
 
 	var/list/ruins_templates = list()
 	var/list/space_ruins_templates = list()
@@ -57,7 +56,7 @@ SUBSYSTEM_DEF(mapping)
 		var/old_config = config
 		config = global.config.defaultmap
 		if(!config || config.defaulted)
-			to_chat(world, span_boldannounce("Unable to load next or default map config, defaulting to Box Station"))
+			to_chat(world, "<span class='boldannounce'>Unable to load next or default map config, defaulting to Box Station</span>")
 			config = old_config
 	loadWorld()
 	repopulate_sorted_areas()
@@ -79,9 +78,9 @@ SUBSYSTEM_DEF(mapping)
 
 	// Load the virtual reality hub
 	if(CONFIG_GET(flag/virtual_reality))
-		to_chat(world, span_boldannounce("Loading virtual reality..."))
+		to_chat(world, "<span class='boldannounce'>Loading virtual reality...</span>")
 		load_new_z_level("_maps/RandomZLevels/VR/vrhub.dmm", "Virtual Reality Hub")
-		to_chat(world, span_boldannounce("Virtual reality loaded."))
+		to_chat(world, "<span class='boldannounce'>Virtual reality loaded.</span>")
 
 	// Generate mining ruins
 	loading_ruins = TRUE
@@ -176,7 +175,7 @@ SUBSYSTEM_DEF(mapping)
 
 	z_list = SSmapping.z_list
 
-#define INIT_ANNOUNCE(X) to_chat(world, span_boldannounce("[X]")); log_world(X)
+#define INIT_ANNOUNCE(X) to_chat(world, "<span class='boldannounce'>[X]</span>"); log_world(X)
 /datum/controller/subsystem/mapping/proc/LoadGroup(list/errorList, name, path, files, list/traits, list/default_traits, silent = FALSE)
 	. = list()
 	var/start_time = REALTIMEOFDAY
@@ -242,10 +241,9 @@ SUBSYSTEM_DEF(mapping)
 	var/list/otherZ = list()
 
 	#ifndef FASTLOAD
-	//otherZ += load_map_config("_maps/map_files/otherz/smallforest.json")
-	//otherZ += load_map_config("_maps/map_files/otherz/smalldecap.json")
-	//otherZ += load_map_config("_maps/map_files/otherz/smallswamp.json")
-	//otherZ += load_map_config("_maps/map_files/otherz/bog.json")
+	otherZ += load_map_config("_maps/map_files/otherz/smallforest.json")
+	otherZ += load_map_config("_maps/map_files/otherz/smalldecap.json")
+	otherZ += load_map_config("_maps/map_files/otherz/smallswamp.json")
 	otherZ += load_map_config("_maps/map_files/otherz/underworld.json")
 	#endif
 	#ifdef ROGUEWORLD
@@ -354,14 +352,14 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 		if(pmv)
 			mapvotes[map] = mapvotes[map]*VM.voteweight
 
-	var/pickedmap = pickweight(mapvotes)
+	var/pickedmap = pick_weight(mapvotes)
 	if (!pickedmap)
 		return
 	var/datum/map_config/VM = global.config.maplist[pickedmap]
 	message_admins("Randomly rotating map to [VM.map_name]")
 	. = changemap(VM)
 	if (. && VM.map_name != config.map_name)
-		to_chat(world, span_boldannounce("Map rotation has chosen [VM.map_name] for next round!"))
+		to_chat(world, "<span class='boldannounce'>Map rotation has chosen [VM.map_name] for next round!</span>")
 
 /datum/controller/subsystem/mapping/proc/changemap(datum/map_config/VM)
 	if(!VM.MakeNextMap())
@@ -371,23 +369,13 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 
 	next_map_config = VM
 	return TRUE
-/*
-/datum/controller/subsystem/mapping/proc/preloadTemplates(path = "_maps/templates/") //see master controller setup
 
+/datum/controller/subsystem/mapping/proc/preloadTemplates(path = "_maps/templates/") //see master controller setup
 	var/list/filelist = flist(path)
 	for(var/map in filelist)
 		var/datum/map_template/T = new(path = "[path][map]", rename = "[map]")
 		map_templates[T.name] = T
-*/
 
-//Precache the templates via map template datums, not directly from files
-//This lets us preload as many files as we want without explicitely loading ALL of them into cache (ie WIP maps or what have you)
-/datum/controller/subsystem/mapping/proc/preloadTemplates()
-	for(var/item in subtypesof(/datum/map_template)) //Look for our template subtypes and fire them up to be used later
-		var/datum/map_template/template = new item()
-		map_templates[template.id] = template
-
-	//These are obsolete, since there are no ss13 templates, but they are harmless enough to stay
 	preloadRuinTemplates()
 	preloadShuttleTemplates()
 	preloadShelterTemplates()
@@ -397,7 +385,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 	var/list/banned = generateMapList("[global.config.directory]/lavaruinblacklist.txt")
 	banned += generateMapList("[global.config.directory]/spaceruinblacklist.txt")
 
-	for(var/item in sortList(subtypesof(/datum/map_template/ruin), GLOBAL_PROC_REF(cmp_ruincost_priority)))
+	for(var/item in sort_list(subtypesof(/datum/map_template/ruin), GLOBAL_PROC_REF(cmp_ruincost_priority)))
 		var/datum/map_template/ruin/ruin_type = item
 		// screen out the abstract subtypes
 		if(!initial(ruin_type.id))
@@ -407,8 +395,8 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 		if(banned.Find(R.mappath))
 			continue
 
-		map_templates[R.id] = R
-		ruins_templates[R.id] = R
+		map_templates[R.name] = R
+		ruins_templates[R.name] = R
 
 /datum/controller/subsystem/mapping/proc/preloadShuttleTemplates()
 	var/list/unbuyable = generateMapList("[global.config.directory]/unbuyableshuttles.txt")
@@ -439,7 +427,6 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 /client/proc/admin_away()
 	set name = "Load Away Mission"
 	set category = "Fun"
-	set hidden = 1
 
 	if(!holder ||!check_rights(R_FUN))
 		return
@@ -460,13 +447,13 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 			if(!mapfile)
 				return
 			away_name = "[mapfile] custom"
-			to_chat(usr,span_notice("Loading [away_name]..."))
+			to_chat(usr,"<span class='notice'>Loading [away_name]...</span>")
 			var/datum/map_template/template = new(mapfile, "Away Mission")
 			away_level = template.load_new_z()
 		else
 			if(answer in GLOB.potentialRandomZlevels)
 				away_name = answer
-				to_chat(usr,span_notice("Loading [away_name]..."))
+				to_chat(usr,"<span class='notice'>Loading [away_name]...</span>")
 				var/datum/map_template/template = new(away_name, "Away Mission")
 				away_level = template.load_new_z()
 			else
@@ -572,27 +559,3 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 		isolated_ruins_z = add_new_zlevel("Isolated Ruins/Reserved", list(ZTRAIT_RESERVED = TRUE, ZTRAIT_ISOLATED_RUINS = TRUE))
 		initialize_reserved_level(isolated_ruins_z.z_value)
 	return isolated_ruins_z.z_value
-
-
-//The initialization of all our marks - this is what gets the ball rolling and self-deletes the marks after the maps are loaded
-/datum/controller/subsystem/mapping/proc/load_marks()
-	var/list/sites = SSmapping.map_load_marks
-
-	if(!LAZYLEN(sites)) //This should never happen unless the base map failed to load or there are 0 marks on the map
-		return
-
-	for(var/M in sites) //Start it up
-		var/obj/effect/landmark/map_load_mark/mark = M
-
-		if(!LAZYLEN(mark.templates)) //Somehow our templates are empty
-			continue
-
-		var/datum/map_template/template = SSmapping.map_templates[pick(mark.templates)] //Find our actual existing template, it should be pre-loaded
-		//Pick() should just randomly pick out of the templates list, or just grab the one there if there is only one
-		if(istype(template)) //If our template pick failed, it should just abort and not do anything
-			if(template.load(get_turf(mark))) //Fire it up. Should use bottom left corner.  This will take the majority of loading time
-				LAZYREMOVE(SSmapping.map_load_marks,mark) //Get rid of the mark from our global list of marks
-				qdel(mark) //Delete the mark now that the map is loaded
-			else
-				//Loading the template failed somehow (template.load returned a FALSE), did you spell the paths right?
-				log_world("SSMapping: Failed to load template: [template.name] ([template.mappath])")

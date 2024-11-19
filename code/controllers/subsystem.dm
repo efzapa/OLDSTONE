@@ -158,6 +158,8 @@
 		if(SS_SLEEPING)
 			state = SS_PAUSING
 
+/// Called after the config has been loaded or reloaded.
+/datum/controller/subsystem/proc/OnConfigLoad()
 
 //used to initialize the subsystem AFTER the map has loaded
 /datum/controller/subsystem/Initialize(start_timeofday)
@@ -165,7 +167,7 @@
 	var/time = (REALTIMEOFDAY - start_timeofday) / 10
 	var/msg = "Initialized [name] subsystem within [time] second[time == 1 ? "" : "s"]!"
 	#ifdef TESTING
-	to_chat(world, span_boldannounce("[msg]"))
+	to_chat(world, "<span class='boldannounce'>[msg]</span>")
 	#endif
 	log_world(msg)
 	return time

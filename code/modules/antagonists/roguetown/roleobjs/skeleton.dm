@@ -3,15 +3,15 @@
 	name = "Skeleton"
 	increase_votepwr = FALSE
 
-/datum/antagonist/skeleton/examine_friendorfoe(datum/antagonist/examined_datum,mob/examiner,mob/examined)
+/datum/antagonist/zombie/examine_friendorfoe(datum/antagonist/examined_datum,mob/examiner,mob/examined)
 	if(istype(examined_datum, /datum/antagonist/vampirelord))
 		var/datum/antagonist/vampirelord/V = examined_datum
 		if(!V.disguised)
-			return span_boldnotice("Another deadite.")
+			return "<span class='boldnotice'>Another deadite.</span>"
 	if(istype(examined_datum, /datum/antagonist/zombie))
-		return span_boldnotice("Another deadite.")
+		return "<span class='boldnotice'>Another deadite.</span>"
 	if(istype(examined_datum, /datum/antagonist/skeleton))
-		return span_boldnotice("Another deadite. My ally.")
+		return "<span class='boldnotice'>Another deadite. My ally.</span>"
 
 /datum/antagonist/skeleton/on_gain()
 //	if(!(locate(/datum/objective/escape) in objectives))
@@ -42,11 +42,11 @@
 	if(traitorwin)
 		//arriving gives them a tri anyway, all good
 //		owner.adjust_triumphs(1)
-		to_chat(owner.current, span_greentext("I've TRIUMPHED! Arcadia belongs to death!"))
+		to_chat(owner.current, "<span class='greentext'>I've TRIUMPHED! Arcadia belongs to death!</span>")
 		if(owner.current)
 			owner.current.playsound_local(get_turf(owner.current), 'sound/misc/triumph.ogg', 100, FALSE, pressure_affected = FALSE)
 	else
-		to_chat(owner.current, span_redtext("I've FAILED to invade Arcadia!"))
+		to_chat(owner.current, "<span class='redtext'>I've FAILED to invade Arcadia!</span>")
 		if(owner.current)
 			owner.current.playsound_local(get_turf(owner.current), 'sound/misc/fail.ogg', 100, FALSE, pressure_affected = FALSE)
 

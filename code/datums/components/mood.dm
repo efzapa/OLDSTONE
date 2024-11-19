@@ -10,7 +10,7 @@
 	var/mood_modifier = 1 //Modifier to allow certain mobs to be less affected by moodlets
 	var/list/datum/mood_event/mood_events = list()
 	var/insanity_effect = 0 //is the owner being punished for low mood? If so, how much?
-	var/atom/movable/screen/mood/screen_obj
+	var/obj/screen/mood/screen_obj
 
 /datum/component/mood/Initialize()
 	if(!isliving(parent))
@@ -43,7 +43,7 @@
 
 /datum/component/mood/proc/print_mood(mob/user)
 	var/msg = "<span class='info'>*---------*\n<EM>My current mood</EM></span>\n"
-	msg += span_notice("My mental status: ") //Long term
+	msg += "<span class='notice'>My mental status: </span>" //Long term
 	switch(sanity)
 		if(SANITY_GREAT to INFINITY)
 			msg += "<span class='nicegreen'>My mind feels like a temple!</span>\n"
@@ -58,7 +58,7 @@
 		if(SANITY_INSANE to SANITY_CRAZY)
 			msg += "<span class='boldwarning'>AHAHAHAHAHAHAHAHAHAH!!</span>\n"
 
-	msg += span_notice("My current mood: ") //Short term
+	msg += "<span class='notice'>My current mood: </span>" //Short term
 	switch(mood_level)
 		if(1)
 			msg += "<span class='boldwarning'>I wish I was dead!</span>\n"
@@ -79,7 +79,7 @@
 		if(9)
 			msg += "<span class='nicegreen'>I love life!</span>\n"
 
-	msg += span_notice("Moodlets:\n")//All moodlets
+	msg += "<span class='notice'>Moodlets:\n</span>"//All moodlets
 	if(mood_events.len)
 		for(var/i in mood_events)
 			var/datum/mood_event/event = mood_events[i]

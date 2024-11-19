@@ -36,7 +36,7 @@
 	if(!process_scan) //since it's not scanning on process, it scans here.
 		scan_for_target()
 	toggle_on()
-	user.visible_message(span_notice("[user] [active ? "" : "de"]activates [user.p_their()] pinpointer."), span_notice("I [active ? "" : "de"]activate my pinpointer."))
+	user.visible_message("<span class='notice'>[user] [active ? "" : "de"]activates [user.p_their()] pinpointer.</span>", "<span class='notice'>I [active ? "" : "de"]activate my pinpointer.</span>")
 
 /obj/item/pinpointer/proc/toggle_on()
 	active = !active
@@ -107,14 +107,14 @@
 /obj/item/pinpointer/crew/attack_self(mob/living/user)
 	if(active)
 		toggle_on()
-		user.visible_message(span_notice("[user] deactivates [user.p_their()] pinpointer."), span_notice("I deactivate my pinpointer."))
+		user.visible_message("<span class='notice'>[user] deactivates [user.p_their()] pinpointer.</span>", "<span class='notice'>I deactivate my pinpointer.</span>")
 		return
 
 	if (has_owner && !pinpointer_owner)
 		pinpointer_owner = user
 
 	if (pinpointer_owner && pinpointer_owner != user)
-		to_chat(user, span_notice("The pinpointer doesn't respond. It seems to only recognise its owner."))
+		to_chat(user, "<span class='notice'>The pinpointer doesn't respond. It seems to only recognise its owner.</span>")
 		return
 
 	var/list/name_counts = list()
@@ -138,16 +138,16 @@
 		name_counts[crewmember_name] = 1
 
 	if(!names.len)
-		user.visible_message(span_notice("[user]'s pinpointer fails to detect a signal."), span_notice("My pinpointer fails to detect a signal."))
+		user.visible_message("<span class='notice'>[user]'s pinpointer fails to detect a signal.</span>", "<span class='notice'>My pinpointer fails to detect a signal.</span>")
 		return
 
-	var/A = input(user, "Person to track", "Pinpoint") in sortList(names)
+	var/A = input(user, "Person to track", "Pinpoint") in sort_list(names)
 	if(!A || QDELETED(src) || !user || !user.is_holding(src) || user.incapacitated())
 		return
 
 	target = names[A]
 	toggle_on()
-	user.visible_message(span_notice("[user] activates [user.p_their()] pinpointer."), span_notice("I activate my pinpointer."))
+	user.visible_message("<span class='notice'>[user] activates [user.p_their()] pinpointer.</span>", "<span class='notice'>I activate my pinpointer.</span>")
 
 /obj/item/pinpointer/crew/scan_for_target()
 	if(target)

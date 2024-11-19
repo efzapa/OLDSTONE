@@ -184,12 +184,12 @@
 		client.verbs += /client/proc/lobbyooc
 
 /client/proc/show_game_over()
-	var/atom/movable/screen/splash/credits/S = new(src, FALSE)
+	var/obj/screen/splash/credits/S = new(src, FALSE)
 	S.Fade(FALSE,FALSE)
 	RollCredits()
 //	if(GLOB.credits_icons.len)
 //		for(var/i=0, i<=GLOB.credits_icons.len, i++)
-//			var/atom/movable/screen/P = new()
+//			var/obj/screen/P = new()
 //			P.layer = SPLASHSCREEN_LAYER+1
 //			P.appearance = GLOB.credits_icons
 //			screen += P
@@ -199,7 +199,7 @@
 
 	log_game("The round has ended.")
 
-	to_chat(world, "<BR><BR><BR><span class='reallybig'>So ends this tale of Blackstone.</span>")
+	to_chat(world, "<BR><BR><BR><span class='reallybig'>So ends this tale of Roguetown.</span>")
 	get_end_reason()
 
 	var/list/key_list = list()
@@ -296,7 +296,6 @@
 	SSblackbox.Seal()
 
 	sleep(10 SECONDS)
-	SSvote.initiate_vote("map", "Blackstone players")
 	ready_for_reboot = TRUE
 	standard_reboot()
 
@@ -306,7 +305,7 @@
 	if(istype(SSticker.mode, /datum/game_mode/chaosmode))
 		var/datum/game_mode/chaosmode/C = SSticker.mode
 		if(C.check_for_lord)
-			if(!C.check_for_lord(forced = TRUE))
+			if(!C.check_for_lord())
 				end_reason = pick("Without a Monarch, they were doomed to become slaves of Zizo.",
 								"Without a Monarch, they were doomed to be eaten by nite creachers.",
 								"Without a Monarch, they were doomed to become victims of Gehenna.",
@@ -327,9 +326,9 @@
 
 
 	if(end_reason)
-		to_chat(world, span_bigbold("[end_reason]."))
+		to_chat(world, "<span class='big bold'>[end_reason].</span>")
 	else
-		to_chat(world, span_bigbold("The town has managed to survive another week."))
+		to_chat(world, "<span class='big bold'>The town has managed to survive another week.</span>")
 
 /datum/controller/subsystem/ticker/proc/gamemode_report()
 	var/list/all_teams = list()
@@ -385,6 +384,11 @@
 	shit += "<br><font color='#af2323'><span class='bold'>Blood spilt:</span></font> [round(blood_lost / 100, 1)]L"
 	shit += "<br><font color='#36959c'><span class='bold'>TRIUMPH(s) Awarded:</span></font> [tri_gained]"
 	shit += "<br><font color='#a02fa4'><span class='bold'>TRIUMPH(s) Stolen:</span></font> [tri_lost * -1]"
+	shit += "<br><font color='#ffffff'><span class='bold'>Pleasures:</span></font> [cums]"
+//	if(cuckers.len)
+//		shit += "<br><font color='#4e488a'><span class='bold'>Adulterers:</span></font> "
+//		for(var/x in cuckers.len)
+//			shit += "[x]"
 	if(GLOB.confessors.len)
 		shit += "<br><font color='#93cac7'><span class='bold'>Confessors:</span></font> "
 		for(var/x in GLOB.confessors)
@@ -425,7 +429,7 @@
 	//Station Goals
 	parts += goal_report()
 
-	listclearnulls(parts)
+	list_clear_nulls(parts)
 
 	return parts.Join()
 
@@ -438,7 +442,7 @@
 		var/info = statspage ? "<a href='?action=openLink&link=[url_encode(statspage)][GLOB.round_id]'>[GLOB.round_id]</a>" : GLOB.round_id
 		parts += "[FOURSPACES]Round ID: <b>[info]</b>"
 	parts += "[FOURSPACES]Shift Duration: <B>[DisplayTimeText(world.time - SSticker.round_start_time)]</B>"
-	parts += "[FOURSPACES]Station Integrity: <B>[mode.station_was_nuked ? span_redtext("Destroyed") : "[popcount["station_integrity"]]%"]</B>"
+	parts += "[FOURSPACES]Station Integrity: <B>[mode.station_was_nuked ? "<span class='redtext'>Destroyed</span>" : "[popcount["station_integrity"]]%"]</B>"
 	var/total_players = GLOB.joined_player_list.len
 	if(total_players)
 		parts+= "[FOURSPACES]Total Population: <B>[total_players]</B>"
@@ -485,6 +489,13 @@
 //	roundend_report.add_stylesheet("font-awesome", 'html/font-awesome/css/all.min.css')
 	roundend_report.open(FALSE)
 
+/client/proc/show_previous_roundend_report()
+	set name = "Your Last Round"
+	set category = "OOC"
+	set desc = ""
+
+	SSticker.show_roundend_report(src, TRUE)
+
 /datum/controller/subsystem/ticker/proc/personal_report(client/C, popcount)
 	var/list/parts = list()
 	var/mob/M = C.mob
@@ -493,17 +504,17 @@
 			if(EMERGENCY_ESCAPED_OR_ENDGAMED)
 				if(!M.onCentCom() && !M.onSyndieBase())
 					parts += "<div class='panel stationborder'>"
-					parts += span_marooned("I managed to survive, but were marooned on [station_name()]...")
+					parts += "<span class='marooned'>I managed to survive, but were marooned on [station_name()]...</span>"
 				else
 					parts += "<div class='panel greenborder'>"
-					parts += span_greentext("I managed to survive the events on [station_name()] as [M.real_name].")
+					parts += "<span class='greentext'>I managed to survive the events on [station_name()] as [M.real_name].</span>"
 			else
 				parts += "<div class='panel greenborder'>"
-				parts += span_greentext("I managed to survive the events on [station_name()] as [M.real_name].")
+				parts += "<span class='greentext'>I managed to survive the events on [station_name()] as [M.real_name].</span>"
 
 		else
 			parts += "<div class='panel redborder'>"
-			parts += span_redtext("I did not survive the events on [station_name()]...")
+			parts += "<span class='redtext'>I did not survive the events on [station_name()]...</span>"
 	else
 		parts += "<div class='panel stationborder'>"
 	parts += "<br>"
@@ -572,7 +583,7 @@
 /datum/controller/subsystem/ticker/proc/medal_report()
 	if(GLOB.commendations.len)
 		var/list/parts = list()
-		parts += span_header("Medal Commendations:")
+		parts += "<span class='header'>Medal Commendations:</span>"
 		for (var/com in GLOB.commendations)
 			parts += com
 		return "<div class='panel stationborder'>[parts.Join("<br>")]</div>"
@@ -640,7 +651,7 @@
 /datum/controller/subsystem/ticker/proc/give_show_playerlist_button(client/C)
 	set waitfor = 0
 	to_chat(C,"<a href='?src=[C];playerlistrogue=1'>* SHOW PLAYER LIST *</a>")
-	C.commendsomeone(forced = TRUE)
+	to_chat(C,"<a href='?src=[C];commendsomeone=1'>* Commend a Character *</a>")
 
 /datum/action/report
 	name = "Show roundend report"
@@ -704,15 +715,15 @@
 	var/count = 1
 	for(var/datum/objective/objective in objectives)
 		if(objective.check_completion())
-			objective_parts += "<b>[objective.flavor] #[count]</b>: [objective.explanation_text] <span class='greentext'>Success!</span>"
+			objective_parts += "<b>Objective #[count]</b>: [objective.explanation_text] <span class='greentext'>Success!</span>"
 		else
-			objective_parts += "<b>[objective.flavor] #[count]</b>: [objective.explanation_text] <span class='redtext'>Fail.</span>"
+			objective_parts += "<b>Objective #[count]</b>: [objective.explanation_text] <span class='redtext'>Fail.</span>"
 		count++
 	return objective_parts.Join("<br>")
 
 /datum/controller/subsystem/ticker/proc/save_admin_data()
 	if(IsAdminAdvancedProcCall())
-		to_chat(usr, span_adminprefix("Admin rank DB Sync blocked: Advanced ProcCall detected."))
+		to_chat(usr, "<span class='admin prefix'>Admin rank DB Sync blocked: Advanced ProcCall detected.</span>")
 		return
 	if(CONFIG_GET(flag/admin_legacy_system)) //we're already using legacy system so there's nothing to save
 		return

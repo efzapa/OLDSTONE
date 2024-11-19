@@ -14,15 +14,15 @@
 
 /obj/structure/fluff/attackby(obj/item/I, mob/living/user, params)
 	if(I.tool_behaviour == TOOL_WRENCH && deconstructible)
-		user.visible_message(span_notice("[user] starts disassembling [src]..."), span_notice("I start disassembling [src]..."))
+		user.visible_message("<span class='notice'>[user] starts disassembling [src]...</span>", "<span class='notice'>I start disassembling [src]...</span>")
 		I.play_tool_sound(src)
 		if(I.use_tool(src, user, 50))
-			user.visible_message(span_notice("[user] disassembles [src]!"), span_notice("I break down [src] into scrap metal."))
+			user.visible_message("<span class='notice'>[user] disassembles [src]!</span>", "<span class='notice'>I break down [src] into scrap metal.</span>")
 			playsound(user, 'sound/blank.ogg', 50, TRUE)
 			new/obj/item/stack/sheet/metal(drop_location())
 			qdel(src)
 		return
-	. = ..()
+	..()
 
 /obj/structure/fluff/empty_terrarium //Empty terrariums are created when a preserved terrarium in a lavaland seed vault is activated.
 	name = "empty terrarium"
@@ -193,6 +193,7 @@
 	var/passcrawl = TRUE
 	layer = ABOVE_MOB_LAYER
 
+
 /obj/structure/fluff/railing/Initialize()
 	..()
 	var/lay = getwlayer(dir)
@@ -274,7 +275,7 @@
 	return 1
 
 /obj/structure/fluff/railing/OnCrafted(dirin)
-	. = ..()
+	dir = dirin
 	var/lay = getwlayer(dir)
 	if(lay)
 		layer = lay
@@ -388,10 +389,6 @@
 
 /obj/structure/bars/chainlink
 	icon_state = "chainlink"
-
-/obj/structure/bars/tough
-	max_integrity = 9000
-	damage_deflection = 40
 
 /*
 /obj/structure/bars/CheckExit(atom/movable/O, turf/target)
@@ -567,10 +564,10 @@
 	. = ..()
 	if(!broke)
 		. += "Oh no, it's [station_time_timestamp("hh:mm")]."
-		. += span_info("(Round Time: [gameTimestamp("hh:mm:ss", REALTIMEOFDAY - SSticker.round_start_irl)].)")
+		. += "<span class='info'>(Round Time: [gameTimestamp("hh:mm:ss", REALTIMEOFDAY - SSticker.round_start_irl)].)</span>"
 //		if(SSshuttle.emergency.mode == SHUTTLE_DOCKED)
 //			if(SSshuttle.emergency.timeLeft() < 30 MINUTES)
-//				. += span_warning("The last boat will leave in [round(SSshuttle.emergency.timeLeft()/600)] minutes.")
+//				. += "<span class='warning'>The last boat will leave in [round(SSshuttle.emergency.timeLeft()/600)] minutes.</span>"
 
 /obj/structure/fluff/clock/CanPass(atom/movable/mover, turf/target)
 	if(get_dir(loc, mover) == dir)
@@ -613,7 +610,7 @@
 //		testing("mode is [SSshuttle.emergency.mode] should be [SHUTTLE_DOCKED]")
 //		if(SSshuttle.emergency.mode == SHUTTLE_DOCKED)
 //			if(SSshuttle.emergency.timeLeft() < 30 MINUTES)
-//				. += span_warning("The last boat will leave in [round(SSshuttle.emergency.timeLeft()/600)] minutes.")
+//				. += "<span class='warning'>The last boat will leave in [round(SSshuttle.emergency.timeLeft()/600)] minutes.</span>"
 
 /obj/structure/fluff/wallclock/Initialize()
 	soundloop = new(list(src), FALSE)
@@ -722,11 +719,11 @@
 /obj/structure/fluff/customsign/attackby(obj/item/W, mob/user, params)
 	if(!user.cmode)
 		if(!user.is_literate())
-			to_chat(user, span_warning("I don't know any verba."))
+			to_chat(user, "<span class='warning'>I don't know any verba.</span>")
 			return
 		if((user.used_intent.blade_class == BCLASS_STAB) && (W.wlength == WLENGTH_SHORT))
 			if(wrotesign)
-				to_chat(user, span_warning("Something is already carved here."))
+				to_chat(user, "<span class='warning'>Something is already carved here.</span>")
 				return
 			else
 				var/inputty = stripped_input(user, "What would you like to carve here?", "", null, 200)
@@ -761,10 +758,6 @@
 	blade_dulling = DULLING_BASH
 	max_integrity = 300
 	dir = SOUTH
-
-/obj/structure/fluff/statue/OnCrafted(dirin, user)
-	dirin = turn(dirin, 180)
-	. = ..()
 
 /obj/structure/fluff/statue/attack_right(mob/user)
 	if(user.mind && isliving(user))
@@ -806,15 +799,10 @@
 	icon_state = "knightstatue_l"
 
 /obj/structure/fluff/statue/astrata
-	name = "astrata statue"
+	name = "Astrata Statue"
 	desc = "A stone statue of the sun Goddess Astrata. Bless."
 	icon_state = "astrata"
 	icon = 'icons/roguetown/misc/tallandwide.dmi'
-
-/obj/structure/fluff/statue/astrata/gold
-	name = "ornamental astrata statue"
-	desc = "An ornamental stone statue of the sun Goddess Astrata, decorated with golden jewelry. Bless."
-	icon_state = "astrata_bling"
 
 /obj/structure/fluff/statue/knight/r
 	icon_state = "knightstatue_r"
@@ -892,17 +880,16 @@
 					if(L.STAINT < 3)
 						probby = 0
 					if(prob(probby) && !L.has_status_effect(/datum/status_effect/debuff/trainsleep) && !user.buckled)
-						user.visible_message(span_info("[user] trains on [src]!"))
-						var/boon = user.mind.get_learning_boon(W.associated_skill)
+						user.visible_message("<span class='info'>[user] trains on [src]!</span>")
 						var/amt2raise = L.STAINT/2
-						if(user.mind.get_skill_level(W.associated_skill) >= SKILL_LEVEL_APPRENTICE)
-							to_chat(user, span_warning("I've learned all I can from doing this, it's time for the real thing."))
+						if(user.mind.get_skill_level(W.associated_skill) >= 3)
+							to_chat(user, "<span class='warning'>I've learned all I can from doing this, it's time for the real thing.</span>")
 							amt2raise = 0
 						if(amt2raise > 0)
-							user.mind.adjust_experience(W.associated_skill, amt2raise * boon, FALSE)
+							user.mind.adjust_experience(W.associated_skill, amt2raise, FALSE)
 						playsound(loc,pick('sound/combat/hits/onwood/education1.ogg','sound/combat/hits/onwood/education2.ogg','sound/combat/hits/onwood/education3.ogg'), rand(50,100), FALSE)
 					else
-						user.visible_message(span_danger("[user] trains on [src], but [src] ripostes!"))
+						user.visible_message("<span class='danger'>[user] trains on [src], but [src] ripostes!</span>")
 						L.AdjustKnockdown(1)
 						L.throw_at(get_step(L, get_dir(src,L)), 2, 2, L, spin = FALSE)
 						playsound(loc, 'sound/combat/hits/kick/stomp.ogg', 100, TRUE, -1)
@@ -932,7 +919,7 @@
 
 /obj/structure/fluff/statue/evil
 	name = "idol"
-	desc = "A statue built to the robber-god, Matthios, who stole the gift of fire from the underworld. It is said that he grants the wishes of those pagan bandits (free folk) who feed him money and valuable metals."
+	desc = "A statue built to the robber-god, Matthios, who stole the gift of fire from the underworld. It is said that he grants the wishes of those pagan bandits (free folk) who feed him money."
 	icon_state = "evilidol"
 	icon = 'icons/roguetown/misc/structure.dmi'
 
@@ -940,9 +927,9 @@
 	if(user.mind)
 		var/datum/antagonist/bandit/B = user.mind.has_antag_datum(/datum/antagonist/bandit)
 		if(B)
-			if(istype(W, /obj/item/roguecoin) || istype(W, /obj/item/roguegem) || istype(W, /obj/item/clothing/ring) || istype(W, /obj/item/ingot) || istype(W, /obj/item/clothing/neck/roguetown/psicross) || istype(W, /obj/item/reagent_containers/glass/cup) || istype(W, /obj/item/roguestatue))
+			if(istype(W, /obj/item/roguecoin) || istype(W, /obj/item/roguegem))
 				if(B.tri_amt >= 10)
-					to_chat(user, span_warning("The mouth doesn't open."))
+					to_chat(user, "<span class='warning'>The mouth doesn't open.</span>")
 					return
 				B.contrib += W.get_real_price()
 				if(B.contrib >= 100)
@@ -951,31 +938,12 @@
 					B.contrib -= 100
 					var/obj/item/I
 					switch(B.tri_amt)
-						if(1)
-							I = new /obj/item/reagent_containers/glass/bottle/rogue/healthpot(user.loc)
-							I = new /obj/item/storage/backpack/rogue/backpack(user.loc)
 						if(2)
-							I = new /obj/item/reagent_containers/powder/moondust(user.loc)
-							I = new /obj/item/reagent_containers/powder/moondust(user.loc)
-							I = new /obj/item/reagent_containers/powder/moondust(user.loc)
-						if(3)
 							I = new /obj/item/clothing/suit/roguetown/armor/plate/scale(user.loc)
 						if(4)
-							I = new /obj/item/clothing/neck/roguetown/bervor(user.loc)
-						if(5)
 							I = new /obj/item/clothing/head/roguetown/helmet/horned(user.loc)
 						if(6)
-							I = new /obj/item/reagent_containers/glass/bottle/rogue/healthpot(user.loc)
-							I = new /obj/item/reagent_containers/powder/moondust(user.loc)
-							I = new /obj/item/reagent_containers/powder/moondust(user.loc)
-						if(7)
-							I = new /obj/item/clothing/shoes/roguetown/boots/armor(user.loc)
-						if(8)
-							I = new /obj/item/clothing/gloves/roguetown/plate(user.loc)
-						if(9)
-							I = new /obj/item/clothing/wrists/roguetown/bracers(user.loc)
-						if(10)
-							I = new /obj/item/clothing/neck/roguetown/blkknight(user.loc)
+							I = new /obj/item/rogueweapon/spear/billhook(user.loc)
 					if(I)
 						I.sellprice = 0
 					playsound(loc,'sound/items/carvgood.ogg', 50, TRUE)
@@ -1037,7 +1005,6 @@
 /obj/structure/fluff/psycross/crafted
 	name = "wooden pantheon cross"
 	icon_state = "psycrosscrafted"
-	max_integrity = 80
 	chance2hear = 10
 
 /obj/structure/fluff/psycross/attackby(obj/item/W, mob/user, params)
@@ -1045,7 +1012,7 @@
 		if(user.mind.assigned_role == "Priest")
 			if(istype(W, /obj/item/reagent_containers/food/snacks/grown/apple))
 				if(!istype(get_area(user), /area/rogue/indoors/town/church/chapel))
-					to_chat(user, span_warning("I need to do this in the chapel."))
+					to_chat(user, "<span class='warning'>I need to do this in the chapel.</span>")
 					return FALSE
 				var/marriage
 				var/obj/item/reagent_containers/food/snacks/grown/apple/A = W
@@ -1173,7 +1140,7 @@
 	else //caused by emp/remote signal
 		M.log_message("was [targeted? "flashed(targeted)" : "flashed(AOE)"]",LOG_ATTACK)
 	if(generic_message && M != user)
-		to_chat(M, span_danger("[src] emits a blinding light!"))
+		to_chat(M, "<span class='danger'>[src] emits a blinding light!</span>")
 	if(M.flash_act())
 		var/diff = power - M.confused
 		M.confused += min(power, diff)

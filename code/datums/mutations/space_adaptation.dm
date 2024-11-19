@@ -4,7 +4,7 @@
 	desc = ""
 	quality = POSITIVE
 	difficulty = 16
-	text_gain_indication = span_notice("My body feels warm!")
+	text_gain_indication = "<span class='notice'>My body feels warm!</span>"
 	time_coeff = 5
 	instability = 30
 

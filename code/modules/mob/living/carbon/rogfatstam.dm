@@ -6,8 +6,6 @@
 	if(world.time > last_fatigued + 50) //regen fatigue
 		var/added = rogstam / maxrogstam
 		added = round(-10+ (added*-40))
-		if(HAS_TRAIT(src, TRAIT_MISSING_NOSE))
-			added = round(added * 0.5, 1)
 		if(rogfat >= 1)
 			rogfat_add(added)
 		else
@@ -16,22 +14,17 @@
 	update_health_hud()
 
 /mob/living/proc/update_rogstam()
-	var/athletics_skill = 0
-	if(mind)
-		athletics_skill = mind.get_skill_level(/datum/skill/misc/athletics)
-	maxrogstam = (STAEND + (athletics_skill/2 ) ) * 100
+	maxrogstam = STAEND*100
 	if(cmode)
-		if(!HAS_TRAIT(src, TRAIT_BREADY))
+		if(!HAS_TRAIT(src, RTRAIT_BREADY))
 			rogstam_add(-2)
 
 /mob/proc/rogstam_add(added as num)
 	return
 
 /mob/living/rogstam_add(added as num)
-	if(HAS_TRAIT(src, TRAIT_NOROGSTAM))
+	if(HAS_TRAIT(src, TRAIT_NOFATSTAM))
 		return TRUE
-	if(m_intent == MOVE_INTENT_RUN)
-		mind.adjust_experience(/datum/skill/misc/athletics, (STAINT*0.02))
 	rogstam += added
 	if(rogstam > maxrogstam)
 		rogstam = maxrogstam
@@ -49,7 +42,7 @@
 	return TRUE
 
 /mob/living/rogfat_add(added as num, emote_override, force_emote = TRUE) //call update_rogfat here and set last_fatigued, return false when not enough fatigue left
-	if(HAS_TRAIT(src, TRAIT_NOROGSTAM))
+	if(HAS_TRAIT(src, TRAIT_NOFATSTAM))
 		return TRUE
 	rogfat = CLAMP(rogfat+added, 0, maxrogfat)
 	if(added > 0)
@@ -98,14 +91,14 @@
 	var/heart_attacking = FALSE
 
 /mob/living/carbon/proc/heart_attack()
-	if(HAS_TRAIT(src, TRAIT_NOROGSTAM))
+	if(HAS_TRAIT(src, TRAIT_NOFATSTAM))
 		return
 	if(!heart_attacking)
 		heart_attacking = TRUE
 		shake_camera(src, 1, 3)
 		blur_eyes(10)
 		var/stuffy = list("ZIZO GRABS MY WEARY HEART!","ARGH! MY HEART BEATS NO MORE!","NO... MY HEART HAS BEAT IT'S LAST!","MY HEART HAS GIVEN UP!","MY HEART BETRAYS ME!","THE METRONOME OF MY LIFE STILLS!")
-		to_chat(src, span_userdanger("[pick(stuffy)]"))
+		to_chat(src, "<span class='userdanger'>[pick(stuffy)]</span>")
 		emote("breathgasp", forced = TRUE)
 		addtimer(CALLBACK(src, PROC_REF(adjustOxyLoss), 110), 30)
 
@@ -138,7 +131,7 @@
 		//skew.Translate(-224,0)
 		var/matrix/newmatrix = skew 
 		for(var/C in hud_used.plane_masters)
-			var/atom/movable/screen/plane_master/whole_screen = hud_used.plane_masters[C]
+			var/obj/screen/plane_master/whole_screen = hud_used.plane_masters[C]
 			if(whole_screen.plane == HUD_PLANE)
 				continue
 			animate(whole_screen, transform = newmatrix, time = 1, easing = QUAD_EASING)

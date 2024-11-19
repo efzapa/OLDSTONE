@@ -20,7 +20,7 @@
 	. = ..()
 
 /obj/item/instrument/suicide_act(mob/user)
-	user.visible_message(span_suicide("[user] begins to play 'Gloomy Sunday'! It looks like [user.p_theyre()] trying to commit suicide!"))
+	user.visible_message("<span class='suicide'>[user] begins to play 'Gloomy Sunday'! It looks like [user.p_theyre()] trying to commit suicide!</span>")
 	return (BRUTELOSS)
 
 /obj/item/instrument/Initialize(mapload)
@@ -30,7 +30,7 @@
 
 /obj/item/instrument/attack_self(mob/user)
 	if(!user.IsAdvancedToolUser())
-		to_chat(user, span_warning("I don't have the dexterity to do this!"))
+		to_chat(user, "<span class='warning'>I don't have the dexterity to do this!</span>")
 		return 1
 	interact(user)
 
@@ -74,7 +74,7 @@
 	song.instrumentExt = insTypes[name]
 
 /obj/item/instrument/piano_synth/proc/selectInstrument() // Moved here so it can be used by the action and PAI software panel without copypasta
-	var/chosen = input("Choose the type of instrument you want to use", "Instrument Selection", song.instrumentDir) as null|anything in sortList(insTypes)
+	var/chosen = input("Choose the type of instrument you want to use", "Instrument Selection", song.instrumentDir) as null|anything in sort_list(insTypes)
 	if(!insTypes[chosen])
 		return
 	return changeInstrument(chosen)
@@ -214,7 +214,7 @@
 
 /obj/item/instrument/harmonica/proc/handle_speech(datum/source, list/speech_args)
 	if(song.playing && ismob(loc))
-		to_chat(loc, span_warning("I stop playing the harmonica to talk..."))
+		to_chat(loc, "<span class='warning'>I stop playing the harmonica to talk...</span>")
 		song.playing = FALSE
 
 /obj/item/instrument/harmonica/equipped(mob/M, slot)

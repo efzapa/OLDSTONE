@@ -52,7 +52,7 @@
 /atom
 	var/blockscharging = FALSE
 
-/atom/movable/screen
+/obj/screen
 	blockscharging = TRUE
 
 /client/MouseDown(object, location, control, params)
@@ -85,7 +85,7 @@
 		mob.tempfixeye = TRUE //Change icon to 'target' red eye
 		mob.nodirchange = TRUE
 
-	for(var/atom/movable/screen/eye_intent/eyet in mob.hud_used.static_inventory)
+	for(var/obj/screen/eye_intent/eyet in mob.hud_used.static_inventory)
 		eyet.update_icon(mob) //Update eye icon
 
 	if(delay)
@@ -176,7 +176,7 @@
 		mob.nodirchange = FALSE
 
 	if(mob.hud_used)
-		for(var/atom/movable/screen/eye_intent/eyet in mob.hud_used.static_inventory)
+		for(var/obj/screen/eye_intent/eyet in mob.hud_used.static_inventory)
 			eyet.update_icon(mob) //Update eye icon
 
 	if(!mob.atkswinging)
@@ -327,10 +327,10 @@
 /atom/proc/IsAutoclickable()
 	. = 1
 
-/atom/movable/screen/IsAutoclickable()
+/obj/screen/IsAutoclickable()
 	. = 0
 
-/atom/movable/screen/click_catcher/IsAutoclickable()
+/obj/screen/click_catcher/IsAutoclickable()
 	. = 1
 
 /client/MouseDrag(src_object,atom/over_object,src_location,over_location,src_control,over_control,params)

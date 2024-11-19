@@ -26,7 +26,7 @@
 	addtimer(CALLBACK(src, PROC_REF(bear_fruit)), growth_time)
 
 /obj/structure/alien/resin/flower_bud_enemy/proc/bear_fruit()
-	visible_message(span_danger("the plant has borne fruit!"))
+	visible_message("<span class='danger'>the plant has borne fruit!</span>")
 	new /mob/living/simple_animal/hostile/venus_human_trap(get_turf(src))
 	qdel(src)
 
@@ -42,7 +42,7 @@
 		var/mob/living/L = AM
 		if(!("vines" in L.faction))
 			L.adjustBruteLoss(5)
-			to_chat(L, span_alert("I cut myself on the thorny vines."))
+			to_chat(L, "<span class='alert'>I cut myself on the thorny vines.</span>")
 
 
 
@@ -76,8 +76,6 @@
 		var/datum/beam/B = grasping[L]
 		if(B)
 			qdel(B)
-	for(var/datum/component/tether in tethers)
-		tether.RemoveComponent()
 	grasping = null
 	return ..()
 
@@ -111,7 +109,7 @@
 							if(O.density)
 								continue grasping
 					if(prob(grasp_chance))
-						to_chat(L, span_danger("\The [src] has you entangled!"))
+						to_chat(L, "<span class='danger'>\The [src] has you entangled!</span>")
 						grasping[L] = Beam(L, "vine", time=INFINITY, maxdistance=5, beam_type=/obj/effect/ebeam/vine)
 						tethers += list(L.AddComponent(/datum/component/tether, src, grasp_range+1, /obj/effect/ebeam/vine), AddComponent(/datum/component/tether, L, grasp_range+1, /obj/effect/ebeam/vine))
 						break //only take 1 new victim per cycle

@@ -96,7 +96,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 	for(var/mob/C in GLOB.mob_list)
 		if(C.key)
 			available.Add(C)
-	var/mob/choice = input("Choose a player to play the pAI", "Spawn pAI") in sortNames(available)
+	var/mob/choice = input("Choose a player to play the pAI", "Spawn pAI") in sort_names(available)
 	if(!choice)
 		return 0
 	if(!isobserver(choice))
@@ -131,7 +131,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 		INVOKE_ASYNC(M, TYPE_PROC_REF(/mob/living/carbon/human, Alienize))
 		SSblackbox.record_feedback("tally", "admin_verb", 1, "Make Alien") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 		log_admin("[key_name(usr)] made [key_name(M)] into an alien at [AREACOORD(M)].")
-		message_admins(span_adminnotice("[key_name_admin(usr)] made [ADMIN_LOOKUPFLW(M)] into an alien."))
+		message_admins("<span class='adminnotice'>[key_name_admin(usr)] made [ADMIN_LOOKUPFLW(M)] into an alien.</span>")
 	else
 		alert("Invalid mob")
 
@@ -146,7 +146,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 		INVOKE_ASYNC(M, TYPE_PROC_REF(/mob/living/carbon/human, slimeize))
 		SSblackbox.record_feedback("tally", "admin_verb", 1, "Make Slime") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 		log_admin("[key_name(usr)] made [key_name(M)] into a slime at [AREACOORD(M)].")
-		message_admins(span_adminnotice("[key_name_admin(usr)] made [ADMIN_LOOKUPFLW(M)] into a slime."))
+		message_admins("<span class='adminnotice'>[key_name_admin(usr)] made [ADMIN_LOOKUPFLW(M)] into a slime.</span>")
 	else
 		alert("Invalid mob")
 
@@ -162,7 +162,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 
 	if(matches.len==0)
 		return
-	var/hsbitem = input(usr, "Choose an object to delete.", "Delete:") as null|anything in sortList(matches)
+	var/hsbitem = input(usr, "Choose an object to delete.", "Delete:") as null|anything in sort_list(matches)
 	if(hsbitem)
 		hsbitem = matches[hsbitem]
 		var/counter = 0
@@ -224,7 +224,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 		alert("Invalid mob")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Grant Full Access") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	log_admin("[key_name(src)] has granted [M.key] full access.")
-	message_admins(span_adminnotice("[key_name_admin(usr)] has granted [M.key] full access."))
+	message_admins("<span class='adminnotice'>[key_name_admin(usr)] has granted [M.key] full access.</span>")
 
 /client/proc/cmd_assume_direct_control(mob/M in GLOB.mob_list)
 	set category = "Admin"
@@ -237,7 +237,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 		else
 			var/mob/dead/observer/ghost = new/mob/dead/observer(M,1)
 			ghost.ckey = M.ckey
-	message_admins(span_adminnotice("[key_name_admin(usr)] assumed direct control of [M]."))
+	message_admins("<span class='adminnotice'>[key_name_admin(usr)] assumed direct control of [M].</span>")
 	log_admin("[key_name(usr)] assumed direct control of [M].")
 	var/mob/adminmob = src.mob
 	M.ckey = src.ckey
@@ -255,7 +255,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 		to_chat(usr, "Game still loading, please hold!")
 		return
 
-	message_admins(span_adminnotice("[key_name_admin(usr)] used the Test Atmos Monitor debug command."))
+	message_admins("<span class='adminnotice'>[key_name_admin(usr)] used the Test Atmos Monitor debug command.</span>")
 	log_admin("[key_name(usr)] used the Test Atmos Monitor debug command.")
 
 	var/bad_shit = 0
@@ -308,12 +308,12 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 	else
 		log_message = "all z-levels"
 
-	message_admins(span_adminnotice("[key_name_admin(usr)] used the Test Areas debug command checking [log_message]."))
+	message_admins("<span class='adminnotice'>[key_name_admin(usr)] used the Test Areas debug command checking [log_message].</span>")
 	log_admin("[key_name(usr)] used the Test Areas debug command checking [log_message].")
 
 	for(var/area/A in world)
 		if(on_station)
-			var/turf/picked = safepick(get_area_turfs(A.type))
+			var/turf/picked = pick(get_area_turfs(A.type))
 			if(picked && is_station_level(picked.z))
 				if(!(A.type in areas_all) && !is_type_in_typecache(A, station_areas_blacklist))
 					areas_all.Add(A.type)
@@ -491,11 +491,11 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 	H.regenerate_icons()
 
 	log_admin("[key_name(usr)] changed the equipment of [key_name(H)] to [dresscode].")
-	message_admins(span_adminnotice("[key_name_admin(usr)] changed the equipment of [ADMIN_LOOKUPFLW(H)] to [dresscode]."))
+	message_admins("<span class='adminnotice'>[key_name_admin(usr)] changed the equipment of [ADMIN_LOOKUPFLW(H)] to [dresscode].</span>")
 
 /client/proc/robust_dress_shop()
 
-	var/list/baseoutfits = list("Naked","Custom","As Job...", "As Plasmaman...", "As Roguetown Job...")
+	var/list/baseoutfits = list("Naked","Custom","As Job...", "As Plasmaman...", "As Rougetown Job...")
 	var/list/outfits = list()
 	var/list/paths = subtypesof(/datum/outfit) - typesof(/datum/outfit/job) - typesof(/datum/outfit/plasmaman) - typesof(/datum/outfit/job/roguetown)
 
@@ -504,7 +504,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 		if(initial(O.can_be_admin_equipped))
 			outfits[initial(O.name)] = path
 
-	var/dresscode = input("Select outfit", "Robust quick dress shop") as null|anything in baseoutfits + sortList(outfits)
+	var/dresscode = input("Select outfit", "Robust quick dress shop") as null|anything in baseoutfits + sort_list(outfits)
 	if (isnull(dresscode))
 		return
 
@@ -519,7 +519,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 			if(initial(O.can_be_admin_equipped))
 				job_outfits[initial(O.name)] = path
 
-		dresscode = input("Select job equipment", "Robust quick dress shop") as null|anything in sortList(job_outfits)
+		dresscode = input("Select job equipment", "Robust quick dress shop") as null|anything in sort_list(job_outfits)
 		dresscode = job_outfits[dresscode]
 		if(isnull(dresscode))
 			return
@@ -532,7 +532,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 			if(initial(O.can_be_admin_equipped))
 				plasmaman_outfits[initial(O.name)] = path
 
-		dresscode = input("Select plasmeme equipment", "Robust quick dress shop") as null|anything in sortList(plasmaman_outfits)
+		dresscode = input("Select plasmeme equipment", "Robust quick dress shop") as null|anything in sort_list(plasmaman_outfits)
 		dresscode = plasmaman_outfits[dresscode]
 		if(isnull(dresscode))
 			return
@@ -541,21 +541,20 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 		var/list/custom_names = list()
 		for(var/datum/outfit/D in GLOB.custom_outfits)
 			custom_names[D.name] = D
-		var/selected_name = input("Select outfit", "Robust quick dress shop") as null|anything in sortList(custom_names)
+		var/selected_name = input("Select outfit", "Robust quick dress shop") as null|anything in sort_list(custom_names)
 		dresscode = custom_names[selected_name]
 		if(isnull(dresscode))
 			return
 
-	if (dresscode == "As Roguetown Job...")
+	if (dresscode == "As Rougetown Job...")
 		var/list/roguejob_paths = subtypesof(/datum/outfit/job/roguetown)
 		var/list/roguejob_outfits = list()
 		for(var/path in roguejob_paths)
 			var/datum/outfit/O = path
-			//roguetown coders are morons and didn't give ANY outfits proper fucking names
 			if(initial(O.can_be_admin_equipped))
-				roguejob_outfits["[path]"] = path
+				roguejob_outfits[initial(O.name)] = path
 
-		dresscode = input("Select job equipment", "Robust quick dress shop") as null|anything in sortList(roguejob_outfits)
+		dresscode = input("Select job equipment", "Robust quick dress shop") as null|anything in sort_list(roguejob_outfits)
 		dresscode = roguejob_outfits[dresscode]
 		if(isnull(dresscode))
 			return
@@ -715,7 +714,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 
 		names[name] = ruin_landmark
 
-	var/ruinname = input("Select ruin", "Jump to Ruin") as null|anything in sortList(names)
+	var/ruinname = input("Select ruin", "Jump to Ruin") as null|anything in sort_list(names)
 
 
 	var/obj/effect/landmark/ruin/landmark = names[ruinname]
@@ -723,8 +722,8 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 	if(istype(landmark))
 		var/datum/map_template/ruin/template = landmark.ruin_template
 		usr.forceMove(get_turf(landmark))
-		to_chat(usr, span_name("[template.name]"))
-		to_chat(usr, span_italics("[template.description]"))
+		to_chat(usr, "<span class='name'>[template.name]</span>")
+		to_chat(usr, "<span class='italics'>[template.description]</span>")
 
 /client/proc/place_ruin()
 	set category = "Debug"
@@ -746,7 +745,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 	for(var/name in SSmapping.lava_ruins_templates)
 		names[name] = list(SSmapping.lava_ruins_templates[name], ZTRAIT_LAVA_RUINS, /area/lavaland/surface/outdoors/unexplored)
 
-	var/ruinname = input("Select ruin", "Spawn Ruin") as null|anything in sortList(names)
+	var/ruinname = input("Select ruin", "Spawn Ruin") as null|anything in sort_list(names)
 	var/data = names[ruinname]
 	if (!data)
 		return
@@ -765,10 +764,10 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 		var/obj/effect/landmark/ruin/landmark = GLOB.ruin_landmarks[GLOB.ruin_landmarks.len]
 		log_admin("[key_name(src)] randomly spawned ruin [ruinname] at [COORD(landmark)].")
 		usr.forceMove(get_turf(landmark))
-		to_chat(src, span_name("[template.name]"))
-		to_chat(src, span_italics("[template.description]"))
+		to_chat(src, "<span class='name'>[template.name]</span>")
+		to_chat(src, "<span class='italics'>[template.description]</span>")
 	else
-		to_chat(src, span_warning("Failed to place [template.name]."))
+		to_chat(src, "<span class='warning'>Failed to place [template.name].</span>")
 
 /client/proc/clear_dynamic_transit()
 	set category = "Debug"
@@ -779,7 +778,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 	var/answer = alert("WARNING: THIS WILL WIPE ALL RESERVED SPACE TO A CLEAN SLATE! ANY MOVING SHUTTLES, ELEVATORS, OR IN-PROGRESS PHOTOGRAPHY WILL BE DELETED!", "Really wipe dynamic turfs?", "YES", "NO")
 	if(answer != "YES")
 		return
-	message_admins(span_adminnotice("[key_name_admin(src)] cleared dynamic transit space."))
+	message_admins("<span class='adminnotice'>[key_name_admin(src)] cleared dynamic transit space.</span>")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Clear Dynamic Transit") // If...
 	log_admin("[key_name(src)] cleared dynamic transit space.")
 	SSmapping.wipe_reservations()				//this goes after it's logged, incase something horrible happens.
@@ -794,7 +793,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 
 	SSachievements.hub_enabled = !SSachievements.hub_enabled
 
-	message_admins(span_adminnotice("[key_name_admin(src)] [SSachievements.hub_enabled ? "disabled" : "enabled"] the medal hub lockout."))
+	message_admins("<span class='adminnotice'>[key_name_admin(src)] [SSachievements.hub_enabled ? "disabled" : "enabled"] the medal hub lockout.</span>")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Toggle Medal Disable") // If...
 	log_admin("[key_name(src)] [SSachievements.hub_enabled ? "disabled" : "enabled"] the medal hub lockout.")
 
@@ -817,7 +816,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 
 	SSevents.scheduled = world.time
 
-	message_admins(span_adminnotice("[key_name_admin(src)] pumped a random event."))
+	message_admins("<span class='adminnotice'>[key_name_admin(src)] pumped a random event.</span>")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Pump Random Event")
 	log_admin("[key_name(src)] pumped a random event.")
 
@@ -828,7 +827,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 
 	LINE_PROFILE_START
 
-	message_admins(span_adminnotice("[key_name_admin(src)] started line by line profiling."))
+	message_admins("<span class='adminnotice'>[key_name_admin(src)] started line by line profiling.</span>")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Start Line Profiling")
 	log_admin("[key_name(src)] started line by line profiling.")
 
@@ -839,7 +838,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 
 	LINE_PROFILE_STOP
 
-	message_admins(span_adminnotice("[key_name_admin(src)] stopped line by line profiling."))
+	message_admins("<span class='adminnotice'>[key_name_admin(src)] stopped line by line profiling.</span>")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Stop Line Profiling")
 	log_admin("[key_name(src)] stopped line by line profiling.")
 
@@ -848,15 +847,15 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 	set name = "Show Line Profiling"
 	set desc = ""
 
-	var/sortlist = list(
+	var/sort_list = list(
 		"Avg time"		=	/proc/cmp_profile_avg_time_dsc,
 		"Total Time"	=	/proc/cmp_profile_time_dsc,
 		"Call Count"	=	/proc/cmp_profile_count_dsc
 	)
-	var/sort = input(src, "Sort type?", "Sort Type", "Avg time") as null|anything in sortlist
+	var/sort = input(src, "Sort type?", "Sort Type", "Avg time") as null|anything in sort_list
 	if (!sort)
 		return
-	sort = sortlist[sort]
+	sort = sort_list[sort]
 	profile_show(src, sort)
 
 /client/proc/reload_configuration()

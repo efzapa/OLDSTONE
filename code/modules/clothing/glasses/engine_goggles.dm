@@ -32,12 +32,7 @@
 
 /obj/item/clothing/glasses/meson/engine/proc/toggle_mode(mob/user, voluntary)
 	mode = modes[mode]
-	var/stupid_msg
-	if(voluntary)
-		stupid_msg = span_notice("You turn the goggles [mode ? "to [mode] mode" : "off"]!")
-	else
-		stupid_msg = span_warning("The goggles turn [mode ? "to [mode] mode" : "off"]!")
-	to_chat(user, stupid_msg)
+	to_chat(user, "<span class='[voluntary ? "notice":"warning"]'>[voluntary ? "You turn the goggles":"The goggles turn"] [mode ? "to [mode] mode":"off"][voluntary ? ".":"!"]</span>")
 
 	switch(mode)
 		if(MODE_MESON)

@@ -197,7 +197,7 @@
 /* Initializers */
 /datum/ai_laws/malfunction/New()
 	..()
-	set_zeroth_law(span_danger("ERROR ER0RR $R0RRO$!R41.%%!!(%$^^__+ @#F0E4'STATION OVERRUN, ASSUME CONTROL TO CONTAIN OUTBREAK#*`&110010"))
+	set_zeroth_law("<span class='danger'>ERROR ER0RR $R0RRO$!R41.%%!!(%$^^__+ @#F0E4'STATION OVERRUN, ASSUME CONTROL TO CONTAIN OUTBREAK#*`&110010</span>")
 	set_laws_config()
 
 /datum/ai_laws/custom/New() //This reads silicon_laws.txt and allows server hosts to set custom AI starting laws.
@@ -251,7 +251,7 @@
 	var/datum/ai_laws/lawtype
 	var/list/law_weights = CONFIG_GET(keyed_list/law_weight)
 	while(!lawtype && law_weights.len)
-		var/possible_id = pickweightAllowZero(law_weights)
+		var/possible_id = pick_weight(law_weights)
 		lawtype = lawid_to_type(possible_id)
 		if(!lawtype)
 			law_weights -= possible_id
@@ -323,7 +323,7 @@
 		replaceable_groups[LAW_INHERENT] = inherent.len
 	if(supplied.len && (LAW_SUPPLIED in groups))
 		replaceable_groups[LAW_SUPPLIED] = supplied.len
-	var/picked_group = pickweight(replaceable_groups)
+	var/picked_group = pick_weight(replaceable_groups)
 	switch(picked_group)
 		if(LAW_ZEROTH)
 			. = zeroth

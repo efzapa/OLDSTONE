@@ -26,7 +26,7 @@
 	QDEL_LIST(credits)
 	credits = null
 
-/atom/movable/screen/credit
+/obj/screen/credit
 	mouse_opacity = 1
 	alpha = 0
 	screen_loc = "1,1"
@@ -36,7 +36,7 @@
 	var/creditee
 	var/upvoted
 
-/atom/movable/screen/credit/Click()
+/obj/screen/credit/Click()
 	if(upvoted)
 		return
 	testing("clicdebugk")
@@ -48,14 +48,14 @@
 	for(var/client/C in GLOB.clients)
 		if(C == parent)
 			continue
-		for(var/atom/movable/screen/credit/CR in C.screen)
+		for(var/obj/screen/credit/CR in C.screen)
 			if(CR.creditee == creditee)
 				var/image/IR = new('icons/effects/effects.dmi', "hearty")
 				IR.pixel_x = rand(-32,32)
 				animate(IR, pixel_y = 64, alpha = 0, time = 18, flags = ANIMATION_PARALLEL)
 				CR.add_overlay(IR)
 
-/atom/movable/screen/credit/Initialize(mapload, credited, client/P, icon/I)
+/obj/screen/credit/Initialize(mapload, credited, client/P, icon/I)
 	. = ..()
 	testing("spawned credit [credited]")
 	icon = I
@@ -84,7 +84,7 @@
 	QDEL_IN(src, 90)
 	P.screen += src
 
-/atom/movable/screen/credit/Destroy()
+/obj/screen/credit/Destroy()
 	var/client/P = parent
 	if(!P)
 		return ..()
@@ -94,5 +94,5 @@
 	parent = null
 	return ..()
 
-/atom/movable/screen/credit/proc/FadeOut()
+/obj/screen/credit/proc/FadeOut()
 	animate(src, alpha = 0, time = 10,  flags = ANIMATION_PARALLEL)

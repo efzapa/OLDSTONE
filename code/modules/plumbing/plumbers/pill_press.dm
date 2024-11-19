@@ -25,7 +25,7 @@
 
 /obj/machinery/plumbing/pill_press/examine(mob/user)
 	. = ..()
-	. += span_notice("The [name] currently has [stored_pills.len] stored. There needs to be less than [max_floor_pills] on the floor to continue dispensing.")
+	. += "<span class='notice'>The [name] currently has [stored_pills.len] stored. There needs to be less than [max_floor_pills] on the floor to continue dispensing.</span>"
 
 /obj/machinery/plumbing/pill_press/Initialize(mapload, bolt)
 	. = ..()

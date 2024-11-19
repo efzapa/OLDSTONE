@@ -43,11 +43,11 @@
 	if(!select)
 		burst_size = 1
 		fire_delay = 0
-		to_chat(user, span_notice("I switch to semi-automatic."))
+		to_chat(user, "<span class='notice'>I switch to semi-automatic.</span>")
 	else
 		burst_size = initial(burst_size)
 		fire_delay = initial(fire_delay)
-		to_chat(user, span_notice("I switch to [burst_size]-rnd burst."))
+		to_chat(user, "<span class='notice'>I switch to [burst_size]-rnd burst.</span>")
 
 	playsound(user, 'sound/blank.ogg', 100, TRUE)
 	update_icon()
@@ -165,15 +165,15 @@
 			select = 1
 			burst_size = initial(burst_size)
 			fire_delay = initial(fire_delay)
-			to_chat(user, span_notice("I switch to [burst_size]-rnd burst."))
+			to_chat(user, "<span class='notice'>I switch to [burst_size]-rnd burst.</span>")
 		if(1)
 			select = 2
-			to_chat(user, span_notice("I switch to grenades."))
+			to_chat(user, "<span class='notice'>I switch to grenades.</span>")
 		if(2)
 			select = 0
 			burst_size = 1
 			fire_delay = 0
-			to_chat(user, span_notice("I switch to semi-auto."))
+			to_chat(user, "<span class='notice'>I switch to semi-auto.</span>")
 	playsound(user, 'sound/blank.ogg', 100, TRUE)
 	update_icon()
 	return
@@ -236,12 +236,12 @@
 	. = ..()
 	. += "<b>alt + click</b> to [cover_open ? "close" : "open"] the dust cover."
 	if(cover_open && magazine)
-		. += span_notice("It seems like you could use an <b>empty hand</b> to remove the magazine.")
+		. += "<span class='notice'>It seems like you could use an <b>empty hand</b> to remove the magazine.</span>"
 
 
 /obj/item/gun/ballistic/automatic/l6_saw/AltClick(mob/user)
 	cover_open = !cover_open
-	to_chat(user, span_notice("I [cover_open ? "open" : "close"] [src]'s cover."))
+	to_chat(user, "<span class='notice'>I [cover_open ? "open" : "close"] [src]'s cover.</span>")
 	playsound(user, 'sound/blank.ogg', 60, TRUE)
 	update_icon()
 
@@ -253,7 +253,7 @@
 
 /obj/item/gun/ballistic/automatic/l6_saw/afterattack(atom/target as mob|obj|turf, mob/living/user as mob|obj, flag, params)
 	if(cover_open)
-		to_chat(user, span_warning("[src]'s cover is open! Close it before firing!"))
+		to_chat(user, "<span class='warning'>[src]'s cover is open! Close it before firing!</span>")
 		return
 	else
 		. = ..()
@@ -265,13 +265,13 @@
 		..()
 		return
 	if (!cover_open)
-		to_chat(user, span_warning("[src]'s cover is closed! Open it before trying to remove the magazine!"))
+		to_chat(user, "<span class='warning'>[src]'s cover is closed! Open it before trying to remove the magazine!</span>")
 		return
 	..()
 
 /obj/item/gun/ballistic/automatic/l6_saw/attackby(obj/item/A, mob/user, params)
 	if(!cover_open && istype(A, mag_type))
-		to_chat(user, span_warning("[src]'s dust cover prevents a magazine from being fit."))
+		to_chat(user, "<span class='warning'>[src]'s dust cover prevents a magazine from being fit.</span>")
 		return
 	..()
 

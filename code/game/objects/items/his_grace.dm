@@ -55,24 +55,24 @@
 	if(awakened)
 		switch(bloodthirst)
 			if(HIS_GRACE_SATIATED to HIS_GRACE_PECKISH)
-				. += span_his_grace("[src] isn't very hungry. Not yet.")
+				. += "<span class='his_grace'>[src] isn't very hungry. Not yet.</span>"
 			if(HIS_GRACE_PECKISH to HIS_GRACE_HUNGRY)
-				. += span_his_grace("[src] would like a snack.")
+				. += "<span class='his_grace'>[src] would like a snack.</span>"
 			if(HIS_GRACE_HUNGRY to HIS_GRACE_FAMISHED)
-				. += span_his_grace("[src] is quite hungry now.")
+				. += "<span class='his_grace'>[src] is quite hungry now.</span>"
 			if(HIS_GRACE_FAMISHED to HIS_GRACE_STARVING)
-				. += span_his_grace("[src] is openly salivating at the sight of you. Be careful.")
+				. += "<span class='his_grace'>[src] is openly salivating at the sight of you. Be careful.</span>"
 			if(HIS_GRACE_STARVING to HIS_GRACE_CONSUME_OWNER)
-				. += span_his_grace(span_bold("I walk a fine line. [src] is very close to devouring you."))
+				. += "<span class='his_grace bold'>I walk a fine line. [src] is very close to devouring you.</span>"
 			if(HIS_GRACE_CONSUME_OWNER to HIS_GRACE_FALL_ASLEEP)
-				. += span_his_grace(span_bold("[src] is shaking violently and staring directly at you."))
+				. += "<span class='his_grace bold'>[src] is shaking violently and staring directly at you.</span>"
 	else
-		. += span_his_grace("[src] is latched closed.")
+		. += "<span class='his_grace'>[src] is latched closed.</span>"
 
 /obj/item/his_grace/relaymove(mob/living/user) //Allows changelings, etc. to climb out of Him after they revive, provided He isn't active
 	if(!awakened)
 		user.forceMove(get_turf(src))
-		user.visible_message(span_warning("[user] scrambles out of [src]!"), span_notice("I climb out of [src]!"))
+		user.visible_message("<span class='warning'>[user] scrambles out of [src]!</span>", "<span class='notice'>I climb out of [src]!</span>")
 
 /obj/item/his_grace/process()
 	if(!bloodthirst)
@@ -86,7 +86,7 @@
 	if(istype(master) && (src in master.held_items))
 		switch(bloodthirst)
 			if(HIS_GRACE_CONSUME_OWNER to HIS_GRACE_FALL_ASLEEP)
-				master.visible_message(span_boldwarning("[src] turns on [master]!"), span_his_grace(span_bigbold("[src] turns on you!")))
+				master.visible_message("<span class='boldwarning'>[src] turns on [master]!</span>", "<span class='his_grace big bold'>[src] turns on you!</span>")
 				do_attack_animation(master, null, src)
 				master.emote("scream")
 				master.remove_status_effect(STATUS_EFFECT_HISGRACE)
@@ -112,7 +112,7 @@
 	step_to(src, L)
 	if(Adjacent(L))
 		if(!L.stat)
-			L.visible_message(span_warning("[src] lunges at [L]!"), span_his_grace(span_bigbold("[src] lunges at you!")))
+			L.visible_message("<span class='warning'>[src] lunges at [L]!</span>", "<span class='his_grace big bold'>[src] lunges at you!</span>")
 			do_attack_animation(L, null, src)
 			playsound(L, 'sound/blank.ogg', 50, TRUE)
 			playsound(L, 'sound/blank.ogg', 50, TRUE)
@@ -125,7 +125,7 @@
 	if(awakened)
 		return
 	awakened = TRUE
-	user.visible_message(span_boldwarning("[src] begins to rattle. He thirsts."), span_his_grace("I flick [src]'s latch up. You hope this is a good idea."))
+	user.visible_message("<span class='boldwarning'>[src] begins to rattle. He thirsts.</span>", "<span class='his_grace'>I flick [src]'s latch up. You hope this is a good idea.</span>")
 	name = "His Grace"
 	desc = ""
 	gender = MALE
@@ -159,7 +159,7 @@
 	if(!awakened || ascended)
 		return
 	var/turf/T = get_turf(src)
-	T.visible_message(span_boldwarning("[src] slowly stops rattling and falls still, His latch snapping shut."))
+	T.visible_message("<span class='boldwarning'>[src] slowly stops rattling and falls still, His latch snapping shut.</span>")
 	playsound(loc, 'sound/blank.ogg', 100, TRUE)
 	name = initial(name)
 	desc = initial(desc)
@@ -175,7 +175,7 @@
 	if(!meal)
 		return
 	var/victims = 0
-	meal.visible_message(span_warning("[src] swings open and devours [meal]!"), span_his_grace(span_bigbold("[src] consumes you!")))
+	meal.visible_message("<span class='warning'>[src] swings open and devours [meal]!</span>", "<span class='his_grace big bold'>[src] consumes you!</span>")
 	meal.adjustBruteLoss(200)
 	playsound(meal, 'sound/blank.ogg', 75, TRUE)
 	playsound(src, 'sound/blank.ogg', 100, TRUE)
@@ -207,36 +207,36 @@
 	switch(bloodthirst)
 		if(HIS_GRACE_CONSUME_OWNER to HIS_GRACE_FALL_ASLEEP)
 			if(HIS_GRACE_CONSUME_OWNER > prev_bloodthirst)
-				master.visible_message(span_danger("[src] enters a frenzy!"))
+				master.visible_message("<span class='danger'>[src] enters a frenzy!</span>")
 		if(HIS_GRACE_STARVING to HIS_GRACE_CONSUME_OWNER)
 			ADD_TRAIT(src, TRAIT_NODROP, HIS_GRACE_TRAIT)
 			if(HIS_GRACE_STARVING > prev_bloodthirst)
-				master.visible_message(span_boldwarning("[src] is starving!"), "<span class='his_grace big'>[src]'s bloodlust overcomes you. [src] must be fed, or you will become His meal.\
+				master.visible_message("<span class='boldwarning'>[src] is starving!</span>", "<span class='his_grace big'>[src]'s bloodlust overcomes you. [src] must be fed, or you will become His meal.\
 				[force_bonus < 15 ? " And still, His power grows.":""]</span>")
 				force_bonus = max(force_bonus, 15)
 		if(HIS_GRACE_FAMISHED to HIS_GRACE_STARVING)
 			ADD_TRAIT(src, TRAIT_NODROP, HIS_GRACE_TRAIT)
 			if(HIS_GRACE_FAMISHED > prev_bloodthirst)
-				master.visible_message(span_warning("[src] is very hungry!"), "<span class='his_grace big'>Spines sink into my hand. [src] must feed immediately.\
+				master.visible_message("<span class='warning'>[src] is very hungry!</span>", "<span class='his_grace big'>Spines sink into my hand. [src] must feed immediately.\
 				[force_bonus < 10 ? " His power grows.":""]</span>")
 				force_bonus = max(force_bonus, 10)
 			if(prev_bloodthirst >= HIS_GRACE_STARVING)
-				master.visible_message(span_warning("[src] is now only very hungry!"), span_his_grace(span_big("My bloodlust recedes.")))
+				master.visible_message("<span class='warning'>[src] is now only very hungry!</span>", "<span class='his_grace big'>My bloodlust recedes.</span>")
 		if(HIS_GRACE_HUNGRY to HIS_GRACE_FAMISHED)
 			if(HIS_GRACE_HUNGRY > prev_bloodthirst)
-				master.visible_message(span_warning("[src] is getting hungry."), "<span class='his_grace big'>I feel [src]'s hunger within you.\
+				master.visible_message("<span class='warning'>[src] is getting hungry.</span>", "<span class='his_grace big'>I feel [src]'s hunger within you.\
 				[force_bonus < 5 ? " His power grows.":""]</span>")
 				force_bonus = max(force_bonus, 5)
 			if(prev_bloodthirst >= HIS_GRACE_FAMISHED)
-				master.visible_message(span_warning("[src] is now only somewhat hungry."), span_his_grace("[src]'s hunger recedes a little..."))
+				master.visible_message("<span class='warning'>[src] is now only somewhat hungry.</span>", "<span class='his_grace'>[src]'s hunger recedes a little...</span>")
 		if(HIS_GRACE_PECKISH to HIS_GRACE_HUNGRY)
 			if(HIS_GRACE_PECKISH > prev_bloodthirst)
-				master.visible_message(span_warning("[src] is feeling snackish."), span_his_grace("[src] begins to hunger."))
+				master.visible_message("<span class='warning'>[src] is feeling snackish.</span>", "<span class='his_grace'>[src] begins to hunger.</span>")
 			if(prev_bloodthirst >= HIS_GRACE_HUNGRY)
-				master.visible_message(span_warning("[src] is now only a little peckish."), span_his_grace(span_big("[src]'s hunger recedes somewhat...")))
+				master.visible_message("<span class='warning'>[src] is now only a little peckish.</span>", "<span class='his_grace big'>[src]'s hunger recedes somewhat...</span>")
 		if(HIS_GRACE_SATIATED to HIS_GRACE_PECKISH)
 			if(prev_bloodthirst >= HIS_GRACE_PECKISH)
-				master.visible_message(span_warning("[src] is satiated."), span_his_grace(span_big("[src]'s hunger recedes...")))
+				master.visible_message("<span class='warning'>[src] is satiated.</span>", "<span class='his_grace big'>[src]'s hunger recedes...</span>")
 	force = initial(force) + force_bonus
 
 /obj/item/his_grace/proc/ascend()
@@ -250,5 +250,5 @@
 	ascended = TRUE
 	playsound(src, 'sound/blank.ogg', 100)
 	if(istype(master))
-		master.visible_message(span_his_grace(span_bigbold("Gods will be watching.")))
+		master.visible_message("<span class='his_grace big bold'>Gods will be watching.</span>")
 		name = "[master]'s mythical toolbox of three powers"

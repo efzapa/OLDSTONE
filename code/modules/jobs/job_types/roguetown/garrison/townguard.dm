@@ -1,30 +1,27 @@
 /datum/job/roguetown/guardsman
-	title = "Watchman"
+	title = "Town Guard"
 	flag = GUARDSMAN
 	department_flag = GARRISON
 	faction = "Station"
 	total_positions = 10
 	spawn_positions = 10
 	selection_color = JCOLOR_SOLDIER
-	allowed_sexes = list(MALE)
-	allowed_races = list(
-		"Humen",
-		"Elf",
-		"Half-Elf",
-		"Dwarf",
-		"Aasimar",
+	allowed_sexes = list(MALE, FEMALE)
+	allowed_races = list("Humen",
+	"Humen",
+	"Elf",
+	"Dwarf",
+	"Aasimar",
+	"Half-Elf"
 	)
 	allowed_ages = list(AGE_ADULT, AGE_MIDDLEAGED)
-	tutorial = "Responsible for the safety of the town and the enforcement of the King's law, you are the vanguard of the city faced with punishing those who defy his Royal Majesty. Though you've many lords to obey, as both the Church and the Bailiff have great sway over your life."
+	tutorial = "You've enough training to point your spear in the right direction, and you've enough mammons in your pocket to want to keep this job: But you know youre just as disposable as the last poor bastards to call themselves a Guard."
 	display_order = JDO_TOWNGUARD
 	whitelist_req = TRUE
 
 	outfit = /datum/outfit/job/roguetown/guardsman
 	give_bank_account = 16
-	min_pq = 1
-	max_pq = null
-
-	cmode_music = 'sound/music/combat_guard.ogg'
+	min_pq = -4
 
 	/// Chance to be spawned as a bowman instead
 	var/bowman_chance = 35
@@ -52,31 +49,30 @@
 				index = copytext(H.real_name, 1,index)
 			if(!index)
 				index = H.real_name
-			S.name = "watchman tabard ([index])"
-			
+			S.name = "guard's tabard ([index])"
+
 /datum/outfit/job/roguetown/guardsman
-	name = "Watchman"
+	name = "Town Guard"
 	/// Whether or not we are a bowman
 	var/is_bowman = FALSE
 
 /datum/outfit/job/roguetown/guardsman/pre_equip(mob/living/carbon/human/H)
 	. = ..()
-	head = /obj/item/clothing/head/roguetown/helmet
-	pants = /obj/item/clothing/under/roguetown/chainlegs
+	pants = /obj/item/clothing/under/roguetown/trou/leather
 	cloak = /obj/item/clothing/cloak/stabard/guard
-	shirt = /obj/item/clothing/suit/roguetown/armor/gambeson
+	shirt = /obj/item/clothing/suit/roguetown/shirt/shortshirt/merc
 	armor = /obj/item/clothing/suit/roguetown/armor/chainmail
-	neck = /obj/item/clothing/neck/roguetown/chaincoif
+	neck = /obj/item/clothing/neck/roguetown/gorget
 	shoes = /obj/item/clothing/shoes/roguetown/boots
 	beltl = /obj/item/keyring/guard
-	belt = /obj/item/storage/belt/rogue/leather/black
+	belt = /obj/item/storage/belt/rogue/leather
 	beltr = /obj/item/rogueweapon/mace/cudgel
-	wrists = /obj/item/clothing/wrists/roguetown/bracers
-	backr = /obj/item/storage/backpack/rogue/satchel/black
-	backpack_contents = list(/obj/item/rogueweapon/huntingknife/idagger/steel = 1, /obj/item/rope/chain = 1)
+	wrists = /obj/item/clothing/wrists/roguetown/bracers/leather
+	backr = /obj/item/storage/backpack/rogue/satchel
+	backpack_contents = list(/obj/item/rogueweapon/huntingknife/idagger/steel/special = 1, /obj/item/rope/chain = 1)
 	if(is_bowman)
-		backl = /obj/item/gun/ballistic/revolver/grenadelauncher/bow
-		beltr = /obj/item/quiver/arrows //replaces mace
+		backl = /obj/item/gun/ballistic/revolver/grenadelauncher/crossbow
+		beltr = /obj/item/quiver/bolts //replaces mace
 	else
 		backl = null
 	if(H.mind)
@@ -87,29 +83,22 @@
 			H.hairstyle = pick(acceptable)
 			H.update_hair()
 	H.verbs |= /mob/proc/haltyell
-	ADD_TRAIT(H, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
-	ADD_TRAIT(H, TRAIT_MEDIUMARMOR, TRAIT_GENERIC)
+	ADD_TRAIT(H, RTRAIT_HEAVYARMOR, TRAIT_GENERIC)
 
 /datum/outfit/job/roguetown/guardsman/proc/assign_skills(mob/living/carbon/human/guard)
-	guard.mind.adjust_skillrank(/datum/skill/combat/maces, pick(3,4), TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/combat/wrestling, 4, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/combat/unarmed, 4, TRUE) 
-	guard.mind.adjust_skillrank(/datum/skill/combat/swords, 3, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/combat/polearms, 3, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/combat/whipsflails, 3, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/combat/knives, 3, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/combat/bows, 3, TRUE)
+	guard.mind.adjust_skillrank(/datum/skill/combat/axesmaces, 3, TRUE)
+	guard.mind.adjust_skillrank(/datum/skill/combat/bows, 2, TRUE)
 	guard.mind.adjust_skillrank(/datum/skill/combat/crossbows, 2, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/misc/climbing, 3, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/misc/athletics, 3, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/misc/sneaking, 3, TRUE) 
+	guard.mind.adjust_skillrank(/datum/skill/combat/wrestling, 4, TRUE)
+	guard.mind.adjust_skillrank(/datum/skill/combat/unarmed, 3, TRUE)
+	guard.mind.adjust_skillrank(/datum/skill/combat/swords, 2, TRUE)
+	guard.mind.adjust_skillrank(/datum/skill/combat/knives, 2, TRUE)
 	guard.mind.adjust_skillrank(/datum/skill/misc/swimming, 2, TRUE)
+	guard.mind.adjust_skillrank(/datum/skill/misc/climbing, 2, TRUE)
+	guard.mind.adjust_skillrank(/datum/skill/misc/athletics, 2, TRUE)
 	guard.mind.adjust_skillrank(/datum/skill/misc/reading, 1, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/misc/medicine, 1, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/misc/riding, 2, TRUE)
 	guard.change_stat("strength", 1)
-	guard.change_stat("perception", 2) 
-	guard.change_stat("constitution", 1)
+	guard.change_stat("perception", 1)
 	guard.change_stat("endurance", 1)
 	guard.change_stat("speed", 1)
 
@@ -118,21 +107,19 @@
 	is_bowman = TRUE
 
 /datum/outfit/job/roguetown/guardsman/bowman/assign_skills(mob/living/carbon/human/guard)
+	guard.mind.adjust_skillrank(/datum/skill/combat/axesmaces, 1, TRUE)
 	guard.mind.adjust_skillrank(/datum/skill/combat/bows, 5, TRUE)
 	guard.mind.adjust_skillrank(/datum/skill/combat/crossbows, 4, TRUE)
 	guard.mind.adjust_skillrank(/datum/skill/combat/wrestling, 3, TRUE)
 	guard.mind.adjust_skillrank(/datum/skill/combat/unarmed, 3, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/combat/knives, 3, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/combat/maces, 2, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/combat/swords, 2, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/misc/climbing, 3, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/misc/athletics, 3, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/misc/sneaking, 3, TRUE) 
+	guard.mind.adjust_skillrank(/datum/skill/combat/swords, 1, TRUE)
+	guard.mind.adjust_skillrank(/datum/skill/combat/knives, 2, TRUE)
 	guard.mind.adjust_skillrank(/datum/skill/misc/swimming, 2, TRUE)
+	guard.mind.adjust_skillrank(/datum/skill/misc/climbing, 2, TRUE)
+	guard.mind.adjust_skillrank(/datum/skill/misc/athletics, 2, TRUE)
 	guard.mind.adjust_skillrank(/datum/skill/misc/reading, 1, TRUE)
-	guard.mind.adjust_skillrank(/datum/skill/misc/medicine, 1, TRUE)
-	guard.change_stat("perception", 3)
-	guard.change_stat("constitution", 1)
+	guard.change_stat("perception", 2)
+	guard.change_stat("endurance", 1)
 	guard.change_stat("speed", 2)
 
 /mob/proc/haltyell()

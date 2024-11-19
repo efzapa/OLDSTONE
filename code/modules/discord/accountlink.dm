@@ -6,15 +6,15 @@
 	set hidden = FALSE
 	// Safety checks
 	if(!CONFIG_GET(flag/sql_enabled))
-		to_chat(src, span_warning("This feature requires the SQL backend to be running."))
+		to_chat(src, "<span class='warning'>This feature requires the SQL backend to be running.</span>")
 		return
 
 	if(!SSdiscord) // SS is still starting
-		to_chat(src, span_notice("The server is still starting up. Please wait before attempting to link your account!"))
+		to_chat(src, "<span class='notice'>The server is still starting up. Please wait before attempting to link your account!</span>")
 		return
 
 	if(!SSdiscord.enabled)
-		to_chat(src, span_warning("This feature requires the server is running on the TGS toolkit."))
+		to_chat(src, "<span class='warning'>This feature requires the server is running on the TGS toolkit.</span>")
 		return
 
 	var/stored_id = SSdiscord.lookup_id(usr.ckey)

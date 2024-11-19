@@ -1,7 +1,7 @@
 
 /obj/structure/roguewindow
 	name = "window"
-	desc = "A glass window. Glass is very rare nowadays."
+	desc = ""
 	icon = 'icons/roguetown/misc/structure.dmi'
 	icon_state = "window-solid"
 	layer = TABLE_LAYER
@@ -32,23 +32,11 @@
 	icon_state = "[base_state]"
 
 /obj/structure/roguewindow/stained
-	icon_state = null
-	base_state = null
-	opacity = TRUE
-	max_integrity = 100 
-	integrity_failure = 0.75
-
-/obj/structure/roguewindow/stained/silver
 	icon_state = "stained-silver"
 	base_state = "stained-silver"
-
-/obj/structure/roguewindow/stained/yellow
-	icon_state = "stained-yellow"
-	base_state = "stained-yellow"
-	
-/obj/structure/roguewindow/stained/zizo
-	icon_state = "stained-zizo"
-	base_state = "stained-zizo"
+	opacity = TRUE
+	max_integrity = 100
+	integrity_failure = 0.75
 
 /obj/structure/roguewindow/openclose
 	icon_state = "woodwindowdir"
@@ -94,24 +82,24 @@
 /obj/structure/roguewindow/openclose/attack_right(mob/user)
 	if(get_dir(src,user) == lockdir)
 		if(brokenstate)
-			to_chat(user, span_warning("It's broken, that would be foolish."))
+			to_chat(user, "<span class='warning'>It's broken, that would be foolish.</span>")
 			return
 		if(climbable)
 			close_up(user)
 		else
 			open_up(user)
 	else
-		to_chat(user, span_warning("The window doesn't close from this side."))
+		to_chat(user, "<span class='warning'>The window doesn't close from this side.</span>")
 
 /obj/structure/roguewindow/proc/open_up(mob/user)
-	visible_message(span_info("[user] opens [src]."))
+	visible_message("<span class='info'>[user] opens [src].</span>")
 	playsound(src, 'sound/foley/doors/windowup.ogg', 100, FALSE)
 	climbable = TRUE
 	opacity = FALSE
 	update_icon()
 
 /obj/structure/roguewindow/proc/close_up(mob/user)
-	visible_message(span_info("[user] closes [src]."))
+	visible_message("<span class='info'>[user] closes [src].</span>")
 	playsound(src, 'sound/foley/doors/windowdown.ogg', 100, FALSE)
 	climbable = FALSE
 	opacity = TRUE
@@ -149,7 +137,7 @@
 	if(brokenstate)
 		return
 	user.changeNext_move(CLICK_CD_MELEE)
-	src.visible_message(span_info("[user] knocks on [src]."))
+	src.visible_message("<span class='info'>[user] knocks on [src].</span>")
 	add_fingerprint(user)
 	playsound(src, 'sound/misc/glassknock.ogg', 100)
 

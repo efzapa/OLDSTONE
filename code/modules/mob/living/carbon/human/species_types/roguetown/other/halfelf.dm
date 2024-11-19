@@ -3,7 +3,7 @@
 
 /datum/species/human/halfelf
 	name = "Half-Elf"
-	id = "helf"
+	id = "human"
 	desc = "<b>Half Elf</b><br>\
 	The child of an Elf and Humen, Half-Elves are generally frowned \
 	upon by more conservative peoples, although as racial tensions lower, \
@@ -23,7 +23,7 @@
 	mutant_bodyparts = list("ears")
 	mutanteyes = /obj/item/organ/eyes/halfelf
 	use_skintones = 1
-	possible_ages = ALL_AGES_LIST
+	possible_ages = list(AGE_YOUNG, AGE_ADULT, AGE_MIDDLEAGED)
 	skinned_type = /obj/item/stack/sheet/animalhide/human
 	disliked_food = NONE
 	liked_food = NONE
@@ -49,17 +49,21 @@
 	specstats_f = list("strength" = -1, "perception" = 1, "intelligence" = 1, "constitution" = -2, "endurance" = 0, "speed" = 2, "fortune" = -1)
 	enflamed_icon = "widefire"
 
+/datum/species/human/halfelf/check_roundstart_eligible()
+	return TRUE
+
 /datum/species/human/halfelf/get_skin_list()
 	return list(
-		"Timber-Gronn" = SKIN_COLOR_TIMBER_GRONN,
-		"Giza-Azure" = SKIN_COLOR_GIZA_AZURE,
-		"Walnut-Stine" = SKIN_COLOR_WALNUT_STINE,
-		"Etrustcan-Dandelion" = SKIN_COLOR_ETRUSTCAN_DANDELION,
-		"Ebon-Born" = SKIN_COLOR_EBON_BORN,
+	"Timber-Gronn" = "ffe0d1",
+	"Giza-Azure" = "fcccb3",
+	"Walnut-Stine" = "edc6b3",
+	"Etrustcan-Dandelion" = "e2b9a3",
+	"Ebon-Born" = "5a4a41"
 	)
 
+
 /datum/species/human/halfelf/get_hairc_list()
-	return sortList(list(
+	return sort_list(list(
 	"black - oil" = "181a1d",
 	"black - cave" = "201616",
 	"black - rogue" = "2b201b",

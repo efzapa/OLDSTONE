@@ -25,10 +25,10 @@
 
 	//Vents
 //	if(ventcrawler)
-//		to_chat(src, span_notice("I can ventcrawl! Use alt+click on vents to quickly travel about the station."))
+//		to_chat(src, "<span class='notice'>I can ventcrawl! Use alt+click on vents to quickly travel about the station.</span>")
 
 	if(ranged_ability)
-		ranged_ability.add_ranged_ability(src, span_notice("I currently have <b>[ranged_ability]</b> active!"))
+		ranged_ability.add_ranged_ability(src, "<span class='notice'>I currently have <b>[ranged_ability]</b> active!</span>")
 
 	var/datum/antagonist/changeling/changeling = mind.has_antag_datum(/datum/antagonist/changeling)
 	if(changeling)
@@ -38,7 +38,7 @@
 	set waitfor = FALSE
 	if(!client)
 		return
-	var/atom/movable/screen/F = new /atom/movable/screen/fullscreen/fade()
+	var/obj/screen/F = new /obj/screen/fullscreen/fade()
 	client.screen += F
 	sleep(40)
 	if(!client)

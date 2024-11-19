@@ -39,7 +39,7 @@
 /obj/machinery/smartfridge/examine(mob/user)
 	. = ..()
 	if(in_range(user, src) || isobserver(user))
-		. += span_notice("The status display reads: This unit can hold a maximum of <b>[max_n_of_items]</b> items.")
+		. += "<span class='notice'>The status display reads: This unit can hold a maximum of <b>[max_n_of_items]</b> items.</span>"
 
 /obj/machinery/smartfridge/update_icon()
 	if(!stat)
@@ -86,12 +86,12 @@
 	if(!stat)
 
 		if(contents.len >= max_n_of_items)
-			to_chat(user, span_warning("\The [src] is full!"))
+			to_chat(user, "<span class='warning'>\The [src] is full!</span>")
 			return FALSE
 
 		if(accept_check(O))
 			load(O)
-			user.visible_message(span_notice("[user] has added \the [O] to \the [src]."), span_notice("I add \the [O] to \the [src]."))
+			user.visible_message("<span class='notice'>[user] has added \the [O] to \the [src].</span>", "<span class='notice'>I add \the [O] to \the [src].</span>")
 			updateUsrDialog()
 			if (visible_contents)
 				update_icon()
@@ -110,22 +110,22 @@
 
 			if(loaded)
 				if(contents.len >= max_n_of_items)
-					user.visible_message(span_notice("[user] loads \the [src] with \the [O]."), \
-									 span_notice("I fill \the [src] with \the [O]."))
+					user.visible_message("<span class='notice'>[user] loads \the [src] with \the [O].</span>", \
+									 "<span class='notice'>I fill \the [src] with \the [O].</span>")
 				else
-					user.visible_message(span_notice("[user] loads \the [src] with \the [O]."), \
-										 span_notice("I load \the [src] with \the [O]."))
+					user.visible_message("<span class='notice'>[user] loads \the [src] with \the [O].</span>", \
+										 "<span class='notice'>I load \the [src] with \the [O].</span>")
 				if(O.contents.len > 0)
-					to_chat(user, span_warning("Some items are refused."))
+					to_chat(user, "<span class='warning'>Some items are refused.</span>")
 				if (visible_contents)
 					update_icon()
 				return TRUE
 			else
-				to_chat(user, span_warning("There is nothing in [O] to put in [src]!"))
+				to_chat(user, "<span class='warning'>There is nothing in [O] to put in [src]!</span>")
 				return FALSE
 
 	if(user.used_intent.type != INTENT_HARM)
-		to_chat(user, span_warning("\The [src] smartly refuses [O]."))
+		to_chat(user, "<span class='warning'>\The [src] smartly refuses [O].</span>")
 		updateUsrDialog()
 		return FALSE
 	else
@@ -142,7 +142,7 @@
 	if(ismob(O.loc))
 		var/mob/M = O.loc
 		if(!M.transferItemToLoc(O, src))
-			to_chat(usr, span_warning("\the [O] is stuck to your hand, you cannot put it in \the [src]!"))
+			to_chat(usr, "<span class='warning'>\the [O] is stuck to your hand, you cannot put it in \the [src]!</span>")
 			return FALSE
 		else
 			return TRUE
@@ -179,7 +179,7 @@
 				listofitems[md5name]["amount"]++	// The good news is, #30519 made smartfridge UIs non-auto-updating
 			else
 				listofitems[md5name] = list("name" = O.name, "type" = O.type, "amount" = 1)
-	sortList(listofitems)
+	sort_list(listofitems)
 
 	.["contents"] = listofitems
 	.["name"] = name
@@ -198,7 +198,7 @@
 			var/desired = 0
 
 			if(!allow_ai_retrieve && isAI(usr))
-				to_chat(usr, span_warning("[src] does not seem to be configured to respect your authority!"))
+				to_chat(usr, "<span class='warning'>[src] does not seem to be configured to respect your authority!</span>")
 				return
 
 			if (params["amount"])

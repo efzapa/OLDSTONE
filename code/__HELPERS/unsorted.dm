@@ -281,7 +281,7 @@ Turf and target are separate in case you want to teleport some distance from a t
 	var/list/borgs = active_free_borgs()
 	if(borgs.len)
 		if(user)
-			. = input(user,"Unshackled cyborg signals detected:", "Cyborg Selection", borgs[1]) in sortList(borgs)
+			. = input(user,"Unshackled cyborg signals detected:", "Cyborg Selection", borgs[1]) in sort_list(borgs)
 		else
 			. = pick(borgs)
 	return .
@@ -290,7 +290,7 @@ Turf and target are separate in case you want to teleport some distance from a t
 	var/list/ais = active_ais()
 	if(ais.len)
 		if(user)
-			. = input(user,"AI signals detected:", "AI Selection", ais[1]) in sortList(ais)
+			. = input(user,"AI signals detected:", "AI Selection", ais[1]) in sort_list(ais)
 		else
 			. = pick(ais)
 	return .
@@ -328,16 +328,33 @@ Turf and target are separate in case you want to teleport some distance from a t
 //Orders mobs by type then by name
 /proc/sortmobs()
 	var/list/moblist = list()
-	var/list/sortmob = sortNames(GLOB.mob_list)
-	var/list/types = list()
-	for(var/mob/M in sortmob)
-		if(M.type in types)
-			types[M.type].Add(M)
-		else
-			types[M.type] = list(M)
-	var/types_sort = sortNames(types)
-	for(var/T in types_sort)
-		moblist.Add(types_sort[T])
+	var/list/sortmob = sort_names(GLOB.mob_list)
+	for(var/mob/living/silicon/ai/M in sortmob)
+		moblist.Add(M)
+	for(var/mob/camera/M in sortmob)
+		moblist.Add(M)
+	for(var/mob/living/silicon/pai/M in sortmob)
+		moblist.Add(M)
+	for(var/mob/living/silicon/robot/M in sortmob)
+		moblist.Add(M)
+	for(var/mob/living/carbon/human/M in sortmob)
+		moblist.Add(M)
+	for(var/mob/living/brain/M in sortmob)
+		moblist.Add(M)
+	for(var/mob/living/carbon/alien/M in sortmob)
+		moblist.Add(M)
+	for(var/mob/dead/observer/M in sortmob)
+		moblist.Add(M)
+	for(var/mob/dead/new_player/M in sortmob)
+		moblist.Add(M)
+	for(var/mob/living/carbon/monkey/M in sortmob)
+		moblist.Add(M)
+	for(var/mob/living/simple_animal/slime/M in sortmob)
+		moblist.Add(M)
+	for(var/mob/living/simple_animal/M in sortmob)
+		moblist.Add(M)
+	for(var/mob/living/carbon/true_devil/M in sortmob)
+		moblist.Add(M)
 	return moblist
 
 // Format a power value in W, kW, MW, or GW.
@@ -643,6 +660,86 @@ Turf and target are separate in case you want to teleport some distance from a t
 /proc/anyprob(value)
 	return (rand(1,value)==value)
 
+/proc/parse_zone(zone)
+	if(zone == BODY_ZONE_PRECISE_R_HAND)
+		return "right hand"
+	else if (zone == BODY_ZONE_PRECISE_L_HAND)
+		return "left hand"
+	else if (zone == BODY_ZONE_L_ARM)
+		return "left arm"
+	else if (zone == BODY_ZONE_R_ARM)
+		return "right arm"
+	else if (zone == BODY_ZONE_L_LEG)
+		return "left leg"
+	else if (zone == BODY_ZONE_R_LEG)
+		return "right leg"
+	else if (zone == BODY_ZONE_PRECISE_L_FOOT)
+		return "left foot"
+	else if (zone == BODY_ZONE_PRECISE_R_FOOT)
+		return "right foot"
+	else if (zone == BODY_ZONE_PRECISE_NECK)
+		return "throat"
+	else if (zone == BODY_ZONE_PRECISE_GROIN)
+		return "groin"
+	else if (zone == BODY_ZONE_PRECISE_EARS)	//we want the chatlog to say 'grabbed his ear' not 'grabbed his ears' etc
+		return "ear"
+	else if (zone == BODY_ZONE_PRECISE_R_EYE)
+		return "eyes"
+	else if (zone == BODY_ZONE_PRECISE_L_EYE)
+		return "eyes"
+	else if (zone == BODY_ZONE_PRECISE_NOSE)
+		return "nose"
+	else if (zone == BODY_ZONE_R_INHAND)
+		return "right hand"
+	else if (zone == BODY_ZONE_L_INHAND)
+		return "left hand"
+	else if (zone == BODY_ZONE_PRECISE_HAIR)
+		return "hair"
+	else if (zone == BODY_ZONE_PRECISE_MOUTH)
+		return "mouth"
+	else
+		return zone
+
+/mob/living/carbon/proc/parse_zone(zone, mob/living/target)
+	if(zone == BODY_ZONE_PRECISE_R_HAND)
+		return "right hand"
+	else if (zone == BODY_ZONE_PRECISE_L_HAND)
+		return "left hand"
+	else if (zone == BODY_ZONE_L_ARM)
+		return "left arm"
+	else if (zone == BODY_ZONE_R_ARM)
+		return "right arm"
+	else if (zone == BODY_ZONE_L_LEG)
+		return "left leg"
+	else if (zone == BODY_ZONE_R_LEG)
+		return "right leg"
+	else if (zone == BODY_ZONE_PRECISE_L_FOOT)
+		return "left foot"
+	else if (zone == BODY_ZONE_PRECISE_R_FOOT)
+		return "right foot"
+	else if (zone == BODY_ZONE_PRECISE_NECK)
+		return "throat"
+	else if (zone == BODY_ZONE_PRECISE_GROIN)
+		return "groin"
+	else if (zone == BODY_ZONE_PRECISE_EARS)	//we want the chatlog to say 'grabbed his ear' not 'grabbed his ears' etc
+		return "ear"
+	else if (zone == BODY_ZONE_PRECISE_R_EYE)
+		return "right eye"
+	else if (zone == BODY_ZONE_PRECISE_L_EYE)
+		return "left eye"
+	else if (zone == BODY_ZONE_PRECISE_NOSE)
+		return "nose"
+	else if (zone == BODY_ZONE_R_INHAND)
+		return parse_inhand(zone)
+	else if (zone == BODY_ZONE_L_INHAND)
+		return parse_inhand(zone)
+	else if (zone == BODY_ZONE_PRECISE_HAIR)
+		return "hair"
+	else if (zone == BODY_ZONE_PRECISE_MOUTH)
+		return "mouth"
+	else
+		return zone
+
 /*
 
  Gets the turf this atom's *ICON* appears to inhabit
@@ -708,12 +805,22 @@ Turf and target are separate in case you want to teleport some distance from a t
 		loc = loc.loc
 	return null
 
-/proc/can_embed(obj/item/weapon)
-	if(HAS_TRAIT(weapon, TRAIT_NODROP) || HAS_TRAIT(weapon, TRAIT_NOEMBED))
-		return FALSE
-	if(!weapon.embedding?.embed_chance)
-		return FALSE
-	return TRUE
+
+//For objects that should embed, but make no sense being is_sharp or is_pointed()
+//e.g: rods
+GLOBAL_LIST_INIT(can_embed_types, typecacheof(list(
+	/obj/item/stack/rods,
+	/obj/item/pipe)))
+
+/proc/can_embed(obj/item/W)
+	if(W.get_sharpness())
+		return 1
+	if(is_pointed(W))
+		return 1
+
+	if(is_type_in_typecache(W, GLOB.can_embed_types))
+		return 1
+
 
 /*
 Checks if that loc and dir has an item on the wall
@@ -1064,8 +1171,11 @@ B --><-- A
 	sleep(duration)
 	A.cut_overlay(O)
 
+///Returns a random turf on the station
 /proc/get_random_station_turf()
-	return safepick(get_area_turfs(pick(GLOB.the_station_areas)))
+	var/list/turfs = get_area_turfs(pick(GLOB.the_station_areas))
+	if (length(turfs))
+		return pick(turfs)
 
 /proc/get_safe_random_station_turf() //excludes dense turfs (like walls) and areas that have valid_territory set to FALSE
 	for (var/i in 1 to 5)
@@ -1122,7 +1232,7 @@ proc/pick_closest_path(value, list/matches = get_fancy_list_of_atom_types())
 	if(matches.len==1)
 		chosen = matches[1]
 	else
-		chosen = input("Select a type", "Pick Type", matches[1]) as null|anything in sortList(matches)
+		chosen = input("Select a type", "Pick Type", matches[1]) as null|anything in sort_list(matches)
 		if(!chosen)
 			return
 	chosen = matches[chosen]
@@ -1279,8 +1389,6 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 			if(W.ini_dir == dir_to_check || W.ini_dir == FULLTILE_WINDOW_DIR || dir_to_check == FULLTILE_WINDOW_DIR)
 				return FALSE
 	return TRUE
-
-#define UNTIL(X) while(!(X)) stoplag()
 
 /proc/pass(...)
 	return
@@ -1518,13 +1626,6 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 				continue
 			. |= i
 
-/proc/special_list_filter(list/L, datum/callback/condition)
-	if(!islist(L) || !length(L) || !istype(condition))
-		return list()
-	. = list()
-	for(var/i in L)
-		if(condition.Invoke(i))
-			. |= i
 /proc/generate_items_inside(list/items_list,where_to)
 	for(var/each_item in items_list)
 		for(var/i in 1 to items_list[each_item])

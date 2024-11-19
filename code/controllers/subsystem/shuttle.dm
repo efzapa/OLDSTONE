@@ -194,33 +194,33 @@ SUBSYSTEM_DEF(shuttle)
 		emergency = backup_shuttle
 	var/srd = CONFIG_GET(number/shuttle_refuel_delay)
 	if(world.time - SSticker.round_start_time < srd)
-//		to_chat(user, span_warning("There is no response."))
+//		to_chat(user, "<span class='warning'>There is no response.</span>")
 		return
 
 	switch(emergency.mode)
 		if(SHUTTLE_RECALL)
-//			to_chat(user, span_alert("The emergency shuttle may not be called while returning to CentCom."))
+//			to_chat(user, "<span class='alert'>The emergency shuttle may not be called while returning to CentCom.</span>")
 			return
 		if(SHUTTLE_CALL)
-//			to_chat(user, span_alert("The emergency shuttle is already on its way."))
+//			to_chat(user, "<span class='alert'>The emergency shuttle is already on its way.</span>")
 			return
 		if(SHUTTLE_DOCKED)
-//			to_chat(user, span_alert("The emergency shuttle is already here."))
+//			to_chat(user, "<span class='alert'>The emergency shuttle is already here.</span>")
 			return
 		if(SHUTTLE_IGNITING)
-//			to_chat(user, span_alert("The emergency shuttle is firing its engines to leave."))
+//			to_chat(user, "<span class='alert'>The emergency shuttle is firing its engines to leave.</span>")
 			return
 		if(SHUTTLE_ESCAPE)
-//			to_chat(user, span_alert("The emergency shuttle is moving away to a safe distance."))
+//			to_chat(user, "<span class='alert'>The emergency shuttle is moving away to a safe distance.</span>")
 			return
 		if(SHUTTLE_STRANDED)
-//			to_chat(user, span_alert("The emergency shuttle has been disabled by CentCom."))
+//			to_chat(user, "<span class='alert'>The emergency shuttle has been disabled by CentCom.</span>")
 			return
 
 	call_reason = trim(html_encode(call_reason))
 
 //	if(length(call_reason) < CALL_SHUTTLE_REASON_LENGTH && seclevel2num(get_security_level()) > SEC_LEVEL_GREEN)
-//		to_chat(user, span_alert("I must provide a reason."))
+//		to_chat(user, "<span class='alert'>I must provide a reason.</span>")
 //		return
 
 	var/area/signal_origin = get_area(user)
@@ -244,7 +244,7 @@ SUBSYSTEM_DEF(shuttle)
 //	var/area/A = get_area(user)
 
 	log_game("[key_name(user)] has called the shuttle.")
-//	deadchat_broadcast(" has called for the boat at <span class='name'>[A.name]</span>.", span_name("[user.real_name]"), user)
+//	deadchat_broadcast(" has called for the boat at <span class='name'>[A.name]</span>.", "<span class='name'>[user.real_name]</span>", user)
 	if(call_reason)
 		SSblackbox.record_feedback("text", "shuttle_reason", 1, "[call_reason]")
 		log_game("Shuttle call reason: [call_reason]")
@@ -282,7 +282,7 @@ SUBSYSTEM_DEF(shuttle)
 		emergency.cancel(get_area(user))
 		log_game("[key_name(user)] has recalled the shuttle.")
 		message_admins("[ADMIN_LOOKUPFLW(user)] has recalled the shuttle.")
-		deadchat_broadcast(" has recalled the shuttle from <span class='name'>[get_area_name(user, TRUE)]</span>.", span_name("[user.real_name]"), user)
+		deadchat_broadcast(" has recalled the shuttle from <span class='name'>[get_area_name(user, TRUE)]</span>.", "<span class='name'>[user.real_name]</span>", user)
 		return 1
 
 /datum/controller/subsystem/shuttle/proc/canRecall()
@@ -815,7 +815,7 @@ SUBSYSTEM_DEF(shuttle)
 
 		templates[S.port_id]["templates"] += list(L)
 
-	data["templates_tabs"] = sortList(data["templates_tabs"])
+	data["templates_tabs"] = sort_list(data["templates_tabs"])
 
 	data["existing_shuttle"] = null
 
@@ -922,3 +922,4 @@ SUBSYSTEM_DEF(shuttle)
 //		log_game("Round end vote passed. Shuttle has been auto-called.")
 //		message_admins("Round end vote passed. Shuttle has been auto-called.")
 	emergencyNoRecall = TRUE
+

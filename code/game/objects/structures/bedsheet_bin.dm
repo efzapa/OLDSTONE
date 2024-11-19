@@ -23,6 +23,10 @@ LINEN BINS
 	dog_fashion = /datum/dog_fashion/head/ghost
 	var/list/dream_messages = list("white")
 
+/obj/item/bedsheet/attack(mob/living/M, mob/user)
+	if(!attempt_initiate_surgery(src, M, user))
+		..()
+
 /obj/item/bedsheet/attack_self(mob/user)
 	if(!user.CanReach(src))		//No telekenetic grabbing.
 		return
@@ -30,12 +34,12 @@ LINEN BINS
 		return
 	if(layer == initial(layer))
 		layer = ABOVE_MOB_LAYER
-		to_chat(user, span_notice("I cover myself with [src]."))
+		to_chat(user, "<span class='notice'>I cover myself with [src].</span>")
 		pixel_x = 0
 		pixel_y = 0
 	else
 		layer = initial(layer)
-		to_chat(user, span_notice("I smooth [src] out beneath you."))
+		to_chat(user, "<span class='notice'>I smooth [src] out beneath you.</span>")
 	add_fingerprint(user)
 	return
 
@@ -45,7 +49,7 @@ LINEN BINS
 		transfer_fingerprints_to(C)
 		C.add_fingerprint(user)
 		qdel(src)
-		to_chat(user, span_notice("I tear [src] up."))
+		to_chat(user, "<span class='notice'>I tear [src] up.</span>")
 	else
 		return ..()
 
@@ -291,7 +295,7 @@ LINEN BINS
 
 /obj/item/bedsheet/dorms/Initialize()
 	..()
-	var/type = pickweight(list("Colors" = 80, "Special" = 20))
+	var/type = pick_weight(list("Colors" = 80, "Special" = 20))
 	switch(type)
 		if("Colors")
 			type = pick(list(/obj/item/bedsheet,
@@ -362,7 +366,7 @@ LINEN BINS
 			return
 		sheets.Add(I)
 		amount++
-		to_chat(user, span_notice("I tuck [I] in [src]."))
+		to_chat(user, "<span class='notice'>I tuck [I] in [src].</span>")
 		update_icon()
 
 	else if(default_unfasten_wrench(user, I, 5))
@@ -381,10 +385,10 @@ LINEN BINS
 
 	else if(amount && !hidden && I.w_class < WEIGHT_CLASS_BULKY)	//make sure there's sheets to hide it among, make sure nothing else is hidden in there.
 		if(!user.transferItemToLoc(I, src))
-			to_chat(user, span_warning("\The [I] is stuck to your hand, you cannot hide it among the sheets!"))
+			to_chat(user, "<span class='warning'>\The [I] is stuck to your hand, you cannot hide it among the sheets!</span>")
 			return
 		hidden = I
-		to_chat(user, span_notice("I hide [I] among the sheets."))
+		to_chat(user, "<span class='notice'>I hide [I] among the sheets.</span>")
 
 
 /obj/structure/bedsheetbin/attack_paw(mob/user)
@@ -411,12 +415,12 @@ LINEN BINS
 
 		B.forceMove(drop_location())
 		user.put_in_hands(B)
-		to_chat(user, span_notice("I take [B] out of [src]."))
+		to_chat(user, "<span class='notice'>I take [B] out of [src].</span>")
 		update_icon()
 
 		if(hidden)
 			hidden.forceMove(drop_location())
-			to_chat(user, span_notice("[hidden] falls out of [B]!"))
+			to_chat(user, "<span class='notice'>[hidden] falls out of [B]!</span>")
 			hidden = null
 
 
@@ -434,7 +438,7 @@ LINEN BINS
 			B = new /obj/item/bedsheet(loc)
 
 		B.forceMove(drop_location())
-		to_chat(user, span_notice("I telekinetically remove [B] from [src]."))
+		to_chat(user, "<span class='notice'>I telekinetically remove [B] from [src].</span>")
 		update_icon()
 
 		if(hidden)

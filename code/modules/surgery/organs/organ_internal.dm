@@ -27,7 +27,7 @@
 	var/low_threshold_cleared
 	dropshrink = 0.5
 
-/obj/item/organ/proc/Insert(mob/living/carbon/M, special = FALSE, drop_if_replaced = TRUE)
+/obj/item/organ/proc/Insert(mob/living/carbon/M, special = 0, drop_if_replaced = TRUE)
 	if(!iscarbon(M) || owner == M)
 		return
 
@@ -49,7 +49,7 @@
 	STOP_PROCESSING(SSobj, src)
 
 //Special is for instant replacement like autosurgeons
-/obj/item/organ/proc/Remove(mob/living/carbon/M, special = FALSE, drop_if_replaced = TRUE)
+/obj/item/organ/proc/Remove(mob/living/carbon/M, special = FALSE)
 	owner = null
 	if(M)
 		M.internal_organs -= src
@@ -60,7 +60,6 @@
 	for(var/X in actions)
 		var/datum/action/A = X
 		A.Remove(M)
-	update_icon()
 //	START_PROCESSING(SSobj, src)
 
 
@@ -88,12 +87,12 @@
 	. = ..()
 	if(organ_flags & ORGAN_FAILING)
 		if(status == ORGAN_ROBOTIC)
-			. += span_warning("[src] seems to be broken!")
+			. += "<span class='warning'>[src] seems to be broken!</span>"
 			return
-		. += span_warning("[src] has decayed for too long, and has turned a sickly color! It doesn't look like it will work anymore!")
+		. += "<span class='warning'>[src] has decayed for too long, and has turned a sickly color! It doesn't look like it will work anymore!</span>"
 		return
 	if(damage > high_threshold)
-		. += span_warning("[src] is starting to look discolored.")
+		. += "<span class='warning'>[src] is starting to look discolored.</span>"
 
 
 /obj/item/organ/proc/prepare_eat(mob/living/carbon/human/user)
@@ -110,7 +109,7 @@
 	name = "appendix"
 	icon_state = "appendix"
 	icon = 'icons/obj/surgery.dmi'
-	list_reagents = list(/datum/reagent/consumable/nutriment = 5, /datum/reagent/organpoison = 1)
+	list_reagents = list(/datum/reagent/consumable/nutriment = 3, /datum/reagent/berrypoison = 1)
 	foodtype = RAW | MEAT | GROSS
 	eat_effect = /datum/status_effect/debuff/uncookedfood
 
@@ -163,15 +162,13 @@
   * description: By checking our current damage against our previous damage, we can decide whether we've passed an organ threshold.
   *				 If we have, send the corresponding threshold message to the owner, if such a message exists.
   */
-/obj/item/organ/proc/check_damage_thresholds(mob/M)
+/obj/item/organ/proc/check_damage_thresholds(M)
 	if(damage == prev_damage)
 		return
 	var/delta = damage - prev_damage
 	if(delta > 0)
 		if(damage >= maxHealth)
 			organ_flags |= ORGAN_FAILING
-			if((organ_flags & ORGAN_VITAL) && M && (M.stat < DEAD) && !(M.status_flags & GODMODE))
-				M.death()
 			return now_failing
 		if(damage > high_threshold && prev_damage <= high_threshold)
 			return high_threshold_passed

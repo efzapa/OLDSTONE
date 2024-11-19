@@ -3,28 +3,26 @@
 	result = /obj/structure/gravemarker
 	reqs = list(/obj/item/grown/log/tree/stick = 1)
 	time = 10 SECONDS
-	verbage_simple = "tie together"
-	verbage = "ties together"
+	verbage = "tie"
 	craftsound = 'sound/foley/Building-01.ogg'
 	structurecraft = /obj/structure/closet/dirthole
 	craftdiff = 0
 
 /datum/crafting_recipe/roguetown/gravemarker/TurfCheck(mob/user, turf/T)
 	if(!(locate(/obj/structure/closet/dirthole) in T))
-		to_chat(user, span_warning("There is no grave here."))
+		to_chat(user, "<span class='warning'>There is no grave here.</span>")
 		return FALSE
 	for(var/obj/structure/closet/dirthole/D in T)
 		if(D.stage != 4)
-			to_chat(user, span_warning("The grave isn't covered."))
+			to_chat(user, "<span class='warning'>I can't.</span>")
 			return FALSE
 	if(locate(/obj/structure/gravemarker) in T)
-		to_chat(user, span_warning("This grave is already hallowed."))
+		to_chat(user, "<span class='warning'>This grave is already hallowed.</span>")
 		return FALSE
 	return TRUE
 
 /obj/structure/gravemarker
 	name = "grave marker"
-	desc = "A simple marker honouring the departed.."
 	icon = 'icons/turf/roguefloor.dmi'
 	icon_state = "gravemarker1"
 	density = FALSE

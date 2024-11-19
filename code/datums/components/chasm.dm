@@ -81,7 +81,7 @@
 			if(istype(H.belt, /obj/item/wormhole_jaunter))
 				var/obj/item/wormhole_jaunter/J = H.belt
 				//To freak out any bystanders
-				H.visible_message(span_boldwarning("[H] falls into [parent]!"))
+				H.visible_message("<span class='boldwarning'>[H] falls into [parent]!</span>")
 				J.chasm_react(H)
 				return FALSE
 	return TRUE
@@ -95,8 +95,8 @@
 
 	if(T)
 		// send to the turf below
-		AM.visible_message(span_boldwarning("[AM] falls into [parent]!"), span_danger("[fall_message]"))
-		T.visible_message(span_boldwarning("[AM] falls from above!"))
+		AM.visible_message("<span class='boldwarning'>[AM] falls into [parent]!</span>", "<span class='danger'>[fall_message]</span>")
+		T.visible_message("<span class='boldwarning'>[AM] falls from above!</span>")
 		AM.forceMove(T)
 		if(isliving(AM))
 			var/mob/living/L = AM
@@ -106,7 +106,7 @@
 
 	else
 		// send to oblivion
-		AM.visible_message(span_boldwarning("[AM] falls into [parent]!"), span_danger("[oblivion_message]"))
+		AM.visible_message("<span class='boldwarning'>[AM] falls into [parent]!</span>", "<span class='danger'>[oblivion_message]</span>")
 		if (isliving(AM))
 			var/mob/living/L = AM
 			L.notransform = TRUE
@@ -136,7 +136,7 @@
 		qdel(AM)
 		if(AM && !QDELETED(AM))	//It's indestructible
 			var/atom/parent = src.parent
-			parent.visible_message(span_boldwarning("[parent] spits out [AM]!"))
+			parent.visible_message("<span class='boldwarning'>[parent] spits out [AM]!</span>")
 			AM.alpha = oldalpha
 			AM.color = oldcolor
 			AM.transform = oldtransform

@@ -36,10 +36,6 @@ GLOBAL_LIST_EMPTY(antagonists)
 	owner = null
 	return ..()
 
-//Called after antags choose a new name with choose_name_popup
-/datum/antagonist/proc/after_name_change()
-	return
-
 /datum/antagonist/proc/examine_friendorfoe(datum/antagonist/examined_datum,mob/examiner,mob/examined)
 	return
 
@@ -90,7 +86,7 @@ GLOBAL_LIST_EMPTY(antagonists)
 		if(removing) // They're a clown becoming an antag, remove clumsy
 			H.dna.remove_mutation(CLOWNMUT)
 			if(!silent && message)
-				to_chat(H, span_boldnotice("[message]"))
+				to_chat(H, "<span class='boldnotice'>[message]</span>")
 		else
 			H.dna.add_mutation(CLOWNMUT) // We're removing their antag status, add back clumsy
 
@@ -180,10 +176,10 @@ GLOBAL_LIST_EMPTY(antagonists)
 				break
 
 	if(objectives.len == 0 || objectives_complete)
-		report += span_greentextbig("The [name] was successful!")
+		report += "<span class='greentext big'>The [name] was successful!</span>"
 	else
 		testing("redtext")
-		report += span_redtextbig("The [name] has failed!")
+		report += "<span class='redtext big'>The [name] has failed!</span>"
 
 	return report.Join("<br>")
 

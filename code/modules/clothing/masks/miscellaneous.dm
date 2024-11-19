@@ -12,7 +12,7 @@
 	if(iscarbon(user))
 		var/mob/living/carbon/C = user
 		if(src == C.wear_mask)
-			to_chat(user, span_warning("I need help taking this off!"))
+			to_chat(user, "<span class='warning'>I need help taking this off!</span>")
 			return
 	..()
 
@@ -28,7 +28,7 @@
 	visor_flags_cover = MASKCOVERSMOUTH
 	gas_transfer_coefficient = 0.9
 	permeability_coefficient = 0.01
-	armor = list("blunt" = 0, "slash" = 5, "stab" = 5, "bullet" = 0, "laser" = 0,"energy" = 0, "bomb" = 0, "bio" = 25, "rad" = 0, "fire" = 0, "acid" = 0)
+	armor = list("melee" = 0, "bullet" = 0, "laser" = 0,"energy" = 0, "bomb" = 0, "bio" = 25, "rad" = 0, "fire" = 0, "acid" = 0)
 	actions_types = list(/datum/action/item_action/adjust)
 
 /obj/item/clothing/mask/surgical/attack_self(mob/user)
@@ -80,7 +80,7 @@
 	modifies_speech = TRUE
 
 /obj/item/clothing/mask/pig/handle_speech(datum/source, list/speech_args)
-	if(!CHECK_BITFIELD(clothing_flags, VOICEBOX_DISABLED))
+	if(clothing_flags & VOICEBOX_DISABLED)
 		speech_args[SPEECH_MESSAGE] = pick("Oink!","Squeeeeeeee!","Oink Oink!")
 
 /obj/item/clothing/mask/pig/cursed
@@ -106,7 +106,7 @@
 	modifies_speech = TRUE
 
 /obj/item/clothing/mask/frog/handle_speech(datum/source, list/speech_args) //whenever you speak
-	if(!CHECK_BITFIELD(clothing_flags, VOICEBOX_DISABLED))
+	if(clothing_flags & VOICEBOX_DISABLED)
 		if(prob(5)) //sometimes, the angry spirit finds others words to speak.
 			speech_args[SPEECH_MESSAGE] = pick("HUUUUU!!","SMOOOOOKIN'!!","Hello my baby, hello my honey, hello my rag-time gal.", "Feels bad, man.", "GIT DIS GUY OFF ME!!" ,"SOMEBODY STOP ME!!", "NORMIES, GET OUT!!")
 		else
@@ -122,7 +122,7 @@
 /obj/item/clothing/mask/frog/cursed/equipped(mob/user, slot)
 	var/mob/living/carbon/C = user
 	if(C.wear_mask == src && HAS_TRAIT_FROM(src, TRAIT_NODROP, CURSED_MASK_TRAIT))
-		to_chat(user, span_danger("[src] was cursed! Ree!!"))
+		to_chat(user, "<span class='danger'>[src] was cursed! Ree!!</span>")
 	return ..()
 
 /obj/item/clothing/mask/cowmask
@@ -135,7 +135,7 @@
 	modifies_speech = TRUE
 
 /obj/item/clothing/mask/cowmask/handle_speech(datum/source, list/speech_args)
-	if(!CHECK_BITFIELD(clothing_flags, VOICEBOX_DISABLED))
+	if(clothing_flags & VOICEBOX_DISABLED)
 		speech_args[SPEECH_MESSAGE] = pick("Moooooooo!","Moo!","Moooo!")
 
 /obj/item/clothing/mask/cowmask/cursed
@@ -159,7 +159,7 @@
 	clothing_flags = VOICEBOX_TOGGLABLE
 
 /obj/item/clothing/mask/horsehead/handle_speech(datum/source, list/speech_args)
-	if(!CHECK_BITFIELD(clothing_flags, VOICEBOX_DISABLED))
+	if(clothing_flags & VOICEBOX_DISABLED)
 		speech_args[SPEECH_MESSAGE] = pick("NEEIIGGGHHHH!", "NEEEIIIIGHH!", "NEIIIGGHH!", "HAAWWWWW!", "HAAAWWW!")
 
 /obj/item/clothing/mask/horsehead/cursed
@@ -243,10 +243,10 @@
 	if(iscarbon(user))
 		var/mob/living/carbon/C = user
 		if((C.get_item_by_slot(SLOT_HEAD == src)) || (C.get_item_by_slot(SLOT_WEAR_MASK) == src))
-			to_chat(user, span_warning("I can't tie [src] while wearing it!"))
+			to_chat(user, "<span class='warning'>I can't tie [src] while wearing it!</span>")
 			return
 	if(slot_flags & ITEM_SLOT_HEAD)
-		to_chat(user, span_warning("I must undo [src] before you can tie it into a neckerchief!"))
+		to_chat(user, "<span class='warning'>I must undo [src] before you can tie it into a neckerchief!</span>")
 	else
 		if(user.is_holding(src))
 			var/obj/item/clothing/neck/neckerchief/nk = new(src)
@@ -257,10 +257,10 @@
 			var/currentHandIndex = user.get_held_index_of_item(src)
 			user.transferItemToLoc(src, null)
 			user.put_in_hand(nk, currentHandIndex)
-			user.visible_message(span_notice("I tie [src] up like a neckerchief."), span_notice("[user] ties [src] up like a neckerchief."))
+			user.visible_message("<span class='notice'>I tie [src] up like a neckerchief.</span>", "<span class='notice'>[user] ties [src] up like a neckerchief.</span>")
 			qdel(src)
 		else
-			to_chat(user, span_warning("I must be holding [src] in order to tie it!"))
+			to_chat(user, "<span class='warning'>I must be holding [src] in order to tie it!</span>")
 
 /obj/item/clothing/mask/bandana/red
 	name = "red bandana"

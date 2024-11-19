@@ -127,6 +127,9 @@
 	can_buckle = FALSE
 	aggressive = 1
 
+/mob/living/simple_animal/hostile/retaliate/rogue/saiga/saigakid/get_emote_frequency()
+	return 55100
+
 /mob/living/simple_animal/hostile/retaliate/rogue/saiga/simple_limb_hit(zone)
 	if(!zone)
 		return ""
@@ -139,7 +142,7 @@
 			return "snout"
 		if(BODY_ZONE_PRECISE_MOUTH)
 			return "snout"
-		if(BODY_ZONE_PRECISE_SKULL)
+		if(BODY_ZONE_PRECISE_HAIR)
 			return "head"
 		if(BODY_ZONE_PRECISE_EARS)
 			return "head"
@@ -189,8 +192,8 @@
 	mob_biotypes = MOB_ORGANIC|MOB_BEAST
 	attack_verb_continuous = "headbutts"
 	attack_verb_simple = "headbutt"
-	health = 400
-	maxHealth = 400
+	health = 200
+	maxHealth = 200
 	melee_damage_lower = 60
 	melee_damage_upper = 90
 	environment_smash = ENVIRONMENT_SMASH_NONE
@@ -286,7 +289,7 @@
 			return "snout"
 		if(BODY_ZONE_PRECISE_MOUTH)
 			return "snout"
-		if(BODY_ZONE_PRECISE_SKULL)
+		if(BODY_ZONE_PRECISE_HAIR)
 			return "head"
 		if(BODY_ZONE_PRECISE_EARS)
 			return "head"
@@ -341,6 +344,10 @@
 	tame = TRUE
 	can_buckle = FALSE
 	aggressive = 1
+
+/mob/living/simple_animal/hostile/retaliate/rogue/saiga/saigaboy/get_emote_frequency()
+	return 55100
+
 /mob/living/simple_animal/hostile/retaliate/rogue/saiga/tame
 	tame = TRUE
 

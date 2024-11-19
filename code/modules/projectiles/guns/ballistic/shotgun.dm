@@ -85,7 +85,7 @@
 
 /obj/item/gun/ballistic/shotgun/automatic/dual_tube/examine(mob/user)
 	. = ..()
-	. += span_notice("Alt-click to pump it.")
+	. += "<span class='notice'>Alt-click to pump it.</span>"
 
 /obj/item/gun/ballistic/shotgun/automatic/dual_tube/Initialize()
 	. = ..()
@@ -105,9 +105,9 @@
 	alternate_magazine = current_mag
 	toggled = !toggled
 	if(toggled)
-		to_chat(user, span_notice("I switch to tube B."))
+		to_chat(user, "<span class='notice'>I switch to tube B.</span>")
 	else
-		to_chat(user, span_notice("I switch to tube A."))
+		to_chat(user, "<span class='notice'>I switch to tube A.</span>")
 
 /obj/item/gun/ballistic/shotgun/automatic/dual_tube/AltClick(mob/living/user)
 	if(!istype(user) || !user.canUseTopic(src, BE_CLOSE, ismonkey(user)))
@@ -206,11 +206,11 @@
 		var/obj/item/stack/cable_coil/C = A
 		if(C.use(10))
 			slot_flags = ITEM_SLOT_BACK
-			to_chat(user, span_notice("I tie the lengths of cable to the shotgun, making a sling."))
+			to_chat(user, "<span class='notice'>I tie the lengths of cable to the shotgun, making a sling.</span>")
 			slung = TRUE
 			update_icon()
 		else
-			to_chat(user, span_warning("I need at least ten lengths of cable if you want to make a sling!"))
+			to_chat(user, "<span class='warning'>I need at least ten lengths of cable if you want to make a sling!</span>")
 
 /obj/item/gun/ballistic/shotgun/doublebarrel/improvised/update_icon()
 	..()
@@ -259,19 +259,19 @@
 	if(!istype(user) || !user.canUseTopic(src, BE_CLOSE, ismonkey(user)))
 		return
 	if(toggled)
-		to_chat(user,span_notice("I switch to the shotgun."))
+		to_chat(user,"<span class='notice'>I switch to the shotgun.</span>")
 		fire_sound = initial(fire_sound)
 	else
-		to_chat(user,span_notice("I switch to the hook."))
+		to_chat(user,"<span class='notice'>I switch to the hook.</span>")
 		fire_sound = 'sound/blank.ogg'
 	toggled = !toggled
 
 /obj/item/gun/ballistic/shotgun/doublebarrel/hook/examine(mob/user)
 	. = ..()
 	if(toggled)
-		. += span_notice("Alt-click to switch to the shotgun.")
+		. += "<span class='notice'>Alt-click to switch to the shotgun.</span>"
 	else
-		. += span_notice("Alt-click to switch to the hook.")
+		. += "<span class='notice'>Alt-click to switch to the hook.</span>"
 
 /obj/item/gun/ballistic/shotgun/doublebarrel/hook/afterattack(atom/target, mob/living/user, flag, params)
 	if(toggled)

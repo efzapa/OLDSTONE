@@ -312,8 +312,6 @@
 	var/list/cached_addictions = addiction_list
 	if(C)
 		expose_temperature(C.bodytemperature, 0.25)
-		if(HAS_TRAIT(C, TRAIT_CRACKHEAD))
-			can_overdose = FALSE
 	var/need_mob_update = 0
 	for(var/reagent in cached_reagents)
 		var/datum/reagent/R = reagent
@@ -378,7 +376,7 @@
 	update_total()
 
 /datum/reagents/proc/remove_addiction(datum/reagent/R)
-	to_chat(my_atom, span_notice("I feel like you've gotten over your need for [R.name]."))
+	to_chat(my_atom, "<span class='notice'>I feel like you've gotten over your need for [R.name].</span>")
 	SEND_SIGNAL(my_atom, COMSIG_CLEAR_MOOD_EVENT, "[R.type]_overdose")
 	addiction_list.Remove(R)
 	qdel(R)
@@ -514,14 +512,14 @@
 
 					if(selected_reaction.mix_message)
 						for(var/mob/M in seen)
-							to_chat(M, span_notice("[iconhtml] [selected_reaction.mix_message]"))
+							to_chat(M, "<span class='notice'>[iconhtml] [selected_reaction.mix_message]</span>")
 
 				if(istype(cached_my_atom, /obj/item/slime_extract))
 					var/obj/item/slime_extract/ME2 = my_atom
 					ME2.Uses--
 					if(ME2.Uses <= 0) // give the notification that the slime core is dead
 						for(var/mob/M in seen)
-							to_chat(M, span_notice("[iconhtml] \The [my_atom]'s power is consumed in the reaction."))
+							to_chat(M, "<span class='notice'>[iconhtml] \The [my_atom]'s power is consumed in the reaction.</span>")
 							ME2.name = "used slime extract"
 							ME2.desc = ""
 
@@ -870,7 +868,7 @@
 						tastes[taste] += amount
 					else
 						tastes[taste] = amount
-			else if(R.taste_description)
+			else
 				var/taste_desc = R.taste_description
 				var/taste_amount = R.volume * R.taste_mult
 				if(taste_desc in tastes)

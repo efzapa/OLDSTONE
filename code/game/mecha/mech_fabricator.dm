@@ -218,7 +218,7 @@
 			remove_from_queue(1)
 		else
 			return FALSE
-		D = listgetindex(queue, 1)
+		D = LAZYACCESS(queue, 1)
 	say("Queue processing finished successfully.")
 
 /obj/machinery/mecha_part_fabricator/proc/list_queue()
@@ -438,10 +438,10 @@
 
 /obj/machinery/mecha_part_fabricator/proc/is_insertion_ready(mob/user)
 	if(panel_open)
-		to_chat(user, span_warning("I can't load [src] while it's opened!"))
+		to_chat(user, "<span class='warning'>I can't load [src] while it's opened!</span>")
 		return FALSE
 	if(being_built)
-		to_chat(user, span_warning("\The [src] is currently processing! Please wait until completion."))
+		to_chat(user, "<span class='warning'>\The [src] is currently processing! Please wait until completion.</span>")
 		return FALSE
 
 	return TRUE

@@ -29,7 +29,7 @@
 /datum/antagonist/brother/on_removal()
 	SSticker.mode.brothers -= owner
 	if(owner.current)
-		to_chat(owner.current,span_danger("I are no longer the [special_role]!"))
+		to_chat(owner.current,"<span class='danger'>I are no longer the [special_role]!</span>")
 	owner.special_role = null
 	return ..()
 
@@ -64,7 +64,7 @@
 
 /datum/antagonist/brother/greet()
 	var/brother_text = get_brother_names()
-	to_chat(owner.current, span_alertsyndie("I are the [owner.special_role] of [brother_text]."))
+	to_chat(owner.current, "<span class='alertsyndie'>I are the [owner.special_role] of [brother_text].</span>")
 	to_chat(owner.current, "The Syndicate only accepts those that have proven themselves. Prove myself and prove my [team.member_name]s by completing my objectives together!")
 	owner.announce_objectives()
 	give_meeting_area()
@@ -80,7 +80,7 @@
 			continue
 		candidates[L.mind.name] = L.mind
 
-	var/choice = input(admin,"Choose the blood brother.", "Brother") as null|anything in sortNames(candidates)
+	var/choice = input(admin,"Choose the blood brother.", "Brother") as null|anything in sort_names(candidates)
 	if(!choice)
 		return
 	var/datum/mind/bro = candidates[choice]
@@ -119,7 +119,7 @@
 /datum/team/brother_team/roundend_report()
 	var/list/parts = list()
 
-	parts += span_header("The blood brothers of [name] were:")
+	parts += "<span class='header'>The blood brothers of [name] were:</span>"
 	for(var/datum/mind/M in members)
 		parts += printplayer(M)
 	var/win = TRUE
@@ -132,9 +132,9 @@
 			win = FALSE
 		objective_count++
 	if(win)
-		parts += span_greentext("The blood brothers were successful!")
+		parts += "<span class='greentext'>The blood brothers were successful!</span>"
 	else
-		parts += span_redtext("The blood brothers have failed!")
+		parts += "<span class='redtext'>The blood brothers have failed!</span>"
 
 	return "<div class='panel redborder'>[parts.Join("<br>")]</div>"
 

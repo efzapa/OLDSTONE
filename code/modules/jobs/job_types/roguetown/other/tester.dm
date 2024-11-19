@@ -1,7 +1,7 @@
 /datum/job/roguetown/tester
 	title = "Tester"
-	flag = TESTER
-	department_flag = SLOP
+	flag = GRAVEDIGGER
+	department_flag = PEASANTS
 	faction = "Station"
 #ifdef TESTSERVER
 	total_positions = 99
@@ -10,13 +10,21 @@
 	total_positions = 0
 	spawn_positions = 0
 #endif
-	min_pq = null //no pq
-	max_pq = null
-
+	allowed_sexes = list("male", "female")
+	allowed_races = list("Humen",
+	"Humen",
+	"Elf",
+	"Elf",
+	"Half-Elf",
+	"Dark Elf",
+	"Tiefling",
+	"Dwarf",
+	"Dwarf"
+	)
 	tutorial = ""
 	outfit = /datum/outfit/job/roguetown/tester
 	plevel_req = 0
-	display_order = JDO_DESERT_RIDER
+	display_order = JDO_MERCENARY
 
 /datum/outfit/job/roguetown/tester/pre_equip(mob/living/carbon/human/H)
 	..()
@@ -41,8 +49,7 @@
 		H.mind.adjust_skillrank(/datum/skill/misc/swimming, rand(1,5), TRUE)
 		H.mind.adjust_skillrank(/datum/skill/misc/climbing, rand(1,5), TRUE)
 		H.mind.adjust_skillrank(/datum/skill/misc/sneaking, rand(1,5), TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/maces, rand(1,5), TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/axes, rand(1,5), TRUE)
+		H.mind.adjust_skillrank(/datum/skill/combat/axesmaces, rand(1,5), TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/bows, rand(1,5), TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/crossbows, rand(1,5), TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/wrestling, rand(1,5), TRUE)

@@ -38,7 +38,7 @@
 	var/list/display_names = generate_display_names()
 	if(!display_names.len)
 		return
-	var/choice = input(M,"Which item would you like to order?","Select an Item") as null|anything in sortList(display_names)
+	var/choice = input(M,"Which item would you like to order?","Select an Item") as null|anything in sort_list(display_names)
 	if(!choice || !M.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
 		return
 
@@ -47,7 +47,7 @@
 	if(!uses)
 		qdel(src)
 	else
-		to_chat(M, span_notice("[uses] use[uses > 1 ? "s" : ""] remaining on the [src]."))
+		to_chat(M, "<span class='notice'>[uses] use[uses > 1 ? "s" : ""] remaining on the [src].</span>")
 
 /obj/item/choice_beacon/proc/spawn_option(obj/choice,mob/living/M)
 	var/obj/new_item = new choice()
@@ -129,7 +129,7 @@
 
 /obj/item/choice_beacon/augments/spawn_option(obj/choice,mob/living/M)
 	new choice(get_turf(M))
-	to_chat(M, span_hear("I hear something crackle from the beacon for a moment before a voice speaks. \"Please stand by for a message from S.E.L.F. Message as follows: <b>Item request received. Your package has been transported, use the autosurgeon supplied to apply the upgrade.</b> Message ends.\""))
+	to_chat(M, "<span class='hear'>I hear something crackle from the beacon for a moment before a voice speaks. \"Please stand by for a message from S.E.L.F. Message as follows: <b>Item request received. Your package has been transported, use the autosurgeon supplied to apply the upgrade.</b> Message ends.\"</span>")
 
 /obj/item/skub
 	desc = ""
@@ -140,7 +140,7 @@
 	attack_verb = list("skubbed")
 
 /obj/item/skub/suicide_act(mob/living/user)
-	user.visible_message(span_suicide("[user] has declared themself as anti-skub! The skub tears them apart!"))
+	user.visible_message("<span class='suicide'>[user] has declared themself as anti-skub! The skub tears them apart!</span>")
 
 	user.gib()
 	playsound(src, 'sound/blank.ogg', 50, TRUE, -1)

@@ -85,7 +85,7 @@
 		mood_change = 2
 
 /datum/mood_event/table_headsmash
-	description = span_warning("My fucking head, that hurt...")
+	description = "<span class='warning'>My fucking head, that hurt...</span>"
 	mood_change = -3
 	timeout = 3 MINUTES
 

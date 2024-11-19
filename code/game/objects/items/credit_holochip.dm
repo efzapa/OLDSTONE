@@ -16,7 +16,7 @@
 /obj/item/holochip/examine(mob/user)
 	. = ..()
 	. += "<span class='notice'>It's loaded with [credits] credit[( credits > 1 ) ? "s" : ""]</span>\n"+\
-	span_notice("Alt-Click to split.")
+	"<span class='notice'>Alt-Click to split.</span>"
 
 /obj/item/holochip/get_item_credit_value()
 	return credits
@@ -77,7 +77,7 @@
 	if(istype(I, /obj/item/holochip))
 		var/obj/item/holochip/H = I
 		credits += H.credits
-		to_chat(user, span_notice("I insert the credits into [src]."))
+		to_chat(user, "<span class='notice'>I insert the credits into [src].</span>")
 		update_icon()
 		qdel(H)
 
@@ -95,7 +95,7 @@
 				H.forceMove(user.drop_location())
 			add_fingerprint(user)
 		H.add_fingerprint(user)
-		to_chat(user, span_notice("I extract [split_amount] credits into a new holochip."))
+		to_chat(user, "<span class='notice'>I extract [split_amount] credits into a new holochip.</span>")
 
 /obj/item/holochip/emp_act(severity)
 	. = ..()
@@ -103,5 +103,5 @@
 		return
 	var/wipe_chance = 60 / severity
 	if(prob(wipe_chance))
-		visible_message(span_warning("[src] fizzles and disappears!"))
+		visible_message("<span class='warning'>[src] fizzles and disappears!</span>")
 		qdel(src) //rip cash

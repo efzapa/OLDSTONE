@@ -2,15 +2,14 @@
 	set category = "Admin"
 	set name = "Show Borg Panel"
 	set desc = ""
-	set hidden = 1
 
 	if(!check_rights(R_ADMIN))
 		return
 
 	if (!istype(borgo, /mob/living/silicon/robot))
-		borgo = input("Select a borg", "Select a borg", null, null) as null|anything in sortNames(GLOB.silicon_mobs)
+		borgo = input("Select a borg", "Select a borg", null, null) as null|anything in sort_names(GLOB.silicon_mobs)
 	if (!istype(borgo, /mob/living/silicon/robot))
-		to_chat(usr, span_warning("Borg is required for borgpanel"))
+		to_chat(usr, "<span class='warning'>Borg is required for borgpanel</span>")
 
 	var/datum/borgpanel/borgpanel = new(usr, borgo)
 

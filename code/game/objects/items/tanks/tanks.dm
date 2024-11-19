@@ -13,7 +13,7 @@
 	throw_range = 4
 	custom_materials = list(/datum/material/iron = 500)
 	actions_types = list(/datum/action/item_action/set_internals)
-	armor = list("blunt" = 0, "slash" = 0, "stab" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 10, "bio" = 0, "rad" = 0, "fire" = 80, "acid" = 30)
+	armor = list("melee" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 10, "bio" = 0, "rad" = 0, "fire" = 80, "acid" = 30)
 	var/datum/gas_mixture/air_contents = null
 	var/distribute_pressure = ONE_ATMOSPHERE
 	var/integrity = 3
@@ -28,24 +28,24 @@
 		return
 
 	if(H.internal == src)
-		to_chat(H, span_notice("I close [src] valve."))
+		to_chat(H, "<span class='notice'>I close [src] valve.</span>")
 		H.internal = null
 		H.update_internals_hud_icon(0)
 	else
 		if(!H.getorganslot(ORGAN_SLOT_BREATHING_TUBE))
 			if(!H.wear_mask)
-				to_chat(H, span_warning("I need a mask!"))
+				to_chat(H, "<span class='warning'>I need a mask!</span>")
 				return
 			if(H.wear_mask.mask_adjusted)
 				H.wear_mask.adjustmask(H)
 			if(!(H.wear_mask.clothing_flags & MASKINTERNALS))
-				to_chat(H, span_warning("[H.wear_mask] can't use [src]!"))
+				to_chat(H, "<span class='warning'>[H.wear_mask] can't use [src]!</span>")
 				return
 
 		if(H.internal)
-			to_chat(H, span_notice("I switch your internals to [src]."))
+			to_chat(H, "<span class='notice'>I switch your internals to [src].</span>")
 		else
-			to_chat(H, span_notice("I open [src] valve."))
+			to_chat(H, "<span class='notice'>I open [src] valve.</span>")
 		H.internal = src
 		H.update_internals_hud_icon(1)
 	H.update_action_buttons_icon()
@@ -78,10 +78,10 @@
 		icon = src.loc
 	if(!in_range(src, user) && !isobserver(user))
 		if(icon == src)
-			. += span_notice("If you want any more information you'll need to get closer.")
+			. += "<span class='notice'>If you want any more information you'll need to get closer.</span>"
 		return
 
-	. += span_notice("The pressure gauge reads [round(src.air_contents.return_pressure(),0.01)] kPa.")
+	. += "<span class='notice'>The pressure gauge reads [round(src.air_contents.return_pressure(),0.01)] kPa.</span>"
 
 	var/celsius_temperature = src.air_contents.temperature-T0C
 	var/descriptive
@@ -99,7 +99,7 @@
 	else
 		descriptive = "furiously hot"
 
-	. += span_notice("It feels [descriptive].")
+	. += "<span class='notice'>It feels [descriptive].</span>"
 
 /obj/item/tank/blob_act(obj/structure/blob/B)
 	if(B && B.loc == loc)
@@ -123,14 +123,14 @@
 
 /obj/item/tank/suicide_act(mob/user)
 	var/mob/living/carbon/human/H = user
-	user.visible_message(span_suicide("[user] is putting [src]'s valve to [user.p_their()] lips! It looks like [user.p_theyre()] trying to commit suicide!"))
+	user.visible_message("<span class='suicide'>[user] is putting [src]'s valve to [user.p_their()] lips! It looks like [user.p_theyre()] trying to commit suicide!</span>")
 	playsound(loc, 'sound/blank.ogg', 10, TRUE, -3)
 	if(!QDELETED(H) && air_contents && air_contents.return_pressure() >= 1000)
 		ADD_TRAIT(H, TRAIT_DISFIGURED, TRAIT_GENERIC)
 		H.inflate_gib()
 		return MANUAL_SUICIDE
 	else
-		to_chat(user, span_warning("There isn't enough pressure in [src] to commit suicide with..."))
+		to_chat(user, "<span class='warning'>There isn't enough pressure in [src] to commit suicide with...</span>")
 	return SHAME
 
 /obj/item/tank/attackby(obj/item/W, mob/user, params)

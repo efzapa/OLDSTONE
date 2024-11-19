@@ -85,38 +85,41 @@ GLOBAL_VAR(moneymaster)
 		playsound(loc, 'sound/misc/beep.ogg', 100, FALSE, -1)
 	update_icon()
 
-proc/select_currency(mob/user)
-	return input(user, "Select a currency:", "Currency Selection") in list("BRONZE", "SILVER", "GOLD", "PLATINUM")
-
 /obj/structure/roguemachine/money/attack_right(mob/user)
 	. = ..()
 	if(.)
 		return
 	user.changeNext_move(CLICK_CD_MELEE)
-	var/currency = select_currency(user)
-	if(currency && Adjacent(user))
-		to_chat(user, "<span class='info'>I pull on the [currency] tongue.</span>")
-		switch(currency)
-			if("PLATINUM")
-				var/zenars = budget/50
-				if(zenars >= 1)
-					for(var/i in 1 to zenars)
-						budget -= 50
-			if("GOLD")
-				var/zenars = budget/10
-				if(zenars >= 1)
-					for(var/i in 1 to zenars)
-						budget -= 10
-			if("SILVER")
-				var/zenars = budget/5
-				if(zenars >= 1)
-					for(var/i in 1 to zenars)
-						budget -= 5
-			if("BRONZE")
-				if(budget >= 1)
-					for(var/i in 1 to budget)
-						budget -= 1
-	update_icon()
+	var/inputt = alert(user,"Gold, Silver, or Bronze?",,"BRONZE","SILVER","GOLD")
+	if(inputt && Adjacent(user))
+		to_chat(user, "<span class='info'>I pull on the [inputt] tongue.</span>")
+		if(inputt == "BRONZE" && budget >= 50)
+			budget2change(budget, user, inputt)
+			budget = 0
+			if(isliving(user))
+				var/mob/living/L = user
+				L.emote("scream")
+				L.Paralyze(50)
+				L.Stun(50)
+				L.visible_message("<span class='danger'>[user] is buried under a mountain of coins!</span>")
+		else
+			budget2change(budget, user, inputt)
+			switch(inputt)
+				if("GOLD")
+					var/zenars = budget/10
+					if(zenars >= 1)
+						for(var/i in 1 to zenars)
+							budget -= 10
+				if("SILVER")
+					var/zenars = budget/5
+					if(zenars >= 1)
+						for(var/i in 1 to zenars)
+							budget -= 5
+				if("BRONZE")
+					if(budget >= 1)
+						for(var/i in 1 to budget)
+							budget -= 1
+		update_icon()
 
 /obj/structure/roguemachine/proc/budget2change(budget, mob/user, specify)
 	var/turf/T
@@ -124,53 +127,49 @@ proc/select_currency(mob/user)
 		T = get_turf(src)
 	else
 		T = get_turf(user)
-	if(!budget || budget <= 0)
+	if(!budget)
 		return
-	budget = floor(budget)
-	var/type_to_put
-	var/zenars_to_put
+	budget = round(budget)
+	var/found
 	if(specify)
+		found = TRUE
+
+		var/type_to_spawn
+		var/zenars
 		switch(specify)
-			if("PLATINUM")
-				zenars_to_put = budget/50
-				type_to_put = /obj/item/roguecoin/xybrium
 			if("GOLD")
-				zenars_to_put = budget/10
-				type_to_put = /obj/item/roguecoin/gold
+				zenars = budget/10
+				type_to_spawn = /obj/item/roguecoin/gold
 			if("SILVER")
-				zenars_to_put = budget/5
-				type_to_put = /obj/item/roguecoin/silver
+				zenars = budget/5
+				type_to_spawn = /obj/item/roguecoin/silver
 			if("BRONZE")
-				zenars_to_put = budget
-				type_to_put = /obj/item/roguecoin/copper
+				zenars = budget
+				type_to_spawn = /obj/item/roguecoin/copper
+		if(zenars < 1)
+			return
+		var/obj/item/roguecoin/G = new type_to_spawn(T)
+		G.set_quantity(floor(zenars))
+		user.put_in_hands(G)
 	else
-		var/highest_found = FALSE
-		var/zenars = floor(budget/10)
-		if(zenars)
-			budget -= zenars * 10
-			highest_found = TRUE
-			type_to_put = /obj/item/roguecoin/gold
-			zenars_to_put = zenars
-		zenars = floor(budget/5)
-		if(zenars)
-			budget -= zenars * 5
-			if(!highest_found)
-				highest_found = TRUE
-				type_to_put = /obj/item/roguecoin/silver
-				zenars_to_put = zenars
-			else
-				new /obj/item/roguecoin/silver(T, zenars)
+		var/zenars = budget/10
+		if(zenars >= 1)
+			for(var/i in 1 to zenars)
+				budget -= 10
+				found = TRUE
+				new /obj/item/roguecoin/gold(T)
+		zenars = budget/5
+		if(zenars >= 1)
+			for(var/i in 1 to zenars)
+				budget -= 5
+				found = TRUE
+				new /obj/item/roguecoin/silver(T)
 		if(budget >= 1)
-			if(!highest_found)
-				type_to_put = /obj/item/roguecoin/copper
-				zenars_to_put = budget
-			else
-				new /obj/item/roguecoin/copper(T, budget)
-	if(!type_to_put || zenars_to_put < 1)
-		return
-	var/obj/item/roguecoin/G = new type_to_put(T, floor(zenars_to_put))
-	user.put_in_hands(G)
-	playsound(T, 'sound/misc/coindispense.ogg', 100, FALSE, -1)
+			for(var/i in 1 to budget)
+				found = TRUE
+				new /obj/item/roguecoin/copper(T)
+	if(found)
+		playsound(T, 'sound/misc/coindispense.ogg', 100, FALSE, -1)
 /*
 /obj/structure/roguemachine/money/attack_right(mob/user)
 	. = ..()

@@ -8,7 +8,12 @@
 		var/datum/objective/purishep/escape_objective = new
 		escape_objective.owner = owner
 		objectives += escape_objective
+		return
 	return ..()
+
+/datum/antagonist/purishep/on_removal()
+	return ..()
+
 
 /datum/antagonist/purishep/greet()
 	owner.announce_objectives()
@@ -31,6 +36,6 @@
 				traitorwin = FALSE
 	if(considered_alive(owner))
 		if(traitorwin)
-			to_chat(owner.current, span_greentext("5/5."))
+			to_chat(owner.current, "<span class='greentext'>5/5.</span>")
 		else
-			to_chat(owner.current, span_redtext("I've FAILED to meet my quota. Someone more capable will be along to replace me."))
+			to_chat(owner.current, "<span class='redtext'>I've FAILED to meet my quota. Someone more capable will be along to replace me.</span>")

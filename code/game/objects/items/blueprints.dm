@@ -101,9 +101,9 @@
 	if(href_list["view_wireset"])
 		legend = href_list["view_wireset"];
 	if(href_list["view_blueprints"])
-		set_viewer(usr, span_notice("I flip the blueprints over to view the complex information diagram."))
+		set_viewer(usr, "<span class='notice'>I flip the blueprints over to view the complex information diagram.</span>")
 	if(href_list["hide_blueprints"])
-		clear_viewer(usr,span_notice("I flip the blueprints over to view the simple information diagram."))
+		clear_viewer(usr,"<span class='notice'>I flip the blueprints over to view the simple information diagram.</span>")
 	if(href_list["refresh"])
 		clear_viewer(usr)
 		set_viewer(usr)
@@ -150,7 +150,9 @@
 		/area/centcom,
 		/area/asteroid,
 		/area/tdome,
-		/area/wizard_station
+		/area/wizard_station,
+		/area/hilbertshotel,
+		/area/hilbertshotelstorage
 	)
 	for (var/type in SPECIALS)
 		if ( istype(A,type) )
@@ -184,12 +186,12 @@
 	if(!str || !length(str) || str==prevname) //cancel
 		return
 	if(length(str) > 50)
-		to_chat(usr, span_warning("The given name is too long. The area's name is unchanged."))
+		to_chat(usr, "<span class='warning'>The given name is too long. The area's name is unchanged.</span>")
 		return
 
 	rename_area(A, str)
 
-	to_chat(usr, span_notice("I rename the '[prevname]' to '[str]'."))
+	to_chat(usr, "<span class='notice'>I rename the '[prevname]' to '[str]'.</span>")
 	log_game("[key_name(usr)] has renamed [prevname] to [str]")
 	A.update_areasize()
 	interact()

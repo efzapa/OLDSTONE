@@ -99,7 +99,7 @@
 
 	else if(W.tool_behaviour == TOOL_SCREWDRIVER && igniter && !lit)
 		status = !status
-		to_chat(user, span_notice("[igniter] is now [status ? "secured" : "unsecured"]!"))
+		to_chat(user, "<span class='notice'>[igniter] is now [status ? "secured" : "unsecured"]!</span>")
 		update_icon()
 		return
 
@@ -120,7 +120,7 @@
 			if(user.transferItemToLoc(W,src))
 				ptank.forceMove(get_turf(src))
 				ptank = W
-				to_chat(user, span_notice("I swap the plasma tank in [src]!"))
+				to_chat(user, "<span class='notice'>I swap the plasma tank in [src]!</span>")
 			return
 		if(!user.transferItemToLoc(W, src))
 			return
@@ -144,22 +144,22 @@
 	if(ptank && isliving(user) && user.canUseTopic(src, BE_CLOSE, ismonkey(user)))
 		user.put_in_hands(ptank)
 		ptank = null
-		to_chat(user, span_notice("I remove the plasma tank from [src]!"))
+		to_chat(user, "<span class='notice'>I remove the plasma tank from [src]!</span>")
 		update_icon()
 
 /obj/item/flamethrower/examine(mob/user)
 	. = ..()
 	if(ptank)
-		. += span_notice("\The [src] has \a [ptank] attached. Alt-click to remove it.")
+		. += "<span class='notice'>\The [src] has \a [ptank] attached. Alt-click to remove it.</span>"
 
 /obj/item/flamethrower/proc/toggle_igniter(mob/user)
 	if(!ptank)
-		to_chat(user, span_notice("Attach a plasma tank first!"))
+		to_chat(user, "<span class='notice'>Attach a plasma tank first!</span>")
 		return
 	if(!status)
-		to_chat(user, span_notice("Secure the igniter first!"))
+		to_chat(user, "<span class='notice'>Secure the igniter first!</span>")
 		return
-	to_chat(user, span_notice("I [lit ? "extinguish" : "ignite"] [src]!"))
+	to_chat(user, "<span class='notice'>I [lit ? "extinguish" : "ignite"] [src]!</span>")
 	lit = !lit
 	if(lit)
 		set_light(1)
@@ -243,7 +243,7 @@
 /obj/item/flamethrower/hit_reaction(mob/living/carbon/human/owner, atom/movable/hitby, attack_text = "the attack", final_block_chance = 0, damage = 0, attack_type = MELEE_ATTACK)
 	var/obj/projectile/P = hitby
 	if(damage && attack_type == PROJECTILE_ATTACK && P.damage_type != STAMINA && prob(15))
-		owner.visible_message(span_danger("\The [attack_text] hits the fueltank on [owner]'s [name], rupturing it! What a shot!"))
+		owner.visible_message("<span class='danger'>\The [attack_text] hits the fueltank on [owner]'s [name], rupturing it! What a shot!</span>")
 		var/turf/target_turf = get_turf(owner)
 		log_game("A projectile ([hitby]) detonated a flamethrower tank held by [key_name(owner)] at [COORD(target_turf)]")
 		igniter.ignite_turf(src,target_turf, release_amount = 100)

@@ -52,9 +52,8 @@
 	var/dynamic_hair_suffix = ""//head > mask for head hair
 	var/dynamic_fhair_suffix = ""//mask > head for facial hair
 	edelay_type = 0
-	var/list/allowed_sex
+	var/list/allowed_sex = list(MALE,FEMALE)
 	var/list/allowed_race = ALL_RACES_LIST
-	var/immune_to_genderswap = FALSE
 	var/armor_class = ARMOR_CLASS_NONE
 
 	sellprice = 1
@@ -104,14 +103,14 @@
 		if(r_sleeve_status == SLEEVE_NOMOD)
 			return
 		if(r_sleeve_status == SLEEVE_TORN)
-			to_chat(user, span_info("It's torn away."))
+			to_chat(user, "<span class='info'>It's torn away.</span>")
 			return
 		if(!shiftheld)
 			if(!do_after(user, 20, target = user))
 				return
 			if(prob(L.STASTR * 8))
 				r_sleeve_status = SLEEVE_TORN
-				user.visible_message(span_notice("[user] tears [src]."))
+				user.visible_message("<span class='notice'>[user] tears [src].</span>")
 				playsound(src, 'sound/foley/cloth_rip.ogg', 50, TRUE)
 				if(r_sleeve_zone == BODY_ZONE_R_ARM)
 					body_parts_covered &= ~ARM_RIGHT
@@ -121,7 +120,7 @@
 				C.color = color
 				user.put_in_hands(C)
 			else
-				user.visible_message(span_warning("[user] tries to tear [src]."))
+				user.visible_message("<span class='warning'>[user] tries to tear [src].</span>")
 		else
 			if(r_sleeve_status == SLEEVE_ROLLED)
 				if(r_sleeve_zone == BODY_ZONE_R_ARM)
@@ -139,14 +138,14 @@
 		if(l_sleeve_status == SLEEVE_NOMOD)
 			return
 		if(l_sleeve_status == SLEEVE_TORN)
-			to_chat(user, span_info("It's torn away."))
+			to_chat(user, "<span class='info'>It's torn away.</span>")
 			return
 		if(!shiftheld) //tear
 			if(!do_after(user, 20, target = user))
 				return
 			if(prob(L.STASTR * 8))
 				l_sleeve_status = SLEEVE_TORN
-				user.visible_message(span_notice("[user] tears [src]."))
+				user.visible_message("<span class='notice'>[user] tears [src].</span>")
 				playsound(src, 'sound/foley/cloth_rip.ogg', 50, TRUE)
 				if(l_sleeve_zone == BODY_ZONE_L_ARM)
 					body_parts_covered &= ~ARM_LEFT
@@ -156,7 +155,7 @@
 				C.color = color
 				user.put_in_hands(C)
 			else
-				user.visible_message(span_warning("[user] tries to tear [src]."))
+				user.visible_message("<span class='warning'>[user] tries to tear [src].</span>")
 		else
 			if(l_sleeve_status == SLEEVE_ROLLED)
 				l_sleeve_status = SLEEVE_NORMAL
@@ -176,33 +175,25 @@
 
 
 /obj/item/clothing/mob_can_equip(mob/M, mob/equipper, slot, disable_warning = 0)
-	. = ..()
-	if(!.)
+	if(!..())
 		return FALSE
-	var/list/allowed_sexes = list()
-	if(length(allowed_sex))
-		allowed_sexes |= allowed_sex
-	var/mob/living/carbon/human/H
-	if(ishuman(M))
-		H = M
-		if(!immune_to_genderswap && H.dna?.species?.gender_swapping)
-			if(MALE in allowed_sex)
-				allowed_sexes -= MALE
-				allowed_sexes += FEMALE
-			if(FEMALE in allowed_sex)
-				allowed_sexes -= FEMALE
-				allowed_sexes += MALE
 	if(slot_flags & slotdefine2slotbit(slot))
-		if(!length(allowed_sexes) || (M.gender in allowed_sex))
-			if(length(allowed_race) && H)
-				if(H.dna.species.id in allowed_race)
-					return TRUE
-				return FALSE
+		if(M.gender in allowed_sex)
+			if(ishuman(M))
+				var/mob/living/carbon/human/H = M
+				if(H.dna)
+					if(H.dna.species.id in allowed_race)
+						return TRUE
+					else
+						return FALSE
 			return TRUE
-		return FALSE
+		else
+			return FALSE
+
+
 
 /obj/item/clothing/Initialize()
-	if(CHECK_BITFIELD(clothing_flags, VOICEBOX_TOGGLABLE))
+	if((clothing_flags & VOICEBOX_TOGGLABLE))
 		actions_types += /datum/action/item_action/toggle_voice_box
 	. = ..()
 	if(ispath(pocket_storage_component_path))
@@ -218,8 +209,8 @@
 	if(ismecha(M.loc)) // stops inventory actions in a mech
 		return
 
-	if(!M.incapacitated() && loc == M && istype(over_object, /atom/movable/screen/inventory/hand))
-		var/atom/movable/screen/inventory/hand/H = over_object
+	if(!M.incapacitated() && loc == M && istype(over_object, /obj/screen/inventory/hand))
+		var/obj/screen/inventory/hand/H = over_object
 		if(M.putItemFromInventoryInHandIfPossible(src, H.held_index))
 			add_fingerprint(usr)
 
@@ -246,7 +237,7 @@
 		C.use(1)
 		update_clothes_damaged_state(FALSE)
 		obj_integrity = max_integrity
-		to_chat(user, span_notice("I fix the damage on [src] with [C]."))
+		to_chat(user, "<span class='notice'>I fix the damage on [src] with [C].</span>")
 		return 1*/
 	return ..()
 
@@ -286,7 +277,7 @@
 		if (1601 to 35000)
 			. += "[src] offers the wearer robust protection from fire."
 	if(damaged_clothes)
-		. += span_warning("It looks damaged!")
+		. += "<span class='warning'>It looks damaged!</span>"
 	var/datum/component/storage/pockets = GetComponent(/datum/component/storage)
 	if(pockets)
 		var/list/how_cool_are_your_threads = list("<span class='notice'>")
@@ -396,20 +387,20 @@ BLIND     // can't see anything
 	var/list/modes = list("Off", "Binary vitals", "Exact vitals", "Tracking beacon")
 	var/switchMode = input("Select a sensor mode:", "Suit Sensor Mode", modes[sensor_mode + 1]) in modes
 	if(get_dist(usr, src) > 1)
-		to_chat(usr, span_warning("I have moved too far away!"))
+		to_chat(usr, "<span class='warning'>I have moved too far away!</span>")
 		return
 	sensor_mode = modes.Find(switchMode) - 1
 
 	if (src.loc == usr)
 		switch(sensor_mode)
 			if(0)
-				to_chat(usr, span_notice("I disable my suit's remote sensing equipment."))
+				to_chat(usr, "<span class='notice'>I disable my suit's remote sensing equipment.</span>")
 			if(1)
-				to_chat(usr, span_notice("My suit will now only report whether you are alive or dead."))
+				to_chat(usr, "<span class='notice'>My suit will now only report whether you are alive or dead.</span>")
 			if(2)
-				to_chat(usr, span_notice("My suit will now only report my exact vital lifesigns."))
+				to_chat(usr, "<span class='notice'>My suit will now only report my exact vital lifesigns.</span>")
 			if(3)
-				to_chat(usr, span_notice("My suit will now report my exact vital lifesigns as well as my coordinate position."))
+				to_chat(usr, "<span class='notice'>My suit will now report my exact vital lifesigns as well as my coordinate position.</span>")
 
 	if(ishuman(loc))
 		var/mob/living/carbon/human/H = loc
@@ -438,12 +429,12 @@ BLIND     // can't see anything
 	if(!can_use(usr))
 		return
 	if(!can_adjust)
-		to_chat(usr, span_warning("I cannot wear this suit any differently!"))
+		to_chat(usr, "<span class='warning'>I cannot wear this suit any differently!</span>")
 		return
 	if(toggle_jumpsuit_adjust())
-		to_chat(usr, span_notice("I adjust the suit to wear it more casually."))
+		to_chat(usr, "<span class='notice'>I adjust the suit to wear it more casually.</span>")
 	else
-		to_chat(usr, span_notice("I adjust the suit back to normal."))
+		to_chat(usr, "<span class='notice'>I adjust the suit back to normal.</span>")
 	if(ishuman(usr))
 		var/mob/living/carbon/human/H = usr
 		H.update_inv_w_uniform()
@@ -470,7 +461,7 @@ BLIND     // can't see anything
 
 	visor_toggling()
 
-	to_chat(user, span_notice("I adjust \the [src] [up ? "up" : "down"]."))
+	to_chat(user, "<span class='notice'>I adjust \the [src] [up ? "up" : "down"].</span>")
 
 	if(iscarbon(user))
 		var/mob/living/carbon/C = user

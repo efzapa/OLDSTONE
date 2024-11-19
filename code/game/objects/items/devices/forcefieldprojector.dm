@@ -23,37 +23,37 @@
 	if(istype(target, /obj/structure/projected_forcefield))
 		var/obj/structure/projected_forcefield/F = target
 		if(F.generator == src)
-			to_chat(user, span_notice("I deactivate [F]."))
+			to_chat(user, "<span class='notice'>I deactivate [F].</span>")
 			qdel(F)
 			return
 	var/turf/T = get_turf(target)
 	var/obj/structure/projected_forcefield/found_field = locate() in T
 	if(found_field)
-		to_chat(user, span_warning("There is already a forcefield in that location!"))
+		to_chat(user, "<span class='warning'>There is already a forcefield in that location!</span>")
 		return
 	if(T.density)
 		return
 	if(get_dist(T,src) > field_distance_limit)
 		return
 	if(LAZYLEN(current_fields) >= max_fields)
-		to_chat(user, span_warning("[src] cannot sustain any more forcefields!"))
+		to_chat(user, "<span class='warning'>[src] cannot sustain any more forcefields!</span>")
 		return
 
 	playsound(src,'sound/blank.ogg',50,TRUE)
-	user.visible_message(span_warning("[user] projects a forcefield!"),span_notice("I project a forcefield."))
+	user.visible_message("<span class='warning'>[user] projects a forcefield!</span>","<span class='notice'>I project a forcefield.</span>")
 	var/obj/structure/projected_forcefield/F = new(T, src)
 	current_fields += F
 	user.changeNext_move(CLICK_CD_MELEE)
 
 /obj/item/forcefield_projector/attack_self(mob/user)
 	if(LAZYLEN(current_fields))
-		to_chat(user, span_notice("I deactivate [src], disabling all active forcefields."))
+		to_chat(user, "<span class='notice'>I deactivate [src], disabling all active forcefields.</span>")
 		for(var/obj/structure/projected_forcefield/F in current_fields)
 			qdel(F)
 
 /obj/item/forcefield_projector/examine(mob/user)
 	. = ..()
-	. += span_notice("It is currently sustaining [LAZYLEN(current_fields)]/[max_fields] fields, and it's [round((shield_integrity/max_shield_integrity)*100)]% charged.")
+	. += "<span class='notice'>It is currently sustaining [LAZYLEN(current_fields)]/[max_fields] fields, and it's [round((shield_integrity/max_shield_integrity)*100)]% charged.</span>"
 
 /obj/item/forcefield_projector/Initialize(mapload)
 	. = ..()
@@ -84,7 +84,7 @@
 	mouse_opacity = MOUSE_OPACITY_OPAQUE
 	resistance_flags = INDESTRUCTIBLE
 	CanAtmosPass = ATMOS_PASS_DENSITY
-	armor = list("blunt" = 0, "slash" = 0, "stab" = 0, "bullet" = 25, "laser" = 50, "energy" = 50, "bomb" = 25, "bio" = 100, "rad" = 100, "fire" = 100, "acid" = 100)
+	armor = list("melee" = 0, "bullet" = 25, "laser" = 50, "energy" = 50, "bomb" = 25, "bio" = 100, "rad" = 100, "fire" = 100, "acid" = 100)
 	var/obj/item/forcefield_projector/generator
 
 /obj/structure/projected_forcefield/Initialize(mapload, obj/item/forcefield_projector/origin)
@@ -92,7 +92,7 @@
 	generator = origin
 
 /obj/structure/projected_forcefield/Destroy()
-	visible_message(span_warning("[src] flickers and disappears!"))
+	visible_message("<span class='warning'>[src] flickers and disappears!</span>")
 	playsound(src,'sound/blank.ogg',25,TRUE)
 	generator.current_fields -= src
 	generator = null

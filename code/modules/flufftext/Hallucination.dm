@@ -34,7 +34,7 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 	if(world.time < next_hallucination)
 		return
 
-	var/halpick = pickweight(GLOB.hallucination_list)
+	var/halpick = pick_weight(GLOB.hallucination_list)
 	new halpick(src, FALSE)
 
 	next_hallucination = world.time + rand(100, 600)
@@ -225,7 +225,7 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 	update_icon("alienh_pounce")
 	if(hit_atom == target && target.stat!=DEAD)
 		target.Paralyze(100)
-		target.visible_message(span_danger("[target] flails around wildly."),span_danger("[name] pounces on you!"))
+		target.visible_message("<span class='danger'>[target] flails around wildly.</span>","<span class='danger'>[name] pounces on you!</span>")
 
 /datum/hallucination/xeno_attack
 	//Xeno crawls from nearby vent,jumps at you, and goes back in
@@ -250,10 +250,10 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 		xeno.throw_at(pump,7,1, xeno, FALSE, TRUE)
 		sleep(10)
 		var/xeno_name = xeno.name
-		to_chat(target, span_notice("[xeno_name] begins climbing into the ventilation system..."))
+		to_chat(target, "<span class='notice'>[xeno_name] begins climbing into the ventilation system...</span>")
 		sleep(30)
 		qdel(xeno)
-		to_chat(target, span_notice("[xeno_name] scrambles into the ventilation ducts!"))
+		to_chat(target, "<span class='notice'>[xeno_name] scrambles into the ventilation ducts!</span>")
 	qdel(src)
 
 /obj/effect/hallucination/simple/clown
@@ -315,7 +315,7 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 			target.adjustStaminaLoss(40)
 			step_away(target, bubblegum)
 			shake_camera(target, 4, 3)
-			target.visible_message(span_warning("[target] jumps backwards, falling on the ground!"),span_danger("[bubblegum] slams into you!"))
+			target.visible_message("<span class='warning'>[target] jumps backwards, falling on the ground!</span>","<span class='danger'>[bubblegum] slams into you!</span>")
 		sleep(2)
 	sleep(30)
 	qdel(src)
@@ -586,7 +586,7 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 	A.override = 1
 	if(target.client)
 		if(wabbajack)
-			to_chat(target, span_hear("...wabbajack...wabbajack..."))
+			to_chat(target, "<span class='hear'>...wabbajack...wabbajack...</span>")
 			target.playsound_local(target,'sound/blank.ogg', 50, 1)
 		delusion = A
 		target.client.images |= A
@@ -735,7 +735,7 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 	if(other)
 		if(close_other) //increase the odds
 			for(var/i in 1 to 5)
-				message_pool.Add(span_warning("I feel a tiny prick!"))
+				message_pool.Add("<span class='warning'>I feel a tiny prick!</span>")
 		var/obj/item/storage/equipped_backpack = other.get_item_by_slot(SLOT_BACK)
 		if(istype(equipped_backpack))
 			for(var/i in 1 to 5) //increase the odds
@@ -748,19 +748,19 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 
 		message_pool.Add("<B>[other]</B> [pick("sneezes","coughs")].")
 
-	message_pool.Add(span_notice("I hear something squeezing through the ducts..."), \
-		span_notice("My [pick("arm", "leg", "back", "head")] itches."),\
-		span_warning("I feel [pick("hot","cold","dry","wet","woozy","faint")]."),
-		span_warning("My stomach rumbles."),
-		span_warning("My head hurts."),
-		span_warning("I hear a faint buzz in my head."),
+	message_pool.Add("<span class='notice'>I hear something squeezing through the ducts...</span>", \
+		"<span class='notice'>My [pick("arm", "leg", "back", "head")] itches.</span>",\
+		"<span class='warning'>I feel [pick("hot","cold","dry","wet","woozy","faint")].</span>",
+		"<span class='warning'>My stomach rumbles.</span>",
+		"<span class='warning'>My head hurts.</span>",
+		"<span class='warning'>I hear a faint buzz in my head.</span>",
 		"<B>[target]</B> sneezes.")
 	if(prob(10))
-		message_pool.Add(span_warning("Behind you."),\
-			span_warning("I hear a faint laughter."),
-			span_warning("I see something move."),
-			span_warning("I hear skittering on the ceiling."),
-			span_warning("I see an inhumanly tall silhouette moving in the distance."))
+		message_pool.Add("<span class='warning'>Behind you.</span>",\
+			"<span class='warning'>I hear a faint laughter.</span>",
+			"<span class='warning'>I see something move.</span>",
+			"<span class='warning'>I hear skittering on the ceiling.</span>",
+			"<span class='warning'>I see an inhumanly tall silhouette moving in the distance.</span>")
 	if(prob(10))
 		message_pool.Add("[pick_list_replacements(HAL_LINES_FILE, "advice")]")
 	var/chosen = pick(message_pool)
@@ -900,7 +900,7 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 			SEND_SOUND(target, 'sound/blank.ogg')
 		if("supermatter")
 			SEND_SOUND(target, 'sound/blank.ogg')
-			to_chat(target, span_boldannounce("I feel reality distort for a moment..."))
+			to_chat(target, "<span class='boldannounce'>I feel reality distort for a moment...</span>")
 
 /datum/hallucination/hudscrew
 
@@ -928,46 +928,46 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 	feedback_details += "Type: [alert_type]"
 	switch(alert_type)
 		if("not_enough_oxy")
-			target.throw_alert(alert_type, /atom/movable/screen/alert/not_enough_oxy, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/not_enough_oxy, override = TRUE)
 		if("not_enough_tox")
-			target.throw_alert(alert_type, /atom/movable/screen/alert/not_enough_tox, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/not_enough_tox, override = TRUE)
 		if("not_enough_co2")
-			target.throw_alert(alert_type, /atom/movable/screen/alert/not_enough_co2, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/not_enough_co2, override = TRUE)
 		if("too_much_oxy")
-			target.throw_alert(alert_type, /atom/movable/screen/alert/too_much_oxy, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/too_much_oxy, override = TRUE)
 		if("too_much_co2")
-			target.throw_alert(alert_type, /atom/movable/screen/alert/too_much_co2, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/too_much_co2, override = TRUE)
 		if("too_much_tox")
-			target.throw_alert(alert_type, /atom/movable/screen/alert/too_much_tox, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/too_much_tox, override = TRUE)
 		if("nutrition")
 			if(prob(50))
-				target.throw_alert(alert_type, /atom/movable/screen/alert/fat, override = TRUE)
+				target.throw_alert(alert_type, /obj/screen/alert/fat, override = TRUE)
 			else
-				target.throw_alert(alert_type, /atom/movable/screen/alert/starving, override = TRUE)
+				target.throw_alert(alert_type, /obj/screen/alert/starving, override = TRUE)
 		if("gravity")
-			target.throw_alert(alert_type, /atom/movable/screen/alert/weightless, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/weightless, override = TRUE)
 		if("fire")
-			target.throw_alert(alert_type, /atom/movable/screen/alert/fire, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/fire, override = TRUE)
 		if("temphot")
 			alert_type = "temp"
-			target.throw_alert(alert_type, /atom/movable/screen/alert/hot, 3, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/hot, 3, override = TRUE)
 		if("tempcold")
 			alert_type = "temp"
-			target.throw_alert(alert_type, /atom/movable/screen/alert/cold, 3, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/cold, 3, override = TRUE)
 		if("pressure")
 			if(prob(50))
-				target.throw_alert(alert_type, /atom/movable/screen/alert/highpressure, 2, override = TRUE)
+				target.throw_alert(alert_type, /obj/screen/alert/highpressure, 2, override = TRUE)
 			else
-				target.throw_alert(alert_type, /atom/movable/screen/alert/lowpressure, 2, override = TRUE)
+				target.throw_alert(alert_type, /obj/screen/alert/lowpressure, 2, override = TRUE)
 		//BEEP BOOP I AM A ROBOT
 		if("newlaw")
-			target.throw_alert(alert_type, /atom/movable/screen/alert/newlaw, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/newlaw, override = TRUE)
 		if("locked")
-			target.throw_alert(alert_type, /atom/movable/screen/alert/locked, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/locked, override = TRUE)
 		if("hacked")
-			target.throw_alert(alert_type, /atom/movable/screen/alert/hacked, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/hacked, override = TRUE)
 		if("charge")
-			target.throw_alert(alert_type, /atom/movable/screen/alert/emptycell, override = TRUE)
+			target.throw_alert(alert_type, /obj/screen/alert/emptycell, override = TRUE)
 	sleep(duration)
 	target.clear_alert(alert_type, clear_override = TRUE)
 	qdel(src)
@@ -1102,9 +1102,9 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 	if(AM == target)
 		if(istype(target, /obj/effect/dummy/phased_mob))
 			return
-		to_chat(target, span_danger("I fall into the chasm!"))
+		to_chat(target, "<span class='danger'>I fall into the chasm!</span>")
 		target.Paralyze(40)
-		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(to_chat), target, span_notice("It's surprisingly shallow.")), 15)
+		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(to_chat), target, "<span class='notice'>It's surprisingly shallow.</span>"), 15)
 		QDEL_IN(src, 30)
 
 /obj/effect/hallucination/danger/anomaly
@@ -1139,7 +1139,7 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 	target.set_screwyhud(SCREWYHUD_DEAD)
 	target.Paralyze(300)
 	target.silent += 10
-	to_chat(target, span_deadsay("<b>[target.real_name]</b> has died at <b>[get_area_name(target)]</b>."))
+	to_chat(target, "<span class='deadsay'><b>[target.real_name]</b> has died at <b>[get_area_name(target)]</b>.</span>")
 	if(prob(50))
 		var/mob/fakemob
 		var/list/dead_people = list()
@@ -1171,8 +1171,8 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 	fire_overlay = image('icons/mob/OnFire.dmi', target, "Standing", ABOVE_MOB_LAYER)
 	if(target.client)
 		target.client.images += fire_overlay
-	to_chat(target, span_danger("You're set on fire!"))
-	target.throw_alert("fire", /atom/movable/screen/alert/fire, override = TRUE)
+	to_chat(target, "<span class='danger'>You're set on fire!</span>")
+	target.throw_alert("fire", /obj/screen/alert/fire, override = TRUE)
 	sleep(20)
 	for(var/i in 1 to 3)
 		if(target.fire_stacks <= 0)
@@ -1194,7 +1194,7 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 		target.clear_alert("temp", clear_override = TRUE)
 	else
 		target.clear_alert("temp", clear_override = TRUE)
-		target.throw_alert("temp", /atom/movable/screen/alert/hot, stage, override = TRUE)
+		target.throw_alert("temp", /obj/screen/alert/hot, stage, override = TRUE)
 
 /datum/hallucination/fire/proc/clear_fire()
 	if(!active)
@@ -1223,7 +1223,7 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 	shock_image.override = TRUE
 	electrocution_skeleton_anim = image('icons/mob/human.dmi', target, icon_state = "electrocuted_base", layer=ABOVE_MOB_LAYER)
 	electrocution_skeleton_anim.appearance_flags |= RESET_COLOR|KEEP_APART
-	to_chat(target, span_danger("I feel a powerful shock course through my body!"))
+	to_chat(target, "<span class='danger'>I feel a powerful shock course through my body!</span>")
 	if(target.client)
 		target.client.images |= shock_image
 		target.client.images |= electrocution_skeleton_anim

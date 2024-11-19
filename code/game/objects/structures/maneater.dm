@@ -1,7 +1,6 @@
 
 /obj/structure/flora/roguegrass/maneater
 	name = "grass"
-	desc = "Green and vivid.. Did i see.. a tendril?"
 	icon = 'icons/roguetown/mob/monster/maneater.dmi'
 	icon_state = "maneater-hidden"
 	max_integrity = 5
@@ -62,7 +61,7 @@
 			playsound(src.loc, list('sound/vo/mobs/plant/attack (1).ogg','sound/vo/mobs/plant/attack (2).ogg','sound/vo/mobs/plant/attack (3).ogg','sound/vo/mobs/plant/attack (4).ogg'), 100, FALSE, -1)
 			if(iscarbon(L))
 				var/mob/living/carbon/C = L
-				src.visible_message(span_danger("[src] starts to rip apart [C]!"))
+				src.visible_message("<span class='danger'>[src] starts to rip apart [C]!</span>")
 				spawn(50)
 					if(C && (C.buckled == src))
 						var/obj/item/bodypart/limb
@@ -86,7 +85,7 @@
 								C.gib()
 							return
 			else
-				src.visible_message(span_danger("[src] starts to rip apart [L]!"))
+				src.visible_message("<span class='danger'>[src] starts to rip apart [L]!</span>")
 				spawn(50)
 					if(L && (L.buckled == src))
 						L.gib()
@@ -95,7 +94,6 @@
 /obj/structure/flora/roguegrass/maneater/real/update_icon()
 	if(obj_broken)
 		name = "MANEATER"
-		desc = "This cunning creature is thankfully defeated." // i think this might break, dunno
 		icon_state = "maneater-dead"
 		return
 	if(aggroed)
@@ -117,12 +115,12 @@
 			if(prob(time2mount))
 				..()
 			else
-				user.visible_message(span_warning("[user] tries to pull [M] free of [src]!"))
+				user.visible_message("<span class='warning'>[user] tries to pull [M] free of [src]!</span>")
 			return
 		if(prob(time2mount))
 			..()
 		else
-			user.visible_message(span_warning("[user] tries to break free of [src]!"))
+			user.visible_message("<span class='warning'>[user] tries to break free of [src]!</span>")
 
 /obj/structure/flora/roguegrass/maneater/real/user_buckle_mob(mob/living/M, mob/living/user) //Don't want them getting put on the rack other than by spiking
 	return
@@ -146,7 +144,7 @@
 			START_PROCESSING(SSobj, src)
 			if(!HAS_TRAIT(L, TRAIT_NOPAIN))
 				L.emote("painscream", forced = TRUE)
-			src.visible_message(span_danger("[src] snatches [L]!"))
+			src.visible_message("<span class='danger'>[src] snatches [L]!</span>")
 			playsound(src.loc, list('sound/vo/mobs/plant/attack (1).ogg','sound/vo/mobs/plant/attack (2).ogg','sound/vo/mobs/plant/attack (3).ogg','sound/vo/mobs/plant/attack (4).ogg'), 100, FALSE, -1)
 		if(istype(AM, /obj/item))
 			if(is_type_in_list(AM, eatablez))

@@ -1,7 +1,7 @@
 /turf/open/floor/plating/dirt
 	gender = PLURAL
 	name = "dirt"
-	desc = "The dirt is pocked with the scars of countless battles."
+	desc = ""
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "dirt"
 	baseturfs = /turf/open/chasm/jungle

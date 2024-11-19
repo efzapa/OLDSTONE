@@ -32,7 +32,7 @@ GLOBAL_LIST_INIT(freqtospan, list(
 	SEND_SIGNAL(src, COMSIG_MOVABLE_HEAR, args)
 
 /atom/movable/proc/can_speak()
-	return TRUE
+	return 1
 
 /atom/movable/proc/send_speech(message, range = 7, obj/source = src, bubble_type, list/spans, datum/language/message_language = null, message_mode)
 	var/rendered = compose_message(src, message_language, message, , spans, message_mode)
@@ -134,6 +134,22 @@ GLOBAL_LIST_INIT(freqtospan, list(
 		if(L.cmode)
 			return "— \"[spanned]\""
 	return "[say_mod(input, message_mode)], \"[spanned]\""
+
+/// Transforms the speech emphasis mods from [/atom/movable/proc/say_emphasis] into the appropriate HTML tags. Includes escaping.
+#define ENCODE_HTML_EMPHASIS(input, char, html, varname) \
+	var/static/regex/##varname = regex("(?<!\\\\)[char](.+?)(?<!\\\\)[char]", "g");\
+	input = varname.Replace_char(input, "<[html]>$1</[html]>&#8203;") //zero-width space to force maptext to respect closing tags.
+
+/// Scans the input sentence for speech emphasis modifiers, notably |italics|, +bold+, and _underline_ -mothblocks
+/atom/movable/proc/say_emphasis(input)
+	ENCODE_HTML_EMPHASIS(input, "\\|", "i", italics)
+	ENCODE_HTML_EMPHASIS(input, "\\+", "b", bold)
+	ENCODE_HTML_EMPHASIS(input, "_", "u", underline)
+	var/static/regex/remove_escape_backlashes = regex("\\\\(_|\\+|\\|)", "g") // Removes backslashes used to escape text modification.
+	input = remove_escape_backlashes.Replace_char(input, "$1")
+	return input
+
+#undef ENCODE_HTML_EMPHASIS
 
 /atom/movable/proc/quoteless_say_quote(input, list/spans = list(speech_span), message_mode)
 	var/pos = findtext(input, "*")

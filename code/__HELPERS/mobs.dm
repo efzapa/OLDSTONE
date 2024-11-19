@@ -135,7 +135,7 @@
 			break
 
 
-GLOBAL_LIST_INIT(skin_tones, sortList(list(
+GLOBAL_LIST_INIT(skin_tones, sort_list(list(
 	"skin1" = "ffe0d1",
 	"skin2" = "fcccb3",
 	"skin3" = "e8b59b"
@@ -144,7 +144,7 @@ GLOBAL_LIST_INIT(skin_tones, sortList(list(
 /proc/random_skin_tone()
 	return GLOB.skin_tones[pick(GLOB.skin_tones)]
 
-GLOBAL_LIST_INIT(haircolor, sortList(list(
+GLOBAL_LIST_INIT(haircolor, sort_list(list(
 	"black" = "#0a0707",
 	"brown" = "#362e25",
 	"blonde" = "#dfc999",
@@ -155,7 +155,7 @@ GLOBAL_LIST_INIT(haircolor, sortList(list(
 /proc/random_haircolor()
 	return GLOB.haircolor[pick(GLOB.haircolor)]
 
-GLOBAL_LIST_INIT(oldhc, sortList(list(
+GLOBAL_LIST_INIT(oldhc, sort_list(list(
 	"decay" = "6a6a6a",
 	"elderly" = "9e9e9e",
 	"ancient" = "c9c9c9",
@@ -583,7 +583,7 @@ GLOBAL_LIST_EMPTY(species_list)
 // Displays a message in deadchat, sent by source. Source is not linkified, message is, to avoid stuff like character names to be linkified.
 // Automatically gives the class deadsay to the whole message (message + source)
 /proc/deadchat_broadcast(message, source=null, mob/follow_target=null, turf/turf_target=null, speaker_key=null, message_type=DEADCHAT_REGULAR)
-	message = span_deadsay("[source]<span class='linkify'>[message]</span>")
+	message = "<span class='deadsay'>[source]<span class='linkify'>[message]</span></span>"
 	for(var/mob/M in GLOB.player_list)
 		var/datum/preferences/prefs
 		if(M.client.prefs)

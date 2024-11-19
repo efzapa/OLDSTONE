@@ -95,23 +95,23 @@
 		if(!user.transferItemToLoc(I, src))
 			return
 		cell = I
-		visible_message(span_notice("[user] inserts a cell into [src]."),
-						span_notice("I insert the new cell into [src]."))
+		visible_message("<span class='notice'>[user] inserts a cell into [src].</span>",
+						"<span class='notice'>I insert the new cell into [src].</span>")
 	else if(I.tool_behaviour == TOOL_CROWBAR && open && cell)
 		cell.add_fingerprint(usr)
 		cell.forceMove(loc)
 		cell = null
-		visible_message(span_notice("[user] crowbars out the power cell from [src]."),
-						span_notice("I pry the powercell out of [src]."))
+		visible_message("<span class='notice'>[user] crowbars out the power cell from [src].</span>",
+						"<span class='notice'>I pry the powercell out of [src].</span>")
 	else if(is_wire_tool(I) && open)
 		return attack_hand(user)
 	else if(load && ismob(load))  // chance to knock off rider
 		if(prob(1 + I.force * 2))
 			unload(0)
-			user.visible_message(span_danger("[user] knocks [load] off [src] with \the [I]!"),
-									span_danger("I knock [load] off [src] with \the [I]!"))
+			user.visible_message("<span class='danger'>[user] knocks [load] off [src] with \the [I]!</span>",
+									"<span class='danger'>I knock [load] off [src] with \the [I]!</span>")
 		else
-			to_chat(user, span_warning("I hit [src] with \the [I] but to no effect!"))
+			to_chat(user, "<span class='warning'>I hit [src] with \the [I] but to no effect!</span>")
 			..()
 	else
 		..()
@@ -123,7 +123,7 @@
 		emagged = TRUE
 	if(!open)
 		locked = !locked
-		to_chat(user, span_notice("I [locked ? "lock" : "unlock"] [src]'s controls!"))
+		to_chat(user, "<span class='notice'>I [locked ? "lock" : "unlock"] [src]'s controls!</span>")
 	flick("mulebot-emagged", src)
 	playsound(src, "sparks", 100, FALSE)
 
@@ -158,7 +158,7 @@
 		if(prob(50) && !isnull(load))
 			unload(0)
 		if(prob(25))
-			visible_message(span_danger("Something shorts out inside [src]!"))
+			visible_message("<span class='danger'>Something shorts out inside [src]!</span>")
 			wires.cut_random()
 
 /mob/living/simple_animal/bot/mulebot/interact(mob/user)
@@ -214,7 +214,7 @@
 				turn_off()
 			else if(cell && !open)
 				if(!turn_on())
-					to_chat(usr, span_warning("I can't switch on [src]!"))
+					to_chat(usr, "<span class='warning'>I can't switch on [src]!</span>")
 					return
 			. = TRUE
 		else
@@ -273,17 +273,17 @@
 	dat += "<div class='statusDisplay'>"
 	switch(mode)
 		if(BOT_IDLE)
-			dat += span_good("Ready")
+			dat += "<span class='good'>Ready</span>"
 		if(BOT_DELIVER)
-			dat += span_good("[mode_name[BOT_DELIVER]]")
+			dat += "<span class='good'>[mode_name[BOT_DELIVER]]</span>"
 		if(BOT_GO_HOME)
-			dat += span_good("[mode_name[BOT_GO_HOME]]")
+			dat += "<span class='good'>[mode_name[BOT_GO_HOME]]</span>"
 		if(BOT_BLOCKED)
-			dat += span_average("[mode_name[BOT_BLOCKED]]")
+			dat += "<span class='average'>[mode_name[BOT_BLOCKED]]</span>"
 		if(BOT_NAV,BOT_WAIT_FOR_NAV)
-			dat += span_average("[mode_name[BOT_NAV]]")
+			dat += "<span class='average'>[mode_name[BOT_NAV]]</span>"
 		if(BOT_NO_ROUTE)
-			dat += span_bad("[mode_name[BOT_NO_ROUTE]]")
+			dat += "<span class='bad'>[mode_name[BOT_NO_ROUTE]]</span>"
 	dat += "</div>"
 
 	dat += "<b>Current Load:</b> [load ? load.name : "<i>none</i>"]<BR>"
@@ -319,13 +319,13 @@
 /mob/living/simple_animal/bot/mulebot/proc/buzz(type)
 	switch(type)
 		if(SIGH)
-			audible_message(span_hear("[src] makes a sighing buzz."))
+			audible_message("<span class='hear'>[src] makes a sighing buzz.</span>")
 			playsound(loc, 'sound/blank.ogg', 50, FALSE)
 		if(ANNOYED)
-			audible_message(span_hear("[src] makes an annoyed buzzing sound."))
+			audible_message("<span class='hear'>[src] makes an annoyed buzzing sound.</span>")
 			playsound(loc, 'sound/blank.ogg', 50, FALSE)
 		if(DELIGHT)
-			audible_message(span_hear("[src] makes a delighted ping!"))
+			audible_message("<span class='hear'>[src] makes a delighted ping!</span>")
 			playsound(loc, 'sound/blank.ogg', 50, FALSE)
 
 
@@ -593,14 +593,14 @@
 /mob/living/simple_animal/bot/mulebot/proc/at_target()
 	if(!reached_target)
 		radio_channel = RADIO_CHANNEL_SUPPLY //Supply channel
-		audible_message(span_hear("[src] makes a chiming sound!"))
+		audible_message("<span class='hear'>[src] makes a chiming sound!</span>")
 		playsound(loc, 'sound/blank.ogg', 50, FALSE)
 		reached_target = 1
 
 		if(pathset) //The AI called us here, so notify it of our arrival.
 			loaddir = dir //The MULE will attempt to load a crate in whatever direction the MULE is "facing".
 			if(calling_ai)
-				to_chat(calling_ai, span_notice("[icon2html(src, calling_ai)] [src] wirelessly plays a chiming sound!"))
+				to_chat(calling_ai, "<span class='notice'>[icon2html(src, calling_ai)] [src] wirelessly plays a chiming sound!</span>")
 				playsound(calling_ai, 'sound/blank.ogg',40, FALSE)
 				calling_ai = null
 				radio_channel = RADIO_CHANNEL_AI_PRIVATE //Report on AI Private instead if the AI is controlling us.
@@ -641,11 +641,11 @@
 		if(isliving(obs))
 			var/mob/living/L = obs
 			if(iscyborg(L))
-				visible_message(span_danger("[src] bumps into [L]!"))
+				visible_message("<span class='danger'>[src] bumps into [L]!</span>")
 			else
 				if(!paicard)
 					log_combat(src, L, "knocked down")
-					visible_message(span_danger("[src] knocks over [L]!"))
+					visible_message("<span class='danger'>[src] knocks over [L]!</span>")
 					L.Paralyze(160)
 	return ..()
 
@@ -653,17 +653,17 @@
 // when mulebot is in the same loc
 /mob/living/simple_animal/bot/mulebot/proc/RunOver(mob/living/carbon/human/H)
 	log_combat(src, H, "run over", null, "(DAMTYPE: [uppertext(BRUTE)])")
-	H.visible_message(span_danger("[src] drives over [H]!"), \
-					span_danger("[src] drives over you!"))
+	H.visible_message("<span class='danger'>[src] drives over [H]!</span>", \
+					"<span class='danger'>[src] drives over you!</span>")
 	playsound(loc, 'sound/blank.ogg', 50, TRUE)
 
 	var/damage = rand(5,15)
-	H.apply_damage(2*damage, BRUTE, BODY_ZONE_HEAD, run_armor_check(BODY_ZONE_HEAD, "blunt"))
-	H.apply_damage(2*damage, BRUTE, BODY_ZONE_CHEST, run_armor_check(BODY_ZONE_CHEST, "blunt"))
-	H.apply_damage(0.5*damage, BRUTE, BODY_ZONE_L_LEG, run_armor_check(BODY_ZONE_L_LEG, "blunt"))
-	H.apply_damage(0.5*damage, BRUTE, BODY_ZONE_R_LEG, run_armor_check(BODY_ZONE_R_LEG, "blunt"))
-	H.apply_damage(0.5*damage, BRUTE, BODY_ZONE_L_ARM, run_armor_check(BODY_ZONE_L_ARM, "blunt"))
-	H.apply_damage(0.5*damage, BRUTE, BODY_ZONE_R_ARM, run_armor_check(BODY_ZONE_R_ARM, "blunt"))
+	H.apply_damage(2*damage, BRUTE, BODY_ZONE_HEAD, run_armor_check(BODY_ZONE_HEAD, "melee"))
+	H.apply_damage(2*damage, BRUTE, BODY_ZONE_CHEST, run_armor_check(BODY_ZONE_CHEST, "melee"))
+	H.apply_damage(0.5*damage, BRUTE, BODY_ZONE_L_LEG, run_armor_check(BODY_ZONE_L_LEG, "melee"))
+	H.apply_damage(0.5*damage, BRUTE, BODY_ZONE_R_LEG, run_armor_check(BODY_ZONE_R_LEG, "melee"))
+	H.apply_damage(0.5*damage, BRUTE, BODY_ZONE_L_ARM, run_armor_check(BODY_ZONE_L_ARM, "melee"))
+	H.apply_damage(0.5*damage, BRUTE, BODY_ZONE_R_ARM, run_armor_check(BODY_ZONE_R_ARM, "melee"))
 
 	var/turf/T = get_turf(src)
 	T.add_mob_blood(H)
@@ -708,7 +708,7 @@
 
 
 /mob/living/simple_animal/bot/mulebot/explode()
-	visible_message(span_boldannounce("[src] blows apart!"))
+	visible_message("<span class='boldannounce'>[src] blows apart!</span>")
 	var/atom/Tsec = drop_location()
 
 	new /obj/item/assembly/prox_sensor(Tsec)
@@ -744,7 +744,7 @@
 
 /mob/living/simple_animal/bot/mulebot/insertpai(mob/user, obj/item/paicard/card)
 	if(..())
-		visible_message(span_notice("[src] safeties are locked on."))
+		visible_message("<span class='notice'>[src] safeties are locked on.</span>")
 
 /mob/living/simple_animal/bot/mulebot/paranormal//allows ghosts only unless hacked to actually be useful
 	name = "paranormal MULEbot"
@@ -804,7 +804,7 @@
 /mob/living/simple_animal/bot/mulebot/paranormal/update_icon()
 	if(load && isobserver(load) && isnull(ghost_overlay))//there are issues with adding a ghost as an overlay, and this prevents metagaming to see who is dead
 		ghost_rider = TRUE
-		visible_message(span_warning("A ghostly figure appears on [src]!"))
+		visible_message("<span class='warning'>A ghostly figure appears on [src]!</span>")
 		ghost_overlay = ghost_overlay || mutable_appearance('icons/mob/mob.dmi')
 		ghost_overlay.icon_state = "ghost"
 		ghost_overlay.pixel_y = 9
@@ -823,7 +823,7 @@
 	return
 
 /mob/living/simple_animal/bot/mulebot/paranormal/proc/ghostmoved(atom/movable/AM, OldLoc, Dir, Forced)
-	visible_message(span_notice("The ghostly figure vanishes..."))
+	visible_message("<span class='notice'>The ghostly figure vanishes...</span>")
 	UnregisterSignal(AM, COMSIG_MOVABLE_MOVED)
 	ghost_rider = FALSE
 	cut_overlays()

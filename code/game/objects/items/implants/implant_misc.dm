@@ -33,7 +33,7 @@
 /obj/item/implant/adrenalin/activate()
 	. = ..()
 	uses--
-	to_chat(imp_in, span_notice("I feel a sudden surge of energy!"))
+	to_chat(imp_in, "<span class='notice'>I feel a sudden surge of energy!</span>")
 	imp_in.set_resting(FALSE)
 	imp_in.reagents.add_reagent(/datum/reagent/medicine/badstims, 6)
 	if(!uses)

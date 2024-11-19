@@ -1,4 +1,3 @@
-#define CTYPE_XYBRIUM "x"
 #define CTYPE_GOLD "g"
 #define CTYPE_SILV "s"
 #define CTYPE_COPP "c"
@@ -24,11 +23,6 @@
 	var/base_type //used for compares
 	var/quantity = 1
 	var/plural_name
-
-/obj/item/roguecoin/Initialize(mapload, coin_amount)
-	. = ..()
-	if(coin_amount >= 1)
-		set_quantity(floor(coin_amount))
 
 /obj/item/roguecoin/getonmobprop(tag)
 	. = ..()
@@ -161,7 +155,7 @@
 			icon_state = "[base_type]5"
 		if(11 to 15)
 			icon_state = "[base_type]10"
-		if(16 to INFINITY)
+		if(16 to MAX_COIN_STACK_SIZE)
 			icon_state = "[base_type]15"
 
 
@@ -171,15 +165,6 @@
 		G.merge(src, user)
 		return
 	return ..()
-
-//XYBRIUM
-/obj/item/roguecoin/xybrium
-	name = "xentara"
-	desc = "Xybrium, an exceptionally rare metal, was primarily used to craft small, high-value items like coins. Its extreme rarity made it perfect for minting precious currency such as Zentari, valued for their enduring worth and unique composition."
-	icon_state = "x1"
-	sellprice = 50
-	base_type = CTYPE_XYBRIUM
-	plural_name = "zentari"
 
 //GOLD
 /obj/item/roguecoin/gold
@@ -221,11 +206,6 @@
 	. = ..()
 	set_quantity(rand(4,19))
 
-/obj/item/roguecoin/xybrium/pile/Initialize()
-	. = ..()
-	set_quantity(rand(4,19))
-
-#undef CTYPE_XYBRIUM
 #undef CTYPE_GOLD
 #undef CTYPE_SILV
 #undef CTYPE_COPP

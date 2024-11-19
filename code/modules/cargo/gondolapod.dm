@@ -47,9 +47,9 @@
 /mob/living/simple_animal/pet/gondola/gondolapod/examine(mob/user)
 	. = ..()
 	if (contents.len)
-		. += span_notice("It looks like it hasn't made its delivery yet.</b>")
+		. += "<span class='notice'>It looks like it hasn't made its delivery yet.</b></span>"
 	else
-		. += span_notice("It looks like it has already made its delivery.</b>")
+		. += "<span class='notice'>It looks like it has already made its delivery.</b></span>"
 
 /mob/living/simple_animal/pet/gondola/gondolapod/verb/check()
 	set name = "Count Contents"
@@ -57,9 +57,9 @@
 	set desc = ""
 	var/total = contents.len
 	if (total)
-		to_chat(src, span_notice("I detect [total] object\s within your incredibly vast belly."))
+		to_chat(src, "<span class='notice'>I detect [total] object\s within your incredibly vast belly.</span>")
 	else
-		to_chat(src, span_notice("A closer look inside myself reveals... nothing."))
+		to_chat(src, "<span class='notice'>A closer look inside myself reveals... nothing.</span>")
 
 /mob/living/simple_animal/pet/gondola/gondolapod/proc/setOpened()
 	opened = TRUE

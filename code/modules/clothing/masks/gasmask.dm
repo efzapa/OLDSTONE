@@ -16,7 +16,7 @@
 	desc = ""
 	icon_state = "gas_atmos"
 	item_state = "gas_atmos"
-	armor = list("blunt" = 0, "slash" = 0, "stab" = 0, "bullet" = 0, "laser" = 0,"energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 10, "fire" = 20, "acid" = 10)
+	armor = list("melee" = 0, "bullet" = 0, "laser" = 0,"energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 10, "fire" = 20, "acid" = 10)
 	w_class = WEIGHT_CLASS_SMALL
 	gas_transfer_coefficient = 0.001 //cargo cult time, this var does nothing but just in case someone actually makes it do something
 	permeability_coefficient = 0.001
@@ -38,7 +38,7 @@
 	flash_protect = FLASH_PROTECTION_WELDER
 	custom_materials = list(/datum/material/iron=4000, /datum/material/glass=2000)
 	tint = 2
-	armor = list("blunt" = 5, "slash" = 15, "stab" = 10, "bullet" = 0, "laser" = 0,"energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 100, "acid" = 55)
+	armor = list("melee" = 10, "bullet" = 0, "laser" = 0,"energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 100, "acid" = 55)
 	actions_types = list(/datum/action/item_action/toggle)
 	flags_inv = HIDEEARS|HIDEEYES|HIDEFACE
 	flags_cover = MASKCOVERSEYES
@@ -63,7 +63,7 @@
 	desc = ""
 	icon_state = "plaguedoctor"
 	item_state = "gas_mask"
-	armor = list("blunt" = 10, "slash" = 10, "stab" = 10, "bullet" = 0, "laser" = 2,"energy" = 2, "bomb" = 0, "bio" = 75, "rad" = 0, "fire" = 0, "acid" = 0)
+	armor = list("melee" = 0, "bullet" = 0, "laser" = 2,"energy" = 2, "bomb" = 0, "bio" = 75, "rad" = 0, "fire" = 0, "acid" = 0)
 
 /obj/item/clothing/mask/gas/syndicate
 	name = "syndicate mask"
@@ -95,7 +95,7 @@
 	options["The Rainbow Color"] ="rainbow"
 	options["The Jester"] ="chaos" //Nepeta33Leijon is holding me captive and forced me to help with this please send help
 
-	var/choice = input(user,"To what form do you wish to Morph this mask?","Morph Mask") in sortList(options)
+	var/choice = input(user,"To what form do you wish to Morph this mask?","Morph Mask") in sort_list(options)
 
 	if(src && choice && !user.incapacitated() && in_range(user,src))
 		icon_state = options[choice]
@@ -103,7 +103,7 @@
 		for(var/X in actions)
 			var/datum/action/A = X
 			A.UpdateButtonIcon()
-		to_chat(user, span_notice("My Clown Mask has now morphed into [choice], all praise the Honkmother!"))
+		to_chat(user, "<span class='notice'>My Clown Mask has now morphed into [choice], all praise the Honkmother!</span>")
 		return 1
 
 /obj/item/clothing/mask/gas/sexyclown
@@ -137,7 +137,7 @@
 	options["Effrayé"] = "scaredmime"
 	options["Excité"] ="sexymime"
 
-	var/choice = input(user,"To what form do you wish to Morph this mask?","Morph Mask") in sortList(options)
+	var/choice = input(user,"To what form do you wish to Morph this mask?","Morph Mask") in sort_list(options)
 
 	if(src && choice && !user.incapacitated() && in_range(user,src))
 		icon_state = options[choice]
@@ -145,7 +145,7 @@
 		for(var/X in actions)
 			var/datum/action/A = X
 			A.UpdateButtonIcon()
-		to_chat(user, span_notice("My Mime Mask has now morphed into [choice]!"))
+		to_chat(user, "<span class='notice'>My Mime Mask has now morphed into [choice]!</span>")
 		return 1
 
 /obj/item/clothing/mask/gas/monkeymask
@@ -208,7 +208,7 @@
 	options["Confused Tiki"] = "tiki_confused"
 	options["Angry Tiki"] ="tiki_angry"
 
-	var/choice = input(M,"To what form do you wish to change this mask?","Morph Mask") in sortList(options)
+	var/choice = input(M,"To what form do you wish to change this mask?","Morph Mask") in sort_list(options)
 
 	if(src && choice && !M.stat && in_range(M,src))
 		icon_state = options[choice]
@@ -216,7 +216,7 @@
 		for(var/X in actions)
 			var/datum/action/A = X
 			A.UpdateButtonIcon()
-		to_chat(M, span_notice("The Tiki Mask has now changed into the [choice] Mask!"))
+		to_chat(M, "<span class='notice'>The Tiki Mask has now changed into the [choice] Mask!</span>")
 		return 1
 
 /obj/item/clothing/mask/gas/tiki_mask/yalp_elor

@@ -33,7 +33,7 @@
 			get_area(get_ranged_target_turf(center, SOUTH, 1)),
 			get_area(get_ranged_target_turf(center, EAST, 1)),
 			get_area(get_ranged_target_turf(center, WEST, 1)))
-	listclearnulls(.)
+	list_clear_nulls(.)
 
 /proc/get_open_turf_in_dir(atom/center, dir)
 	var/turf/open/T = get_ranged_target_turf(center, dir, 1)
@@ -45,7 +45,7 @@
 			get_open_turf_in_dir(center, SOUTH),
 			get_open_turf_in_dir(center, EAST),
 			get_open_turf_in_dir(center, WEST))
-	listclearnulls(.)
+	list_clear_nulls(.)
 
 /proc/get_adjacent_open_areas(atom/center)
 	. = list()
@@ -364,7 +364,7 @@
 
 /proc/ScreenText(obj/O, maptext="", screen_loc="CENTER-7,CENTER-7", maptext_height=480, maptext_width=480)
 	if(!isobj(O))
-		O = new /atom/movable/screen/text()
+		O = new /obj/screen/text()
 	O.maptext = maptext
 	O.maptext_height = maptext_height
 	O.maptext_width = maptext_width
@@ -417,22 +417,22 @@
 		window_flash(M.client)
 	switch(ignore_category ? askuser(M,Question,"Please answer in [DisplayTimeText(poll_time)]!","Yes","No","Never for this round", StealFocus=0, Timeout=poll_time) : askuser(M,Question,"Please answer in [DisplayTimeText(poll_time)]!","Yes","No", StealFocus=0, Timeout=poll_time))
 		if(1)
-			to_chat(M, span_notice("Choice registered: Yes."))
+			to_chat(M, "<span class='notice'>Choice registered: Yes.</span>")
 			if(time_passed + poll_time <= world.time)
-				to_chat(M, span_danger("Sorry, you answered too late to be considered!"))
+				to_chat(M, "<span class='danger'>Sorry, you answered too late to be considered!</span>")
 				SEND_SOUND(M, 'sound/blank.ogg')
 				candidates -= M
 			else
 				candidates += M
 		if(2)
-			to_chat(M, span_danger("Choice registered: No."))
+			to_chat(M, "<span class='danger'>Choice registered: No.</span>")
 			candidates -= M
 		if(3)
 			var/list/L = GLOB.poll_ignore[ignore_category]
 			if(!L)
 				GLOB.poll_ignore[ignore_category] = list()
 			GLOB.poll_ignore[ignore_category] += M.ckey
-			to_chat(M, span_danger("Choice registered: Never for this round."))
+			to_chat(M, "<span class='danger'>Choice registered: Never for this round.</span>")
 			candidates -= M
 		else
 			candidates -= M
@@ -442,9 +442,6 @@
 
 	for(var/mob/dead/observer/G in GLOB.player_list)
 		candidates += G
-	
-	for(var/mob/living/carbon/spirit/bigchungus in GLOB.player_list)
-		candidates += bigchungus
 
 	return pollCandidates(Question, jobbanType, gametypeCheck, be_special_flag, poll_time, ignore_category, flashwindow, candidates)
 
@@ -475,7 +472,7 @@
 		if(!M.key || !M.client)
 			result -= M
 
-	listclearnulls(result)
+	list_clear_nulls(result)
 
 	return result
 

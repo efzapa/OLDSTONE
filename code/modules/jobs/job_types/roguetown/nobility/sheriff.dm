@@ -1,98 +1,62 @@
 /datum/job/roguetown/sheriff
-	title = "Guard Captain"
+	title = "Sheriff"
 	flag = SHERIFF
 	department_flag = NOBLEMEN
 	faction = "Station"
-	allowed_patrons = ALL_DIVINE_PATRONS
 	total_positions = 1
 	spawn_positions = 1
 
-	allowed_sexes = list(MALE)
-	allowed_races = list("Humen")
-	allowed_ages = list(AGE_MIDDLEAGED, AGE_OLD)
-	tutorial = "Your lineage is noble, and generations of strong, loyal knights have come before you. You served your time gracefully as a knight of his royal majesty, and now you've grown into a role which many men dream to become. Lead your men to victory and keep them in line and you will see this kingdom prosper under a thousand suns."
-
+	allowed_races = list("Humen",
+	"Humen",
+	"Aasimar")
+	allowed_sexes = list(MALE, FEMALE)
 	display_order = JDO_SHERIFF
+	tutorial = "Law and Order, your divine reason for existence. These animals are undeserving of your protection, for it is their sons and daughters roving the countryside with blade in hand; how many men have you lost this week just to the horrors in the woods alone? Are you the one to stand between this town and chaos, or will you fail it like they expect you to?"
 	whitelist_req = FALSE
-
-	spells = list(/obj/effect/proc_holder/spell/self/convertrole/guard)
 	outfit = /datum/outfit/job/roguetown/sheriff
-
 	give_bank_account = 26
-	min_pq = 4
-	max_pq = null
-
-	cmode_music = 'sound/music/combat_guard2.ogg'
-
-/datum/job/roguetown/sheriff/after_spawn(mob/living/L, mob/M, latejoin = TRUE)
-	. = ..()
-	if(ishuman(L))
-		var/mob/living/carbon/human/H = L
-		if(istype(H.cloak, /obj/item/clothing/cloak/cape/guard))
-			var/obj/item/clothing/S = H.cloak
-			var/index = findtext(H.real_name, " ")
-			if(index)
-				index = copytext(H.real_name, 1,index)
-			if(!index)
-				index = H.real_name
-			S.name = "captain cape ([index])"
-		var/prev_real_name = H.real_name
-		var/prev_name = H.name
-		H.real_name = "Captain [prev_real_name]"
-		H.name = "Captain [prev_name]"
+	min_pq = 2
 
 /datum/outfit/job/roguetown/sheriff/pre_equip(mob/living/carbon/human/H)
 	..()
-	head = /obj/item/clothing/head/roguetown/helmet/heavy/pigface
-	neck = /obj/item/clothing/neck/roguetown/chaincoif
-	armor = /obj/item/clothing/suit/roguetown/armor/plate
-	shirt = /obj/item/clothing/suit/roguetown/armor/chainmail
-	pants = /obj/item/clothing/under/roguetown/chainlegs
-	gloves = /obj/item/clothing/gloves/roguetown/plate
-	wrists = /obj/item/clothing/wrists/roguetown/bracers
-	shoes = /obj/item/clothing/shoes/roguetown/boots/armor
+	pants = /obj/item/clothing/under/roguetown/trou/leather
+	armor = /obj/item/clothing/suit/roguetown/armor/brigandine/sheriff
+	neck = /obj/item/clothing/neck/roguetown/gorget
+	shirt = /obj/item/clothing/suit/roguetown/shirt/shortshirt
+	shoes = /obj/item/clothing/shoes/roguetown/boots
+	backr = /obj/item/storage/backpack/rogue/satchel
 	belt = /obj/item/storage/belt/rogue/leather/plaquesilver
-	beltr = /obj/item/rogueweapon/mace/steel
 	beltl = /obj/item/rogueweapon/sword/sabre
-	cloak = /obj/item/clothing/cloak/stabard/guardhood
-	backl = /obj/item/rogueweapon/shield/tower
-	backr = /obj/item/storage/backpack/rogue/satchel/black
-	backpack_contents = list(/obj/item/keyring/sheriff = 1, /obj/item/rogueweapon/huntingknife/idagger/steel/special = 1)
+	beltr = /obj/item/rogueweapon/mace/cudgel
+	cloak = /obj/item/clothing/cloak/cape/guard
+	backpack_contents = list(/obj/item/keyring/sheriff = 1)
 	if(H.mind)
-		H.mind.adjust_skillrank(/datum/skill/combat/swords, 6, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/polearms, 6, TRUE)
+		H.mind.AddSpell(new /obj/effect/proc_holder/spell/self/convertrole/guard)
+		H.mind.adjust_skillrank(/datum/skill/combat/axesmaces, 3, TRUE)
+		H.mind.adjust_skillrank(/datum/skill/combat/crossbows, 2, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/wrestling, 5, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/unarmed, 4, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/maces, 3, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/crossbows, 3, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/whipsflails, 2, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/bows, 2, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/knives, 2, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/misc/athletics, 4, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/misc/climbing, 2, TRUE)
+		H.mind.adjust_skillrank(/datum/skill/combat/swords, 5, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/misc/swimming, 2, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/misc/reading, 3, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/misc/riding, 3, TRUE)
-		H.change_stat("strength", 3)
+		H.mind.adjust_skillrank(/datum/skill/misc/climbing, 1, TRUE)
+		H.mind.adjust_skillrank(/datum/skill/misc/athletics, 4, TRUE)
+		H.mind.adjust_skillrank(/datum/skill/misc/reading, 2, TRUE)
+		H.mind.adjust_skillrank(/datum/skill/misc/riding, 2, TRUE)
+		H.change_stat("strength", 5)
 		H.change_stat("perception", 2)
-		H.change_stat("intelligence", 3)
-		H.change_stat("constitution", 2)
-		H.change_stat("endurance", 2)
+		H.change_stat("intelligence", 1)
+		H.change_stat("constitution", 1)
+		H.change_stat("endurance", 1)
 		H.change_stat("speed", 1)
-		H.change_stat("fortune", 2)
-	if(H.dna?.species)
-		H.dna.species.soundpack_m = new /datum/voicepack/male/knight()
+		H.change_stat("fortune", 1)
 	if(H.gender == FEMALE)
 		var/acceptable = list("Tomboy", "Bob", "Curly Short")
 		if(!(H.hairstyle in acceptable))
 			H.hairstyle = pick(acceptable)
 			H.update_hair()
-	ADD_TRAIT(H, TRAIT_NOBLE, TRAIT_GENERIC)
-	ADD_TRAIT(H, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
-	ADD_TRAIT(H, TRAIT_MEDIUMARMOR, TRAIT_GENERIC)
-	ADD_TRAIT(H, TRAIT_STEELHEARTED, TRAIT_GENERIC)
+	ADD_TRAIT(H, RTRAIT_NOBLE, TRAIT_GENERIC)
+	ADD_TRAIT(H, RTRAIT_HEAVYARMOR, TRAIT_GENERIC)
 	H.verbs |= /mob/proc/haltyell
-	H.verbs |= list(/mob/living/carbon/human/proc/request_outlaw, /mob/living/carbon/human/proc/request_law, /mob/living/carbon/human/proc/request_law_removal, /mob/living/carbon/human/proc/request_purge)
 
 /obj/effect/proc_holder/spell/self/convertrole
 	name = "Recruit Beggar"
@@ -115,23 +79,23 @@
 /obj/effect/proc_holder/spell/self/convertrole/cast(list/targets,mob/user = usr)
 	. = ..()
 	var/list/recruitment = list()
-	for(var/mob/living/carbon/human/recruit in (get_hearers_in_view(recruitment_range, user) - user))
+	for(var/mob/living/carbon/human/recruit in get_hearers_in_view(recruitment_range, user))
 		//not allowed
 		if(!can_convert(recruit))
 			continue
 		recruitment[recruit.name] = recruit
 	if(!length(recruitment))
-		to_chat(user, span_warning("There are no potential recruits in range."))
+		to_chat(user, "<span class='warning'>There are no potential recruits in range.</span>")
 		return
-	var/inputty = input(user, "Select a potential recruit!", "[name]") as anything in recruitment
+	var/inputty = input("Select a potential recruit!", "[name]") as anything in recruitment
 	if(inputty)
 		var/mob/living/carbon/human/recruit = recruitment[inputty]
 		if(!QDELETED(recruit) && (recruit in get_hearers_in_view(recruitment_range, user)))
 			INVOKE_ASYNC(src, PROC_REF(convert), recruit, user)
 		else
-			to_chat(user, span_warning("Recruitment failed!"))
+			to_chat(user, "<span class='warning'>Recruitment failed!</span>")
 	else
-		to_chat(user, span_warning("Recruitment cancelled."))
+		to_chat(user, "<span class='warning'>Recruitment cancelled.</span>")
 
 /obj/effect/proc_holder/spell/self/convertrole/proc/can_convert(mob/living/carbon/human/recruit)
 	//wtf
@@ -142,9 +106,8 @@
 		return FALSE
 	//only migrants and peasants
 	if(!(recruit.job in GLOB.peasant_positions) && \
-		!(recruit.job in GLOB.yeoman_positions) && \
-		!(recruit.job in GLOB.allmig_positions) && \
-		!(recruit.job in GLOB.mercenary_positions))
+		!(recruit.job in GLOB.serf_positions) && \
+		!(recruit.job in GLOB.allmig_positions))
 		return FALSE
 	//need to see their damn face
 	if(!recruit.get_face_name(null))
@@ -170,8 +133,8 @@
 
 /obj/effect/proc_holder/spell/self/convertrole/guard
 	name = "Recruit Guardsmen"
-	new_role = "Watchman"
-	recruitment_faction = "Watchman"
+	new_role = "Town Guard"
+	recruitment_faction = "Town Guard"
 	recruitment_message = "Serve the town guard, %RECRUIT!"
 	accept_message = "FOR THE KING!"
 	refuse_message = "I refuse."
@@ -181,23 +144,3 @@
 	if(!.)
 		return
 	recruit.verbs |= /mob/proc/haltyell
-
-/mob/living/carbon/human/proc/request_law()
-	set name = "Request Law"
-	set category = "Sheriff"
-	// ...existing code...
-
-/mob/living/carbon/human/proc/request_law_removal()
-	set name = "Request Law Removal"
-	set category = "Sheriff"
-	// ...existing code...
-
-/mob/living/carbon/human/proc/request_purge()
-	set name = "Request Purge"
-	set category = "Sheriff"
-	// ...existing code...
-
-/mob/living/carbon/human/proc/request_outlaw()
-	set name = "Request Outlaw"
-	set category = "Sheriff"
-	// ...existing code...

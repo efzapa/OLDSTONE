@@ -48,21 +48,21 @@
 							)
 
 /obj/machinery/autolathe/Initialize()
-	AddComponent(/datum/component/material_container,
-	list(/datum/material/iron,
-	/datum/material/glass,
-	/datum/material/gold,
-	/datum/material/silver,
-	/datum/material/diamond,
-	/datum/material/uranium,
-	/datum/material/plasma,
-	/datum/material/bluespace,
-	/datum/material/bananium,
-	/datum/material/titanium,
-	/datum/material/runite,
-	/datum/material/plastic,
-	/datum/material/adamantine,
-	/datum/material/mythril
+	AddComponent(/datum/component/material_container, \
+	list(/datum/material/iron, \
+	/datum/material/glass, \
+	/datum/material/gold, \
+	/datum/material/silver, \
+	/datum/material/diamond, \
+	/datum/material/uranium, \
+	/datum/material/plasma, \
+	/datum/material/bluespace, \
+	/datum/material/bananium, \
+	/datum/material/titanium, \
+	/datum/material/runite, \
+	/datum/material/plastic, \
+	/datum/material/adamantine, \
+	/datum/material/mythril \
 	), 0, TRUE, null, null, CALLBACK(src, PROC_REF(AfterMaterialInsert)))
 	. = ..()
 
@@ -123,9 +123,9 @@
 		return TRUE
 
 	if(istype(O, /obj/item/disk/design_disk))
-		user.visible_message(span_notice("[user] begins to load \the [O] in \the [src]..."),
-			span_notice("I begin to load a design from \the [O]..."),
-			span_hear("I hear the chatter of a floppy drive."))
+		user.visible_message("<span class='notice'>[user] begins to load \the [O] in \the [src]...</span>",
+			"<span class='notice'>I begin to load a design from \the [O]...</span>",
+			"<span class='hear'>I hear the chatter of a floppy drive.</span>")
 		busy = TRUE
 		var/obj/item/disk/design_disk/D = O
 		if(do_after(user, 14.4, target = src))
@@ -198,7 +198,7 @@
 						if(materials.materials[i] > 0)
 							list_to_show += i
 
-					used_material = input("Choose [used_material]", "Custom Material") as null|anything in sortList(list_to_show, GLOBAL_PROC_REF(cmp_typepaths_asc))
+					used_material = input("Choose [used_material]", "Custom Material") as null|anything in sort_list(list_to_show, GLOBAL_PROC_REF(cmp_typepaths_asc))
 					if(!used_material)
 						return //Didn't pick any material, so you can't build shit either.
 					custom_materials[used_material] += amount_needed
@@ -272,7 +272,7 @@
 	. += ..()
 	var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
 	if(in_range(user, src) || isobserver(user))
-		. += span_notice("The status display reads: Storing up to <b>[materials.max_amount]</b> material units.<br>Material consumption at <b>[prod_coeff*100]%</b>.")
+		. += "<span class='notice'>The status display reads: Storing up to <b>[materials.max_amount]</b> material units.<br>Material consumption at <b>[prod_coeff*100]%</b>.</span>"
 
 /obj/machinery/autolathe/proc/main_win(mob/user)
 	var/dat = "<div class='statusDisplay'><h3>Autolathe Menu:</h3><br>"
@@ -311,7 +311,7 @@
 			continue
 
 		if(disabled || !can_build(D))
-			dat += span_linkoff("[D.name]")
+			dat += "<span class='linkOff'>[D.name]</span>"
 		else
 			dat += "<a href='?src=[REF(src)];make=[D.id];multiplier=1'>[D.name]</a>"
 
@@ -345,7 +345,7 @@
 	for(var/v in matching_designs)
 		var/datum/design/D = v
 		if(disabled || !can_build(D))
-			dat += span_linkoff("[D.name]")
+			dat += "<span class='linkOff'>[D.name]</span>"
 		else
 			dat += "<a href='?src=[REF(src)];make=[D.id];multiplier=1'>[D.name]</a>"
 

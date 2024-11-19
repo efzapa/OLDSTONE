@@ -668,7 +668,7 @@ GLOBAL_LIST_INIT(binary, list("0","1"))
 	if(fexists(log))
 		oldjson = json_decode(file2text(log))
 		oldentries = oldjson["data"]
-	if(!isemptylist(oldentries))
+	if(length(oldentries))
 		for(var/string in accepted)
 			for(var/old in oldentries)
 				if(string == old)
@@ -677,8 +677,8 @@ GLOBAL_LIST_INIT(binary, list("0","1"))
 
 	var/list/finalized = list()
 	finalized = accepted.Copy() + oldentries.Copy() //we keep old and unreferenced phrases near the bottom for culling
-	listclearnulls(finalized)
-	if(!isemptylist(finalized) && length(finalized) > storemax)
+	list_clear_nulls(finalized)
+	if(length(finalized) && length(finalized) > storemax)
 		finalized.Cut(storemax + 1)
 	fdel(log)
 
@@ -802,27 +802,6 @@ GLOBAL_LIST_INIT(binary, list("0","1"))
 	message = "[prefix][jointext(rearranged," ")]"
 	. = message
 
-/proc/vocal_cord_torn(message)
-	message = uppertext(message)
-	if(prob(20))
-		message = pick("GHHHHHH...", "GLLLL...", "ZZRRRRR...")
-	else
-		var/new_message = ""
-		var/m_len = length(message)
-		var/tracker = 1
-		while(tracker < m_len)
-			var/nletter = copytext(message, tracker, tracker + 1)
-			if(!(nletter in list("A", "E", "I", "O", "U", " ")) && (tracker % 2))
-				nletter = pick("GH", "SHK", "KSS", "SS", "GNHH")
-			else if((nletter == " ") && prob(50))
-				nletter = "... "
-			new_message += nletter
-			tracker++
-		for(var/uhoh in list("E", "I", "O"))
-			new_message = replacetext(new_message, uhoh, pick("H", "G", "GHHH", "GRRR", "GLLL", "ZZZGH", "GLRG", "... ", "RRR"))
-		new_message = replacetext(new_message, "U", pick("UHHH", "UH... "))
-		message = new_message
-	return message
 
 /proc/readable_corrupted_text(text)
 	var/list/corruption_options = list("..", "£%", "~~\"", "!!", "*", "^", "$!", "-", "}", "?")

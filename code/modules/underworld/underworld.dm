@@ -1,3 +1,77 @@
+// Verbs
+/client/proc/descend()
+	set name = "Journey to the Underworld"
+	set category = "Spirit"
+
+	switch(alert("Descend to the Underworld?",,"Yes","No"))
+		if("Yes")
+			if(istype(mob, /mob/living/carbon/spirit))
+				//HONEYPOT CODE, REMOVE LATER
+				message_admins("RETARDED MOTHERFUCKER [key] IS TRYING TO CRASH THE SERVER BY SPAWNING 3 GORILLION SPIRITS!")
+				return
+
+			if(istype(mob, /mob/living/carbon/human))
+				var/mob/living/carbon/human/D = mob
+				if(D.buried && D.funeral)
+					D.returntolobby()
+					return
+
+				// Check if the player's job is adventurer and reduce current_positions
+				var/datum/job/adventurer_job = SSjob.GetJob("Adventurer")
+				if(adventurer_job && D?.mind?.assigned_role == "Adventurer")
+					adventurer_job.current_positions = max(0, adventurer_job.current_positions - 1)
+					// Store the current time for the player
+					GLOB.adventurer_cooldowns[D?.client?.ckey] = world.time
+
+			for(var/obj/effect/landmark/underworld/A in shuffle(GLOB.landmarks_list))
+				var/mob/living/carbon/spirit/O = new /mob/living/carbon/spirit(A.loc)
+				O.livingname = mob.name
+				O.ckey = ckey
+				O.PATRON = prefs.selected_patron
+				SSdroning.area_entered(get_area(O), O.client)
+				break
+			verbs -= /client/proc/descend
+		if("No")
+			usr << "You have second thoughts."	
+
+/mob/verb/returntolobby()
+	set name = "{RETURN TO LOBBY}"
+	set category = "Options"
+	set hidden = 1
+	
+	if(key)
+		GLOB.respawntimes[key] = world.time
+
+	log_game("[key_name(usr)] respawned from underworld")
+
+	to_chat(src, "<span class='info'>Returned to lobby successfully.</span>")
+
+	if(!client)
+		log_game("[key_name(usr)] AM failed due to disconnect.")
+		return
+	client.screen.Cut()
+	client.screen += client.void
+//	stop_all_loops()
+	SSdroning.kill_rain(src.client)
+	SSdroning.kill_loop(src.client)
+	SSdroning.kill_droning(src.client)
+	remove_client_colour(/datum/client_colour/monochrome)
+	if(!client)
+		log_game("[key_name(usr)] AM failed due to disconnect.")
+		return
+
+	var/mob/dead/new_player/M = new /mob/dead/new_player()
+	if(!client)
+		log_game("[key_name(usr)] AM failed due to disconnect.")
+		qdel(M)
+		return
+
+	M.key = key
+	client.verbs -= /client/proc/descend
+	qdel(src)
+	return
+
+// shit that eventually will need moved elsewhere
 /obj/item/flashlight/lantern/shrunken
 	name = "shrunken lamp"
 	desc = "A beacon."
@@ -127,14 +201,14 @@ GLOBAL_VAR_INIT(underworld_coins, 0)
 	should_track = FALSE
 
 /proc/coin_upkeep()
-	if(GLOB.underworld_coins < 8)
+	if(GLOB.underworld_coins < 3)
 		for(var/obj/effect/landmark/underworldcoin/B in GLOB.landmarks_list)
 			new /obj/item/underworld/coin(B.loc)
 	
 
 // why not also some mob stuff too
-/mob/living/simple_animal/hostile/rogue/dragger
-	name = "dragger"
+/mob/living/simple_animal/hostile/rogue/demon
+	name = "demon"
 	desc = ""
 	icon = 'icons/roguetown/underworld/enigma_dragger.dmi'
 	icon_state = "dragger"
@@ -150,8 +224,8 @@ GLOBAL_VAR_INIT(underworld_coins, 0)
 	turns_per_move = 5
 	response_help_continuous = "passes through"
 	response_help_simple = "pass through"
-	maxHealth = 215
-	health = 215
+	maxHealth = 50
+	health = 50
 	layer = 16
 	plane = 16
 	spacewalk = TRUE
@@ -161,8 +235,8 @@ GLOBAL_VAR_INIT(underworld_coins, 0)
 	move_to_delay = 5 //delay for the automated movement.
 	harm_intent_damage = 1
 	obj_damage = 1
-	melee_damage_lower = 30
-	melee_damage_upper = 45
+	melee_damage_lower = 15
+	melee_damage_upper = 25
 	attack_same = FALSE
 	attack_sound = 'sound/combat/wooshes/bladed/wooshmed (1).ogg'
 	dodge_sound = 'sound/combat/dodge.ogg'
@@ -170,7 +244,7 @@ GLOBAL_VAR_INIT(underworld_coins, 0)
 	d_intent = INTENT_PARRY
 	speak_emote = list("growls")
 	limb_destroyer = 1
-	del_on_death = FALSE
+	del_on_death = TRUE
 	STALUC = 11
 	atmos_requirements = list("min_oxy" = 0, "max_oxy" = 0, "min_tox" = 0, "max_tox" = 0, "min_co2" = 0, "max_co2" = 0, "min_n2" = 0, "max_n2" = 0)
 	minbodytemp = 0
@@ -181,10 +255,10 @@ GLOBAL_VAR_INIT(underworld_coins, 0)
 	canparry = TRUE
 	retreat_health = null
 
-/mob/living/simple_animal/hostile/rogue/dragger/electrocute_act(shock_damage, source, siemens_coeff = 1, flags = NONE)
+/mob/living/simple_animal/hostile/rogue/demon/electrocute_act(shock_damage, source, siemens_coeff = 1, flags = NONE)
 	return FALSE
 
-/mob/living/simple_animal/hostile/rogue/dragger/simple_limb_hit(zone)
+/mob/living/simple_animal/hostile/rogue/demon/simple_limb_hit(zone)
 	if(!zone)
 		return ""
 	switch(zone)
@@ -196,7 +270,7 @@ GLOBAL_VAR_INIT(underworld_coins, 0)
 			return "head"
 		if(BODY_ZONE_PRECISE_MOUTH)
 			return "head"
-		if(BODY_ZONE_PRECISE_SKULL)
+		if(BODY_ZONE_PRECISE_HAIR)
 			return "head"
 		if(BODY_ZONE_PRECISE_EARS)
 			return "head"
@@ -214,9 +288,9 @@ GLOBAL_VAR_INIT(underworld_coins, 0)
 			return "body"
 		if(BODY_ZONE_PRECISE_GROIN)
 			return "body"
-		if(BODY_ZONE_PRECISE_R_INHAND)
+		if(BODY_ZONE_R_INHAND)
 			return "body"
-		if(BODY_ZONE_PRECISE_L_INHAND)
+		if(BODY_ZONE_L_INHAND)
 			return "body"
 		if(BODY_ZONE_HEAD)
 			return "head"
@@ -233,25 +307,25 @@ GLOBAL_VAR_INIT(underworld_coins, 0)
 
 	return ..()
 
-/mob/living/simple_animal/hostile/rogue/dragger/taunted(mob/user)
+/mob/living/simple_animal/hostile/rogue/demon/taunted(mob/user)
 	GiveTarget(user)
 	return
 
-/mob/living/simple_animal/hostile/rogue/dragger/Initialize()
+/mob/living/simple_animal/hostile/rogue/demon/Initialize()
 	. = ..()
 	set_light(2, 2, "#c0523f")
 	ADD_TRAIT(src, TRAIT_IGNOREDAMAGESLOWDOWN, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_NOPAINSTUN, TRAIT_GENERIC)
 
 
-/mob/living/simple_animal/hostile/rogue/dragger/death(gibbed)
+/mob/living/simple_animal/hostile/rogue/demon/death(gibbed)
 	emote("death")
 	..()
 
-/mob/living/simple_animal/hostile/rogue/dragger/Life()
+/mob/living/simple_animal/hostile/rogue/demon/Life()
 	. = ..()
 	
-/mob/living/simple_animal/hostile/rogue/dragger/get_sound(input)
+/mob/living/simple_animal/hostile/rogue/demon/get_sound(input)
 	switch(input)
 		if("laugh")
 			return pick('sound/vo/mobs/ghost/laugh (1).ogg','sound/vo/mobs/ghost/laugh (2).ogg','sound/vo/mobs/ghost/laugh (3).ogg','sound/vo/mobs/ghost/laugh (4).ogg','sound/vo/mobs/ghost/laugh (5).ogg','sound/vo/mobs/ghost/laugh (6).ogg')
@@ -264,17 +338,17 @@ GLOBAL_VAR_INIT(underworld_coins, 0)
 		if("aggro")
 			return pick('sound/vo/mobs/ghost/aggro (1).ogg','sound/vo/mobs/ghost/aggro (2).ogg','sound/vo/mobs/ghost/aggro (3).ogg','sound/vo/mobs/ghost/aggro (4).ogg','sound/vo/mobs/ghost/aggro (5).ogg','sound/vo/mobs/ghost/aggro (6).ogg')
 
-/mob/living/simple_animal/hostile/rogue/dragger/AttackingTarget()
+/mob/living/simple_animal/hostile/rogue/demon/AttackingTarget()
 	. = ..()
 	if(. && prob(8) && iscarbon(target))
 		var/mob/living/carbon/C = target
 		C.Immobilize(50)
-		C.visible_message(span_danger("\The [src] paralyzes \the [C] in fear!"), \
-				span_danger("\The [src] paralyzes me!"))
+		C.visible_message("<span class='danger'>\The [src] paralyzes \the [C] in fear!</span>", \
+				"<span class='danger'>\The [src] paralyzes me!</span>")
 		emote("laugh")
 
 /obj/effect/landmark/underworldsafe/Crossed(atom/movable/AM, oldloc)
-	if(istype(AM, /mob/living/simple_animal/hostile/rogue/dragger))
+	if(istype(AM, /mob/living/simple_animal/hostile/rogue/demon))
 		for(var/mob/living/carbon/human/A in view(4))
 			to_chat(A, "The monster's form dematerializes as it nears the Carriage.")
 		qdel(AM)

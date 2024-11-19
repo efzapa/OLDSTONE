@@ -67,10 +67,10 @@
 	if(!active && !(flags_1 & NODECONSTRUCT_1))
 		if(O.tool_behaviour == TOOL_WRENCH)
 			if(!anchored && !isinspace())
-				to_chat(user,span_notice("I secure [src] to the floor."))
+				to_chat(user,"<span class='notice'>I secure [src] to the floor.</span>")
 				setAnchored(TRUE)
 			else if(anchored)
-				to_chat(user,span_notice("I unsecure and disconnect [src]."))
+				to_chat(user,"<span class='notice'>I unsecure and disconnect [src].</span>")
 				setAnchored(FALSE)
 			playsound(src, 'sound/blank.ogg', 50, TRUE)
 			return
@@ -87,14 +87,14 @@
 	if(!user.canUseTopic(src, !issilicon(user)))
 		return
 	if (!anchored)
-		to_chat(user,span_warning("This device must be anchored by a wrench!"))
+		to_chat(user,"<span class='warning'>This device must be anchored by a wrench!</span>")
 		return
 	if(!allowed(user))
-		to_chat(user,span_warning("Error: Access Denied."))
+		to_chat(user,"<span class='warning'>Error: Access Denied.</span>")
 		user.playsound_local(src,'sound/blank.ogg', 25, 1)
 		return
 	if(!songs.len)
-		to_chat(user,span_warning("Error: No music tracks have been authorized for your station. Petition Central Command to resolve this issue."))
+		to_chat(user,"<span class='warning'>Error: No music tracks have been authorized for your station. Petition Central Command to resolve this issue.</span>")
 		playsound(src,'sound/blank.ogg', 25, TRUE)
 		return
 	var/list/dat = list()
@@ -119,7 +119,7 @@
 				return
 			if(!active)
 				if(stop > world.time)
-					to_chat(usr, span_warning("Error: The device is still resetting from the last activation, it will be ready again in [DisplayTimeText(stop-world.time)]."))
+					to_chat(usr, "<span class='warning'>Error: The device is still resetting from the last activation, it will be ready again in [DisplayTimeText(stop-world.time)].</span>")
 					playsound(src, 'sound/blank.ogg', 50, TRUE)
 					return
 				activate_music()
@@ -130,13 +130,13 @@
 				updateUsrDialog()
 		if("select")
 			if(active)
-				to_chat(usr, span_warning("Error: You cannot change the song until the current one is over."))
+				to_chat(usr, "<span class='warning'>Error: You cannot change the song until the current one is over.</span>")
 				return
 
 			var/list/available = list()
 			for(var/datum/track/S in songs)
 				available[S.song_name] = S
-			var/selected = input(usr, "Choose your song", "Track:") as null|anything in sortList(available)
+			var/selected = input(usr, "Choose your song", "Track:") as null|anything in sort_list(available)
 			if(QDELETED(src) || !selected || !istype(available[selected], /datum/track))
 				return
 			selection = available[selected]

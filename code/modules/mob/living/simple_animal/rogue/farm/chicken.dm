@@ -64,7 +64,7 @@
 			return "beak"
 		if(BODY_ZONE_PRECISE_MOUTH)
 			return "beak"
-		if(BODY_ZONE_PRECISE_SKULL)
+		if(BODY_ZONE_PRECISE_HAIR)
 			return "head"
 		if(BODY_ZONE_PRECISE_EARS)
 			return "head"
@@ -110,7 +110,7 @@
 	if(!stat && (production > 29) && egg_type && isturf(loc) && !enemies.len)
 		testing("laying egg with [production] production")
 		if(locate(/obj/structure/fluff/nest) in loc)
-			visible_message(span_alertalien("[src] [pick(layMessage)]"))
+			visible_message("<span class='alertalien'>[src] [pick(layMessage)]</span>")
 			production = max(production - 30, 0)
 			var/obj/item/reagent_containers/food/snacks/egg/E = new egg_type(get_turf(src))
 			E.pixel_x = rand(-6,6)
@@ -130,13 +130,13 @@
 				if(CH)
 					qdel(CH)
 					new /obj/structure/fluff/nest(loc)
-					visible_message(span_notice("[src] builds a nest."))
+					visible_message("<span class='notice'>[src] builds a nest.</span>")
 				else
 					CH = locate(/obj/item/grown/log/tree/stick) in loc
 					if(CH)
 						qdel(CH)
 						new /obj/structure/fluff/nest(loc)
-						visible_message(span_notice("[src] builds a nest."))
+						visible_message("<span class='notice'>[src] builds a nest.</span>")
 				//if cant find, look for chaff in view and move to it
 				var/list/foundchaff = list()
 				for(var/obj/item/natural/fibers/C in oview(src))

@@ -32,7 +32,7 @@
 			update_icon()
 			return attack_hand(user)
 		else
-			to_chat(user, span_warning("Wrong key."))
+			to_chat(user, "<span class='warning'>Wrong key.</span>")
 			return
 	if(istype(P, /obj/item/keyring))
 		var/obj/item/keyring/K = P

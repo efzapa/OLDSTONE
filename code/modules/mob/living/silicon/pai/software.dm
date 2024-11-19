@@ -156,7 +156,7 @@
 				radio.attack_self(src)
 
 			if("image") // Set pAI card display face
-				var/newImage = input("Select my new display image.", "Display Image", "Happy") in sortList(list("Happy", "Cat", "Extremely Happy", "Face", "Laugh", "Off", "Sad", "Angry", "What", "Sunglasses"))
+				var/newImage = input("Select my new display image.", "Display Image", "Happy") in sort_list(list("Happy", "Cat", "Extremely Happy", "Face", "Laugh", "Off", "Sad", "Angry", "What", "Sunglasses"))
 				var/pID = 1
 
 				switch(newImage)
@@ -213,7 +213,7 @@
 					if(iscarbon(card.loc))
 						CheckDNA(card.loc, src) //you should only be able to check when directly in hand, muh immersions?
 					else
-						to_chat(src, span_warning("I are not being carried by anyone!"))
+						to_chat(src, "<span class='warning'>I are not being carried by anyone!</span>")
 						return 0 // FALSE ? If you return here you won't call paiinterface() below
 
 			if("pdamessage")
@@ -293,7 +293,7 @@
 				if(href_list["cable"])
 					var/turf/T = get_turf(loc)
 					cable = new /obj/item/pai_cable(T)
-					T.visible_message(span_warning("A port on [src] opens to reveal [cable], which promptly falls to the floor."), span_hear("I hear the soft click of something light and hard falling to the ground."))
+					T.visible_message("<span class='warning'>A port on [src] opens to reveal [cable], which promptly falls to the floor.</span>", "<span class='hear'>I hear the soft click of something light and hard falling to the ground.</span>")
 
 			if("loudness")
 				if(subscreen == 1) // Open Instrument
@@ -415,9 +415,9 @@
 		return
 	var/answer = input(M, "[P] is requesting a DNA sample from you. Will you allow it to confirm my identity?", "[P] Check DNA", "No") in list("Yes", "No")
 	if(answer == "Yes")
-		M.visible_message(span_notice("[M] presses [M.p_their()] thumb against [P]."),\
-						span_notice("I press my thumb against [P]."),\
-						span_notice("[P] makes a sharp clicking sound as it extracts DNA material from [M]."))
+		M.visible_message("<span class='notice'>[M] presses [M.p_their()] thumb against [P].</span>",\
+						"<span class='notice'>I press my thumb against [P].</span>",\
+						"<span class='notice'>[P] makes a sharp clicking sound as it extracts DNA material from [M].</span>")
 		if(!M.has_dna())
 			to_chat(P, "<b>No DNA detected</b>")
 			return
@@ -427,7 +427,7 @@
 		else
 			to_chat(P, "<b>DNA does not match stored Master DNA.</b>")
 	else
-		to_chat(P, span_warning("[M] does not seem like [M.p_theyre()] going to provide a DNA sample willingly."))
+		to_chat(P, "<span class='warning'>[M] does not seem like [M.p_theyre()] going to provide a DNA sample willingly.</span>")
 
 // -=-=-=-= Software =-=-=-=-=- //
 
@@ -457,7 +457,7 @@
 /mob/living/silicon/pai/proc/softwareManifest()
 	. += "<h2>Crew Manifest</h2><br><br>"
 	if(GLOB.data_core.general)
-		for(var/datum/data/record/t in sortRecord(GLOB.data_core.general))
+		for(var/datum/data/record/t in sort_record(GLOB.data_core.general))
 			. += "[t.fields["name"]] - [t.fields["rank"]]<BR>"
 	. += "</body></html>"
 	return .
@@ -468,7 +468,7 @@
 		if(0)
 			. += "<h3>Medical Records</h3><HR>"
 			if(GLOB.data_core.general)
-				for(var/datum/data/record/R in sortRecord(GLOB.data_core.general))
+				for(var/datum/data/record/R in sort_record(GLOB.data_core.general))
 					. += "<A href='?src=[REF(src)];med_rec=[R.fields["id"]];software=medicalrecord;sub=1'>[R.fields["id"]]: [R.fields["name"]]<BR>"
 		if(1)
 			. += "<CENTER><B>Medical Record</B></CENTER><BR>"
@@ -490,7 +490,7 @@
 		if(0)
 			. += "<h3>Security Records</h3><HR>"
 			if(GLOB.data_core.general)
-				for(var/datum/data/record/R in sortRecord(GLOB.data_core.general))
+				for(var/datum/data/record/R in sort_record(GLOB.data_core.general))
 					. += "<A href='?src=[REF(src)];sec_rec=[R.fields["id"]];software=securityrecord;sub=1'>[R.fields["id"]]: [R.fields["name"]]<BR>"
 		if(1)
 			. += "<h3>Security Record</h3>"

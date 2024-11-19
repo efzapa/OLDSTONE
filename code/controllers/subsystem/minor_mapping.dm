@@ -4,10 +4,7 @@ SUBSYSTEM_DEF(minor_mapping)
 	flags = SS_NO_FIRE
 
 /datum/controller/subsystem/minor_mapping/Initialize(timeofday)
-	//Minor mapping comes quite late in the init list so it should be safe to add here. We want this long after everything else is done
-	SSmapping.load_marks()
-
-//	trigger_migration(CONFIG_GET(number/mice_roundstart)) //christ why is this uncommented yikes
+	trigger_migration(CONFIG_GET(number/mice_roundstart))
 //	place_sunlight()
 //	place_satchels()
 	return ..()

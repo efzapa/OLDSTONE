@@ -23,6 +23,9 @@
 /mob/living/carbon/human/species/skeleton/Initialize()
 	. = ..()
 	cut_overlays()
+	spawn(10)
+		after_creation()
+
 	addtimer(CALLBACK(src, PROC_REF(after_creation)), 10)
 
 /mob/living/carbon/human/species/skeleton/after_creation()
@@ -41,8 +44,10 @@
 		qdel(O)
 	src.regenerate_limb(BODY_ZONE_R_ARM)
 	src.regenerate_limb(BODY_ZONE_L_ARM)
+	for(var/obj/item/bodypart/B in src.bodyparts)
+		B.skeletonize()
 	// src.remove_all_languages()
-	// uncomment this to prohibit skeletons from knowing or speaking any languages. This is commented to allow skeletons to be the main subject of admin events. (eg: skeleton traders, skeletons concealing their bones and blending in with the kingdom society, the underworld bar skeletons, skeletons telling skeleton jokes)
+	// removing this because i wanna actually be able to talk as a skellybones fella
 	var/obj/item/organ/eyes/eyes = src.getorganslot(ORGAN_SLOT_EYES)
 	if(eyes)
 		eyes.Remove(src,1)
@@ -52,21 +57,20 @@
 	src.underwear = "Nude"
 	if(src.charflaw)
 		QDEL_NULL(src.charflaw)
-	mob_biotypes |= MOB_UNDEAD
+	update_body()
+	mob_biotypes = MOB_UNDEAD
 	faction = list("undead")
-	name = "skelelon"
-	real_name = "skelelon"
+	name = "skeleton"
+	real_name = "skeleton"
 	ADD_TRAIT(src, TRAIT_NOMOOD, TRAIT_GENERIC)
-	ADD_TRAIT(src, TRAIT_NOROGSTAM, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_NOFATSTAM, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_NOLIMBDISABLE, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_NOHUNGER, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_EASYDISMEMBER, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_NOBREATH, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_NOPAIN, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_TOXIMMUNE, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_LIMBATTACHMENT, TRAIT_GENERIC)
-	for(var/obj/item/bodypart/B in src.bodyparts)
-		B.skeletonize(FALSE)
-	update_body()
 	if(skel_outfit)
 		var/datum/outfit/OU = new skel_outfit
 		if(OU)
@@ -102,9 +106,3 @@
 		r_hand = /obj/item/rogueweapon/sword
 	else
 		r_hand = /obj/item/rogueweapon/stoneaxe/woodcut
-
-/mob/living/carbon/human/species/skeleton/npc/no_equipment
-    skel_outfit = null
-
-/mob/living/carbon/human/species/skeleton/no_equipment
-    skel_outfit = null

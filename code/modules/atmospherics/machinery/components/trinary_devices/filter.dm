@@ -177,7 +177,7 @@
 /obj/machinery/atmospherics/components/trinary/filter/can_unwrench(mob/user)
 	. = ..()
 	if(. && on && is_operational())
-		to_chat(user, span_warning("I cannot unwrench [src], turn it off first!"))
+		to_chat(user, "<span class='warning'>I cannot unwrench [src], turn it off first!</span>")
 		return FALSE
 
 // mapping

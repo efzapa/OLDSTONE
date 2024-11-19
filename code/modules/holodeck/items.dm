@@ -55,14 +55,14 @@
 		w_class = WEIGHT_CLASS_BULKY
 		hitsound = 'sound/blank.ogg'
 		playsound(user, 'sound/blank.ogg', 20, TRUE)
-		to_chat(user, span_notice("[src] is now active."))
+		to_chat(user, "<span class='notice'>[src] is now active.</span>")
 	else
 		force = 3
 		icon_state = "sword0"
 		w_class = WEIGHT_CLASS_SMALL
 		hitsound = "swing_hit"
 		playsound(user, 'sound/blank.ogg', 20, TRUE)
-		to_chat(user, span_notice("[src] can now be concealed."))
+		to_chat(user, "<span class='notice'>[src] can now be concealed.</span>")
 	return
 
 //BASKETBALL OBJECTS
@@ -89,7 +89,7 @@
 		M.apply_damage(10, STAMINA)
 		if(prob(5))
 			M.Paralyze(60)
-			visible_message(span_danger("[M] is knocked right off [M.p_their()] feet!"))
+			visible_message("<span class='danger'>[M] is knocked right off [M.p_their()] feet!</span>")
 
 //
 // Structures
@@ -106,7 +106,7 @@
 /obj/structure/holohoop/attackby(obj/item/W as obj, mob/user as mob, params)
 	if(get_dist(src,user)<2)
 		if(user.transferItemToLoc(W, drop_location()))
-			visible_message(span_warning("[user] dunks [W] into \the [src]!"))
+			visible_message("<span class='warning'>[user] dunks [W] into \the [src]!</span>")
 
 /obj/structure/holohoop/attack_hand(mob/user)
 	. = ..()
@@ -115,23 +115,23 @@
 	if(user.pulling && user.used_intent.type == INTENT_GRAB && isliving(user.pulling))
 		var/mob/living/L = user.pulling
 		if(user.grab_state < GRAB_AGGRESSIVE)
-			to_chat(user, span_warning("I need a better grip to do that!"))
+			to_chat(user, "<span class='warning'>I need a better grip to do that!</span>")
 			return
 		L.forceMove(loc)
 		L.Paralyze(100)
-		visible_message(span_danger("[user] dunks [L] into \the [src]!"))
+		visible_message("<span class='danger'>[user] dunks [L] into \the [src]!</span>")
 		user.stop_pulling()
 	else
 		..()
 
-/obj/structure/holohoop/hitby(atom/movable/AM, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum, d_type = "blunt")
+/obj/structure/holohoop/hitby(atom/movable/AM, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum)
 	if (isitem(AM) && !istype(AM,/obj/projectile))
 		if(prob(50))
 			AM.forceMove(get_turf(src))
-			visible_message(span_warning("Swish! [AM] lands in [src]."))
+			visible_message("<span class='warning'>Swish! [AM] lands in [src].</span>")
 			return
 		else
-			visible_message(span_danger("[AM] bounces off of [src]'s rim!"))
+			visible_message("<span class='danger'>[AM] bounces off of [src]'s rim!</span>")
 			return ..()
 	else
 		return ..()
@@ -157,22 +157,22 @@
 	power_channel = ENVIRON
 
 /obj/machinery/readybutton/attack_ai(mob/user as mob)
-	to_chat(user, span_warning("The station AI is not to interact with these devices!"))
+	to_chat(user, "<span class='warning'>The station AI is not to interact with these devices!</span>")
 	return
 
 /obj/machinery/readybutton/attack_paw(mob/user as mob)
-	to_chat(user, span_warning("I are too primitive to use this device!"))
+	to_chat(user, "<span class='warning'>I are too primitive to use this device!</span>")
 	return
 
 /obj/machinery/readybutton/attackby(obj/item/W as obj, mob/user as mob, params)
-	to_chat(user, span_warning("The device is a solid button, there's nothing you can do with it!"))
+	to_chat(user, "<span class='warning'>The device is a solid button, there's nothing you can do with it!</span>")
 
 /obj/machinery/readybutton/attack_hand(mob/user as mob)
 	. = ..()
 	if(.)
 		return
 	if(user.stat || stat & (NOPOWER|BROKEN))
-		to_chat(user, span_warning("This device is not powered!"))
+		to_chat(user, "<span class='warning'>This device is not powered!</span>")
 		return
 
 	currentarea = get_area(src.loc)
@@ -180,7 +180,7 @@
 		qdel(src)
 
 	if(eventstarted)
-		to_chat(usr, span_warning("The event has already begun!"))
+		to_chat(usr, "<span class='warning'>The event has already begun!</span>")
 		return
 
 	ready = !ready
@@ -212,7 +212,7 @@
 			qdel(W)
 
 	for(var/mob/M in currentarea)
-		to_chat(M, span_danger("FIGHT!"))
+		to_chat(M, "<span class='danger'>FIGHT!</span>")
 
 /obj/machinery/conveyor/holodeck
 

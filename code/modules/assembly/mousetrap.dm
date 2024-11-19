@@ -10,7 +10,7 @@
 
 /obj/item/assembly/mousetrap/examine(mob/user)
 	. = ..()
-	. += span_notice("The pressure plate is [armed?"primed":"safe"].")
+	. += "<span class='notice'>The pressure plate is [armed?"primed":"safe"].</span>"
 
 /obj/item/assembly/mousetrap/activate()
 	if(..())
@@ -19,7 +19,7 @@
 			if(ishuman(usr))
 				var/mob/living/carbon/human/user = usr
 				if((HAS_TRAIT(user, TRAIT_DUMB) || HAS_TRAIT(user, TRAIT_CLUMSY)) && prob(50))
-					to_chat(user, span_warning("My hand slips, setting off the trigger!"))
+					to_chat(user, "<span class='warning'>My hand slips, setting off the trigger!</span>")
 					pulse(FALSE)
 		update_icon()
 		playsound(src, 'sound/blank.ogg', 30, TRUE, -3)
@@ -58,7 +58,7 @@
 				H.update_damage_overlays()
 	else if(ismouse(target))
 		var/mob/living/simple_animal/mouse/M = target
-		visible_message(span_boldannounce("SPLAT!"))
+		visible_message("<span class='boldannounce'>SPLAT!</span>")
 		M.splat()
 	playsound(src, 'sound/blank.ogg', 50, TRUE)
 	armed = FALSE
@@ -68,17 +68,17 @@
 
 /obj/item/assembly/mousetrap/attack_self(mob/living/carbon/human/user)
 	if(!armed)
-		to_chat(user, span_notice("I arm [src]."))
+		to_chat(user, "<span class='notice'>I arm [src].</span>")
 	else
 		if((HAS_TRAIT(user, TRAIT_DUMB) || HAS_TRAIT(user, TRAIT_CLUMSY)) && prob(50))
 			var/which_hand = BODY_ZONE_PRECISE_L_HAND
 			if(!(user.active_hand_index % 2))
 				which_hand = BODY_ZONE_PRECISE_R_HAND
 			triggered(user, which_hand)
-			user.visible_message(span_warning("[user] accidentally sets off [src], breaking their fingers."), \
-								 span_warning("I accidentally trigger [src]!"))
+			user.visible_message("<span class='warning'>[user] accidentally sets off [src], breaking their fingers.</span>", \
+								 "<span class='warning'>I accidentally trigger [src]!</span>")
 			return
-		to_chat(user, span_notice("I disarm [src]."))
+		to_chat(user, "<span class='notice'>I disarm [src].</span>")
 	armed = !armed
 	update_icon()
 	playsound(src, 'sound/blank.ogg', 30, TRUE, -3)
@@ -92,8 +92,8 @@
 			if(!(user.active_hand_index % 2))
 				which_hand = BODY_ZONE_PRECISE_R_HAND
 			triggered(user, which_hand)
-			user.visible_message(span_warning("[user] accidentally sets off [src], breaking their fingers."), \
-								 span_warning("I accidentally trigger [src]!"))
+			user.visible_message("<span class='warning'>[user] accidentally sets off [src], breaking their fingers.</span>", \
+								 "<span class='warning'>I accidentally trigger [src]!</span>")
 			return
 	return ..()
 
@@ -107,8 +107,8 @@
 					var/mob/living/carbon/H = AM
 					if(H.m_intent == MOVE_INTENT_RUN)
 						triggered(H)
-						H.visible_message(span_warning("[H] accidentally steps on [src]."), \
-										  span_warning("I accidentally step on [src]"))
+						H.visible_message("<span class='warning'>[H] accidentally steps on [src].</span>", \
+										  "<span class='warning'>I accidentally step on [src]</span>")
 				else if(ismouse(MM))
 					triggered(MM)
 		else if(AM.density) // For mousetrap grenades, set off by anything heavy
@@ -119,21 +119,21 @@
 /obj/item/assembly/mousetrap/on_found(mob/finder)
 	if(armed)
 		if(finder)
-			finder.visible_message(span_warning("[finder] accidentally sets off [src], breaking their fingers."), \
-							   span_warning("I accidentally trigger [src]!"))
+			finder.visible_message("<span class='warning'>[finder] accidentally sets off [src], breaking their fingers.</span>", \
+							   "<span class='warning'>I accidentally trigger [src]!</span>")
 			triggered(finder, (finder.active_hand_index % 2 == 0) ? BODY_ZONE_PRECISE_R_HAND : BODY_ZONE_PRECISE_L_HAND)
 			return TRUE	//end the search!
 		else
-			visible_message(span_warning("[src] snaps shut!"))
+			visible_message("<span class='warning'>[src] snaps shut!</span>")
 			triggered(loc)
 			return FALSE
 	return FALSE
 
 
-/obj/item/assembly/mousetrap/hitby(atom/movable/AM, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum, d_type = "blunt")
+/obj/item/assembly/mousetrap/hitby(atom/movable/AM, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum)
 	if(!armed)
 		return ..()
-	visible_message(span_warning("[src] is triggered by [AM]."))
+	visible_message("<span class='warning'>[src] is triggered by [AM].</span>")
 	triggered(null)
 
 

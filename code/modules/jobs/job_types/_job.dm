@@ -1,7 +1,6 @@
 /datum/job
 	//The name of the job , used for preferences, bans and more. Make sure you know what you're doing before changing this.
 	var/title = "NOPE"
-	var/f_title
 
 	//Job access. The use of minimal_access or access is determined by a config setting: config.jobs_have_minimal_access
 	var/list/minimal_access = list()		//Useful for servers which prefer to only have access given to the places a job absolutely needs (Larger server population)
@@ -67,10 +66,10 @@
 	var/list/roundstart_experience
 
 	//allowed sex/race for picking
-	var/list/allowed_sexes
-	var/list/allowed_races
-	var/list/allowed_patrons
-	var/list/allowed_ages = ADULT_AGES_LIST
+	var/list/allowed_sexes = list(MALE,FEMALE)
+	var/list/allowed_races = ALL_RACES_LIST_NAMES
+	var/list/allowed_patrons = ALL_PATRON_NAMES_LIST
+	var/list/allowed_ages = list(AGE_ADULT, AGE_MIDDLEAGED, AGE_OLD)
 
 	/// Innate skill levels unlocked at roundstart. Format is list(/datum/skill/foo = SKILL_EXP_NOVICE) with exp as an integer or as per code/_DEFINES/skills.dm
 	var/list/skills
@@ -79,6 +78,8 @@
 
 	var/list/jobstats
 	var/list/jobstats_f
+
+	var/f_title = null
 
 	var/tutorial = null
 
@@ -91,8 +92,7 @@
 	var/list/peopleknowme = list()
 
 	var/plevel_req = 0
-	var/min_pq = 0
-	var/max_pq = 0
+	var/min_pq = -999
 
 	var/show_in_credits = TRUE
 
@@ -102,46 +102,6 @@
 
 	//is the job required for game progression
 	var/required = FALSE
-
-	/// Some jobs have unique combat mode music, because why not?
-	var/cmode_music
-
-	/// This job is a "wanderer" on examine
-	var/wanderer_examine = FALSE
-
-	/// This job uses adventurer classes on examine
-	var/advjob_examine = FALSE
-
-	/// This job always shows on latechoices
-	var/always_show_on_latechoices = FALSE
-
-	/// Cooldown for joining as this job again, if it was your last job
-	var/same_job_respawn_delay = FALSE
-
-	/// This job re-opens slots if someone dies as it
-	var/job_reopens_slots_on_death = FALSE
-
-	/// This job is immune to species-based swapped gender locks
-	var/immune_to_genderswap = FALSE
-
-/*
-	How this works, its CTAG_DEFINE = amount_to_attempt_to_role 
-	EX: advclass_cat_rolls = list(CTAG_PILGRIM = 5, CTAG_ADVENTURER = 5)
-	You will still need to contact the subsystem though
-*/
-	var/list/advclass_cat_rolls
-/*
-	Basically this is just a ref to a drifter wave if its attached to one
-	The role class handler will grab relevant data out of it it uses a class select
-	Just make sure to unattach afterward we are done.
-*/
-	var/datum/drifter_wave/drifter_wave_attachment
-
-/*
-	How this works, they get one extra roll on every category per PQ amount
-*/
-	var/PQ_boost_divider = 0
-
 
 /datum/job/proc/special_job_check(mob/dead/new_player/player)
 	return TRUE
@@ -165,9 +125,10 @@
 		for(var/i in roundstart_experience)
 			experiencer.mind.adjust_experience(i, roundstart_experience[i], TRUE)
 
-	if(spells && H.mind)	
+	if(spells)		
 		for(var/S in spells)
-			H.mind.AddSpell(new S)
+			if(H.mind)
+				H.mind.AddSpell(new S)
 
 	if(H.gender == FEMALE)
 		if(jobstats_f)
@@ -201,20 +162,15 @@
 
 	if(show_in_credits)
 		SScrediticons.processing += H
-	
-	if(cmode_music)
-		H.cmode_music = cmode_music
 
 /mob/living/carbon/human/proc/add_credit()
 	if(!mind || !client)
 		return
 	var/thename = "[real_name]"
 	var/datum/job/J = SSjob.GetJob(mind.assigned_role)
-	var/used_title
-	if(J)
-		used_title = J.title
-		if(gender == FEMALE && J.f_title)
-			used_title = J.f_title
+	var/used_title = J.title
+	if(gender == FEMALE && J.f_title)
+		used_title = J.f_title
 	if(used_title)
 		thename = "[real_name] the [used_title]"
 	GLOB.credits_icons[thename] = list()
@@ -255,7 +211,7 @@
 	if(!H)
 		return FALSE
 	if(CONFIG_GET(flag/enforce_human_authority) && (title in GLOB.command_positions))
-		if((H.dna.species.id != "human") && (H.dna.species.id != "humen"))
+		if(H.dna.species.id != "human")
 			H.set_species(/datum/species/human)
 			H.apply_pref_name("human", preference_source)
 	if(!visualsOnly)

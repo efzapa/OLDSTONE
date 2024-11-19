@@ -114,7 +114,7 @@
 
 /obj/structure/flora/roguetree/burnt
 	name = "burnt tree"
-	desc = "Maybe lightning, maybe war took the life of this once lively tree."
+	desc = ""
 	icon = 'icons/roguetown/misc/96x96.dmi'
 	icon_state = "t1"
 	stump_type = /obj/structure/flora/roguetree/stump/burnt
@@ -126,7 +126,6 @@
 
 /obj/structure/flora/roguetree/stump/burnt
 	name = "tree stump"
-	desc = "This stump is burnt. Maybe someone is trying to get coal the easy way."
 	icon_state = "st1"
 	icon = 'icons/roguetown/misc/96x96.dmi'
 	stump_type = null
@@ -150,7 +149,6 @@
 
 /obj/structure/flora/roguetree/stump
 	name = "tree stump"
-	desc = "Someone cut this tree down."
 	icon_state = "t1stump"
 	opacity = 0
 	max_integrity = 100
@@ -172,7 +170,6 @@
 
 /obj/structure/flora/roguetree/stump/log
 	name = "ancient log"
-	desc = "Rotten remains of a tree that sufered nature's cruelty ages ago."
 	icon_state = "log1"
 	opacity = 0
 	max_integrity = 200
@@ -190,7 +187,7 @@
 
 /obj/structure/flora/roguegrass
 	name = "grass"
-	desc = "Green, soft and lively."
+	desc = ""
 	icon = 'icons/roguetown/misc/foliage.dmi'
 	icon_state = "grass1"
 	attacked_sound = "plantcross"
@@ -213,13 +210,11 @@
 
 /obj/structure/flora/roguegrass/water
 	name = "grass"
-	desc = "This grass is sodden and muddy."
 	icon_state = "swampgrass"
 	max_integrity = 5
 
 /obj/structure/flora/roguegrass/water/reeds
 	name = "reeds"
-	desc = "This plant thrives in water, and shelters dangers."
 	icon_state = "reeds"
 	opacity = 1
 	max_integrity = 10
@@ -265,7 +260,7 @@
 
 /obj/structure/flora/roguegrass/bush/Initialize()
 	if(prob(88))
-		bushtype = pickweight(list(/obj/item/reagent_containers/food/snacks/grown/berries/rogue=5,
+		bushtype = pick_weight(list(/obj/item/reagent_containers/food/snacks/grown/berries/rogue=5,
 					/obj/item/reagent_containers/food/snacks/grown/berries/rogue/poison=3,
 					/obj/item/reagent_containers/food/snacks/grown/rogue/pipeweed=1))
 	loot_replenish()
@@ -284,24 +279,27 @@
 	..()
 	if(isliving(AM))
 		var/mob/living/L = AM
-		if(L.m_intent == MOVE_INTENT_RUN && (L.mobility_flags & MOBILITY_STAND))
+		if(L.m_intent == MOVE_INTENT_RUN && !L.lying)
 			if(!ishuman(L))
-				to_chat(L, span_warning("I'm cut on a thorn!"))
+				to_chat(L, "<span class='warning'>I'm cut on a thorn!</span>")
 				L.apply_damage(5, BRUTE)
 
 			else
 				var/mob/living/carbon/human/H = L
 				if(prob(20))
 					if(!HAS_TRAIT(src, TRAIT_PIERCEIMMUNE))
-//						H.throw_alert("embeddedobject", /atom/movable/screen/alert/embeddedobject)
+//						H.throw_alert("embeddedobject", /obj/screen/alert/embeddedobject)
 						var/obj/item/bodypart/BP = pick(H.bodyparts)
 						var/obj/item/natural/thorn/TH = new(src.loc)
-						BP.add_embedded_object(TH, silent = TRUE)
+						BP.embedded_objects |= TH
+						TH.add_mob_blood(H)//it embedded itself in you, of course it's bloody!
+						TH.forceMove(H)
 						BP.receive_damage(10)
-						to_chat(H, span_danger("\A [TH] impales my [BP.name]!"))
+						to_chat(H, "<span class='danger'>\A [TH] impales my [BP.name]!</span>")
+						SEND_SIGNAL(src, COMSIG_ADD_MOOD_EVENT, "embedded", /datum/mood_event/embedded)
 				else
 					var/obj/item/bodypart/BP = pick(H.bodyparts)
-					to_chat(H, span_warning("A thorn [pick("slices","cuts","nicks")] my [BP.name]."))
+					to_chat(H, "<span class='warning'>A thorn [pick("slices","cuts","nicks")] my [BP.name].</span>")
 					BP.receive_damage(10)
 
 /obj/structure/flora/roguegrass/bush/attack_hand(mob/user)
@@ -321,15 +319,15 @@
 				if(B)
 					B = new B(user.loc)
 					user.put_in_hands(B)
-					user.visible_message(span_notice("[user] finds [B] in [src]."))
+					user.visible_message("<span class='notice'>[user] finds [B] in [src].</span>")
 					return
-			user.visible_message(span_warning("[user] searches through [src]."))
+			user.visible_message("<span class='warning'>[user] searches through [src].</span>")
 #ifdef MATURESERVER
 			if(!looty.len)
-				to_chat(user, span_warning("Picked clean."))
+				to_chat(user, "<span class='warning'>Picked clean.</span>")
 #else
 			if(!looty.len)
-				to_chat(user, span_warning("Picked clean... I should try later."))
+				to_chat(user, "<span class='warning'>Picked clean... I should try later.</span>")
 #endif
 /obj/structure/flora/roguegrass/bush/update_icon()
 	icon_state = "bush[rand(1, 4)]"
@@ -390,8 +388,8 @@
 
 
 /obj/structure/flora/rogueshroom
-	name = "mushroom"
-	desc = "Mushrooms are the only happy beings in this island."
+	name = "shroom"
+	desc = ""
 	icon = 'icons/roguetown/misc/foliagetall.dmi'
 	icon_state = "mush1"
 	opacity = 0
@@ -452,7 +450,6 @@
 
 /obj/structure/flora/shroomstump
 	name = "shroom stump"
-	desc = "It was a very happy shroom. Not anymore."
 	icon_state = "mush1stump"
 	opacity = 0
 	max_integrity = 100
@@ -474,7 +471,6 @@
 
 /obj/structure/roguerock
 	name = "rock"
-	desc = "A rock protuding from the ground."
 	icon_state = "rock1"
 	icon = 'icons/roguetown/misc/foliage.dmi'
 	opacity = 0

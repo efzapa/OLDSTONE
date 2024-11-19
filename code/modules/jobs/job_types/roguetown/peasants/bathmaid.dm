@@ -1,32 +1,28 @@
 /datum/job/roguetown/nightmaiden
 	title = "Bath Wench"
-	flag = WENCH
+	flag = JESTER
 	department_flag = PEASANTS
 	faction = "Station"
 	total_positions = 0 // Disabled due to ERP removal, originally 2
 	spawn_positions = 0 // Disabled due to ERP removal, originally 3
 
-	allowed_sexes = list(FEMALE)
-	allowed_races = list(
-		"Humen",
-		"Elf",
-		"Half-Elf",
-		"Dwarf",
-		"Tiefling",
-		"Argonian",
-		"Dark Elf",
-		"Aasimar",
+	allowed_sexes = list("female")
+	allowed_races = list("Humen",
+	"Humen",
+	"Elf",
+	"Dark Elf",
+	"Half-Elf",
+	"Tiefling",
+	"Aasimar"
 	)
-	allowed_ages = list(AGE_ADULT, AGE_MIDDLEAGED)
 
 	tutorial = "Nobody would envy your lot in life, for the role of the bathwench is not something so idly taken. It comes from a place of desperation, least usually: for any with true compassion or skill would seek position with a nunnery or the medical trade. Launder clothes and soothe wounds, that is your loathsome creed."
 
+	allowed_ages = list(AGE_ADULT, AGE_MIDDLEAGED)
 	outfit = /datum/outfit/job/roguetown/nightmaiden
-	display_order = JDO_WENCH
+	display_order = JDO_NIGHTMAIDEN
 	give_bank_account = TRUE
 	can_random = FALSE
-	min_pq = -10
-	max_pq = null
 
 /datum/outfit/job/roguetown/nightmaiden/pre_equip(mob/living/carbon/human/H)
 	..()
@@ -35,6 +31,7 @@
 	armor = /obj/item/clothing/suit/roguetown/shirt/dress/gen/sexy
 	neck = /obj/item/storage/belt/rogue/pouch
 	backpack_contents = list(/obj/item/roguekey/nightmaiden = 1)
+	ADD_TRAIT(H, RTRAIT_GOODLOVER, TRAIT_GENERIC)
 
 	if(H.mind)
 		H.mind.adjust_skillrank(/datum/skill/misc/sneaking, 2, TRUE)
@@ -80,23 +77,23 @@
 				msg = "It's started to get a little smaller than it used to be, but it'll definitely still last for a while."
 			else
 				msg = "It's seen some light use, but it's still pretty fresh."
-	. += span_notice("[msg]")
+	. += "<span class='notice'>[msg]</span>"
 
 /obj/item/bath/soap/attack(mob/target, mob/user)
 	var/turf/bathspot = get_turf(target)
 	if(!istype(bathspot, /turf/open/water/bath))
-		to_chat(user, span_warning("They must be in the bath water!"))
+		to_chat(user, "<span class='warning'>They must be in the bath water!</span>")
 		return
 	if(istype(target, /mob/living/carbon/human))
-		visible_message(span_info("[user] begins scrubbing [target] with the [src]."))
+		visible_message("<span class='info'>[user] begins scrubbing [target] with the [src].</span>")
 		if(do_after(user, 50))
 			if(user.job == "Bath Wench")
-				visible_message(span_info("[user] expertly scrubs and soothes [target] with the [src]."))
-				to_chat(target, span_love("I feel so relaxed and clean!"))
+				visible_message("<span class='info'>[user] expertly scrubs and soothes [target] with the [src].</span>")
+				to_chat(target, "<span class='love'>I feel so relaxed and clean!</span>")
 				SEND_SIGNAL(target, COMSIG_ADD_MOOD_EVENT, "bathcleaned", /datum/mood_event/bathcleaned)
 			else
-				visible_message(span_info("[user] tries their best to scrub [target] with the [src]."))
-				to_chat(target, span_warning("Ouch! That hurts!"))
+				visible_message("<span class='info'>[user] tries their best to scrub [target] with the [src].</span>")
+				to_chat(target, "<span class='warning'>Ouch! That hurts!</span>")
 			uses -= 1
 			if(uses == 0)
 				qdel(src)

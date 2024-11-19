@@ -80,9 +80,6 @@
 #define SEC_LEVEL_RED	2
 #define SEC_LEVEL_DELTA	3
 
-//some arbitrary defines to be used by self-pruning global lists. (see master_controller)
-#define PROCESS_KILL 26	//Used to trigger removal from a processing list
-
 // Cargo-related stuff.
 #define MANIFEST_ERROR_CHANCE		5
 #define MANIFEST_ERROR_NAME			1
@@ -191,50 +188,21 @@ GLOBAL_LIST_EMPTY(bloody_footprints_cache)
 #define POLLTYPE_MULTI		"MULTICHOICE"
 #define POLLTYPE_IRV		"IRV"
 
-
-
-//subtypesof(), typesof() without the parent path
-#define subtypesof(typepath) ( typesof(typepath) - typepath )
-
 //Gets the turf this atom inhabits
 #define get_turf(A) (get_step(A, 0))
 
 //Same as above except gets the area instead
 #define get_area(A) (isarea(A) ? A : get_step(A, 0)?.loc)
 
-//Ghost orbit types:
-#define GHOST_ORBIT_CIRCLE		"circle"
-#define GHOST_ORBIT_TRIANGLE	"triangle"
-#define GHOST_ORBIT_HEXAGON		"hexagon"
-#define GHOST_ORBIT_SQUARE		"square"
-#define GHOST_ORBIT_PENTAGON	"pentagon"
-
-//Ghost showing preferences:
-#define GHOST_ACCS_NONE		1
-#define GHOST_ACCS_DIR		50
-#define GHOST_ACCS_FULL		100
-
 #define GHOST_ACCS_NONE_NAME		"default sprites"
 #define GHOST_ACCS_DIR_NAME			"only directional sprites"
 #define GHOST_ACCS_FULL_NAME		"full accessories"
 
-#define GHOST_ACCS_DEFAULT_OPTION	GHOST_ACCS_FULL
-
 GLOBAL_LIST_INIT(ghost_accs_options, list(GHOST_ACCS_NONE, GHOST_ACCS_DIR, GHOST_ACCS_FULL)) //So save files can be sanitized properly.
-
-#define GHOST_OTHERS_SIMPLE 			1
-#define GHOST_OTHERS_DEFAULT_SPRITE		50
-#define GHOST_OTHERS_THEIR_SETTING 		100
 
 #define GHOST_OTHERS_SIMPLE_NAME 			"white ghost"
 #define GHOST_OTHERS_DEFAULT_SPRITE_NAME 	"default sprites"
 #define GHOST_OTHERS_THEIR_SETTING_NAME 	"their setting"
-
-#define GHOST_OTHERS_DEFAULT_OPTION			GHOST_OTHERS_THEIR_SETTING
-
-#define GHOST_MAX_VIEW_RANGE_DEFAULT 10
-#define GHOST_MAX_VIEW_RANGE_MEMBER 14
-
 
 GLOBAL_LIST_INIT(ghost_others_options, list(GHOST_OTHERS_SIMPLE, GHOST_OTHERS_DEFAULT_SPRITE, GHOST_OTHERS_THEIR_SETTING)) //Same as ghost_accs_options.
 
@@ -243,8 +211,6 @@ GLOBAL_LIST_INIT(ghost_others_options, list(GHOST_OTHERS_SIMPLE, GHOST_OTHERS_DE
 #define VT			"VT323"
 #define ORBITRON	"Orbitron"
 #define SHARE		"Share Tech Mono"
-
-GLOBAL_LIST_INIT(pda_styles, sortList(list(MONO, VT, ORBITRON, SHARE)))
 
 /////////////////////////////////////
 // atom.appearence_flags shortcuts //
@@ -293,21 +259,11 @@ GLOBAL_LIST_INIT(pda_styles, sortList(list(MONO, VT, ORBITRON, SHARE)))
 #define FIRST_DIAG_STEP 1
 #define SECOND_DIAG_STEP 2
 
-#define DEADCHAT_ARRIVALRATTLE "arrivalrattle"
-#define DEADCHAT_DEATHRATTLE "deathrattle"
-#define DEADCHAT_REGULAR "regular-deadchat"
-
 // Bluespace shelter deploy checks
 #define SHELTER_DEPLOY_ALLOWED "allowed"
 #define SHELTER_DEPLOY_BAD_TURFS "bad turfs"
 #define SHELTER_DEPLOY_BAD_AREA "bad area"
 #define SHELTER_DEPLOY_ANCHORED_OBJECTS "anchored objects"
-
-//debug printing macros
-#define debug_world(msg) if (GLOB.Debug2) to_chat(world, "DEBUG: [msg]")
-#define debug_usr(msg) if (GLOB.Debug2&&usr) to_chat(usr, "DEBUG: [msg]")
-#define debug_admins(msg) if (GLOB.Debug2) to_chat(GLOB.admins, "DEBUG: [msg]")
-#define debug_world_log(msg) if (GLOB.Debug2) log_world("DEBUG: [msg]")
 
 #define INCREMENT_TALLY(L, stat) if(L[stat]){L[stat]++}else{L[stat] = 1}
 
@@ -318,13 +274,6 @@ GLOBAL_LIST_INIT(pda_styles, sortList(list(MONO, VT, ORBITRON, SHARE)))
 #define LUMA_R 0.213
 #define LUMA_G 0.715
 #define LUMA_B 0.072
-
-//different types of atom colorations
-#define ADMIN_COLOUR_PRIORITY 		1 //only used by rare effects like greentext coloring mobs and when admins varedit color
-#define TEMPORARY_COLOUR_PRIORITY 	2 //e.g. purple effect of the revenant on a mob, black effect when mob electrocuted
-#define WASHABLE_COLOUR_PRIORITY 	3 //color splashed onto an atom (e.g. paint on turf)
-#define FIXED_COLOUR_PRIORITY 		4 //color inherent to the atom (e.g. blob color)
-#define COLOUR_PRIORITY_AMOUNT 4 //how many priority levels there are.
 
 //Endgame Results
 #define NUKE_NEAR_MISS 1
@@ -412,13 +361,6 @@ GLOBAL_LIST_INIT(pda_styles, sortList(list(MONO, VT, ORBITRON, SHARE)))
 #define STACK_CHECK_CARDINALS "cardinals" //checks if there is an object of the result type in any of the cardinal directions
 #define STACK_CHECK_ADJACENT "adjacent" //checks if there is an object of the result type within one tile
 
-//text files
-#define BRAIN_DAMAGE_FILE "traumas.json"
-#define ION_FILE "ion_laws.json"
-#define PIRATE_NAMES_FILE "pirates.json"
-#define REDPILL_FILE "redpill.json"
-#define ARCADE_FILE "arcade.json"
-
 //Fullscreen overlay resolution in tiles.
 #define FULLSCREEN_OVERLAY_RESOLUTION_X 15
 #define FULLSCREEN_OVERLAY_RESOLUTION_Y 15
@@ -447,16 +389,8 @@ GLOBAL_LIST_INIT(pda_styles, sortList(list(MONO, VT, ORBITRON, SHARE)))
 // Used by PDA and cartridge code to reduce repetitiveness of spritesheets
 #define PDAIMG(what) {"<span class="pda16x16 [#what]"></span>"}
 
-//Filters
-#define AMBIENT_OCCLUSION filter(type="drop_shadow", x=0, y=-0, size=1, offset = 0, color="#04080FAA")
-#define GAUSSIAN_BLUR(filter_size) filter(type="blur", size=filter_size)
-
 #define STANDARD_GRAVITY 1 //Anything above this is high gravity, anything below no grav
 #define GRAVITY_DAMAGE_TRESHOLD 3 //Starting with this value gravity will start to damage mobs
-
-#define CAMERA_NO_GHOSTS 0
-#define CAMERA_SEE_GHOSTS_BASIC 1
-#define CAMERA_SEE_GHOSTS_ORBIT 2
 
 #define CLIENT_FROM_VAR(I) (ismob(I) ? I:client : (istype(I, /client) ? I : (istype(I, /datum/mind) ? I:current?:client : null)))
 
@@ -479,9 +413,6 @@ GLOBAL_LIST_INIT(pda_styles, sortList(list(MONO, VT, ORBITRON, SHARE)))
 #define GRENADE_EMPTY 1
 #define GRENADE_WIRED 2
 #define GRENADE_READY 3
-
-//Misc text define. Does 4 spaces. Used as a makeshift tabulator.
-#define FOURSPACES "&nbsp;&nbsp;&nbsp;&nbsp;"
 
 // art quality defines, used in datums/components/art.dm, elsewhere
 #define BAD_ART 12.5

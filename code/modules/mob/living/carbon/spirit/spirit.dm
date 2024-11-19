@@ -47,9 +47,7 @@
 	verbs += /mob/living/proc/mob_sleep
 	verbs += /mob/living/proc/lay_down
 	ADD_TRAIT(src, TRAIT_PACIFISM, TRAIT_GENERIC)
-	var/first_part = pick("Sorrowful", "Forlorn", "Regretful", "Piteous", "Rueful", "Dejected", "Desolate", "Mournful", "Melancholic", "Woeful")
-	var/second_part = pick("Wanderer", "Traveler", "Pilgrim", "Vagabond", "Nomad", "Wayfarer", "Spirit", "Specter", "Wraith", "Phantom")
-	name = first_part + " " + second_part
+	name = pick("Wanderer", "Traveler", "Pilgrim", "Mourner", "Sorrowful", "Forlorn", "Regretful", "Piteous", "Rueful", "Dejected")
 
 	//initialize limbs
 	create_bodyparts()
@@ -71,10 +69,10 @@
 		if(istype(item, /obj/item/underworld/coin))
 			return
 	put_in_hands(new /obj/item/underworld/coin/notracking(get_turf(src)))
-	if(patron)
-		to_chat(src, span_danger("Your suffering has not gone unnoticed, [patron] has rewarded you with your toll."))
+	if(PATRON)
+		to_chat(src, "<span class='danger'>Your suffering has not gone unnoticed, [PATRON] has rewarded you with your toll.</span>")
 	else
-		to_chat(src, span_danger("Your suffering has not gone unnoticed, your patron has rewarded you with your toll."))
+		to_chat(src, "<span class='danger'>Your suffering has not gone unnoticed, your patron has rewarded you with your toll.</span>")
 	playsound(src, 'sound/combat/caught.ogg', 80, TRUE, -1)
 
 /mob/living/carbon/spirit/create_internal_organs()
@@ -109,15 +107,6 @@
 		stat(null, "Move Mode: [m_intent]")
 	return
 
-/mob/living/carbon/spirit/toggle_move_intent(mob/user) // Override so they can't run.
-	return
-
-/mob/living/carbon/spirit/toggle_rogmove_intent(intent, silent = FALSE) // Override so they can't run.
-	return
-
-/mob/living/carbon/spirit/mmb_intent_change(input as text) // There's no need for them to change MMB intents
-	return
-
 /mob/living/carbon/spirit/returntolobby()
 	set name = "{RETURN TO LOBBY}"
 	set category = "Options"
@@ -128,7 +117,7 @@
 
 	log_game("[key_name(usr)] respawned from underworld")
 
-	to_chat(src, span_info("Returned to lobby successfully."))
+	to_chat(src, "<span class='info'>Returned to lobby successfully.</span>")
 
 	if(!client)
 		log_game("[key_name(usr)] AM failed due to disconnect.")
@@ -177,7 +166,7 @@
 	return src
 
 /// Proc that will search inside a given atom for any corpses, and send the associated ghost to the lobby if possible
-/proc/pacify_coffin(atom/movable/coffin, mob/user, deep = TRUE, give_pq = PQ_GAIN_BURIAL)
+/proc/pacify_coffin(atom/movable/coffin, mob/user, deep = TRUE, give_pq = 0.2)
 	if(!coffin)
 		return FALSE
 	var/success = FALSE
@@ -195,21 +184,17 @@
 			if(isliving(stuffing) || istype(stuffing, /obj/item/bodypart/head))
 				continue
 			success ||= pacify_coffin(stuffing, user, deep, give_pq = FALSE)
-	// Success is actually the ckey of the last attacker so we can prevent PQ farming from fragging people
-	if(success && give_pq && user?.ckey && (user.ckey != success))
+	if(success && give_pq && user?.ckey)
 		adjust_playerquality(give_pq, user.ckey)
 	return success
 
 /// Proc that sends the client associated with a given corpse to the lobby, if possible
-/proc/pacify_corpse(mob/living/corpse, mob/user, coin_pq = PQ_GAIN_BURIAL_COIN)
-	if((corpse.stat != DEAD) || !corpse.mind)
+/proc/pacify_corpse(mob/living/corpse, mob/user, coin_pq = 0.2)
+	if(corpse.stat != DEAD)
 		return FALSE
-	var/attacker_ckey = corpse.lastattackerckey || TRUE
-	if(ishuman(corpse))
+	if(ishuman(corpse) && !HAS_TRAIT(corpse, TRAIT_BURIED_COIN_GIVEN))
 		var/mob/living/carbon/human/human_corpse = corpse
-		human_corpse.buried = TRUE
-		human_corpse.funeral = TRUE
-		if(istype(human_corpse.mouth, /obj/item/roguecoin) && !HAS_TRAIT(corpse, TRAIT_BURIED_COIN_GIVEN))
+		if(istype(human_corpse.mouth, /obj/item/roguecoin))
 			var/obj/item/roguecoin/coin = human_corpse.mouth
 			if(coin.quantity >= 1) // stuffing their mouth full of a fuck ton of coins wont do shit
 				ADD_TRAIT(human_corpse, TRAIT_BURIED_COIN_GIVEN, TRAIT_GENERIC)
@@ -217,13 +202,13 @@
 					var/turf/fallen = get_turf(coin_spawn)
 					fallen = locate(fallen.x + rand(-3, 3), fallen.y + rand(-3, 3), fallen.z)
 					new /obj/item/underworld/coin/notracking(fallen)
-					fallen.visible_message(span_warning("A coin falls from above!"))
-					if(coin_pq && user?.ckey && (user.ckey != attacker_ckey))
+					fallen.visible_message("<span class='warning'>A coin falls from above!</span>")
+					if(coin_pq && user?.ckey)
 						adjust_playerquality(coin_pq, user.ckey)
 					qdel(human_corpse.mouth)
 					human_corpse.update_inv_mouth()
 					break
-	corpse.mind.remove_antag_datum(/datum/antagonist/zombie)
+	corpse.mind?.remove_antag_datum(/datum/antagonist/zombie)
 	var/mob/dead/observer/ghost
 	//Try to find a lost ghost if there is no client
 	if(!corpse.client)
@@ -238,11 +223,11 @@
 		ghost = corpse.ghostize(force_respawn = TRUE)
 
 	if(ghost)
-		testing("pacify_corpse success ([corpse.mind?.key || "no key"])")
+		testing("pacify_corpse success ([brainmob.mind?.key || "no key"])")
 		var/user_acknowledgement = user ? user.real_name : "a mysterious force"
-		to_chat(ghost, span_rose("My soul finds peace buried in creation, thanks to [user_acknowledgement]."))
+		to_chat(ghost, "<span class='rose'>My soul finds peace buried in creation, thanks to [user_acknowledgement].</span>")
 		ghost.returntolobby(RESPAWNTIME*-1)
-		return attacker_ckey
+		return TRUE
 
 	testing("pacify_corpse fail ([corpse.mind?.key || "no key"])")
 	return FALSE

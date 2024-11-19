@@ -2,7 +2,7 @@
 	var/amount = 0
 	var/maxamount = 3
 	var/upgrade_item = /obj/item/stack/sheet/animalhide/goliath_hide
-	var/datum/armor/added_armor = list("blunt" = 10, "slash" = 10, "stab" = 10)
+	var/datum/armor/added_armor = list("melee" = 10)
 	var/upgrade_name
 
 /datum/component/armor_plate/Initialize(_maxamount,obj/item/_upgrade_item,datum/armor/_added_armor)
@@ -34,29 +34,29 @@
 	if(ismecha(parent))
 		if(amount)
 			if(amount < maxamount)
-				examine_list += span_notice("Its armor is enhanced with [amount] [upgrade_name].")
+				examine_list += "<span class='notice'>Its armor is enhanced with [amount] [upgrade_name].</span>"
 			else
-				examine_list += span_notice("It's wearing a fearsome carapace entirely composed of [upgrade_name] - its pilot must be an experienced monster hunter.")
+				examine_list += "<span class='notice'>It's wearing a fearsome carapace entirely composed of [upgrade_name] - its pilot must be an experienced monster hunter.</span>"
 		else
-			examine_list += span_notice("It has attachment points for strapping monster hide on for added protection.")
+			examine_list += "<span class='notice'>It has attachment points for strapping monster hide on for added protection.</span>"
 	else
 		if(amount)
-			examine_list += span_notice("It has been strengthened with [amount]/[maxamount] [upgrade_name].")
+			examine_list += "<span class='notice'>It has been strengthened with [amount]/[maxamount] [upgrade_name].</span>"
 		else
-			examine_list += span_notice("It can be strengthened with up to [maxamount] [upgrade_name].")
+			examine_list += "<span class='notice'>It can be strengthened with up to [maxamount] [upgrade_name].</span>"
 
 /datum/component/armor_plate/proc/applyplate(datum/source, obj/item/I, mob/user, params)
 	if(!istype(I,upgrade_item))
 		return
 	if(amount >= maxamount)
-		to_chat(user, span_warning("I can't improve [parent] any further!"))
+		to_chat(user, "<span class='warning'>I can't improve [parent] any further!</span>")
 		return
 
 	if(istype(I,/obj/item/stack))
 		I.use(1)
 	else
 		if(length(I.contents))
-			to_chat(user, span_warning("[I] cannot be used for armoring while there's something inside!"))
+			to_chat(user, "<span class='warning'>[I] cannot be used for armoring while there's something inside!</span>")
 			return
 		qdel(I)
 
@@ -67,9 +67,9 @@
 	if(ismecha(O))
 		var/obj/mecha/R = O
 		R.update_icon()
-		to_chat(user, span_info("I strengthen [R], improving its resistance against melee, bullet and laser damage."))
+		to_chat(user, "<span class='info'>I strengthen [R], improving its resistance against melee, bullet and laser damage.</span>")
 	else
-		to_chat(user, span_info("I strengthen [O], improving its resistance against melee attacks."))
+		to_chat(user, "<span class='info'>I strengthen [O], improving its resistance against melee attacks.</span>")
 
 
 /datum/component/armor_plate/proc/dropplates(datum/source, force)

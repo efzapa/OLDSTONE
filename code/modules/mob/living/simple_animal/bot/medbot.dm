@@ -164,13 +164,11 @@
 	else if(href_list["hptech"])
 		var/oldheal_amount = heal_amount
 		var/tech_boosters
-		/*
 		for(var/i in linked_techweb.researched_designs)
 			var/datum/design/surgery/healing/D = SSresearch.techweb_design_by_id(i)
 			if(!istype(D))
 				continue
 			tech_boosters++
-		*/
 		if(tech_boosters)
 			heal_amount = (round(tech_boosters/2,0.1)*initial(heal_amount))+initial(heal_amount) //every 2 tend wounds tech gives you an extra 100% healing, adjusting for unique branches (combo is bonus)
 			if(oldheal_amount < heal_amount)
@@ -189,8 +187,8 @@
 	if(emagged == 2)
 		declare_crit = 0
 		if(user)
-			to_chat(user, span_notice("I short out [src]'s reagent synthesis circuits."))
-		audible_message(span_danger("[src] buzzes oddly!"))
+			to_chat(user, "<span class='notice'>I short out [src]'s reagent synthesis circuits.</span>")
+		audible_message("<span class='danger'>[src] buzzes oddly!</span>")
 		flick("medibot_spark", src)
 		playsound(src, "sparks", 75, TRUE)
 		if(user)
@@ -382,7 +380,7 @@
 
 		if(!treatment_method && emagged != 2) //If they don't need any of that they're probably cured!
 			if(C.maxHealth - C.health < heal_threshold)
-				to_chat(src, span_notice("[C] is healthy! Your programming prevents you from injecting anyone without at least [heal_threshold] damage of any one type ([heal_threshold + 5] for oxygen damage.)"))
+				to_chat(src, "<span class='notice'>[C] is healthy! Your programming prevents you from injecting anyone without at least [heal_threshold] damage of any one type ([heal_threshold + 5] for oxygen damage.)</span>")
 			var/list/messagevoice = list("All patched up!" = 'sound/blank.ogg')
 			var/message = pick(messagevoice)
 			speak(message)
@@ -390,8 +388,8 @@
 			bot_reset()
 			tending = FALSE
 		else if(patient)
-			C.visible_message(span_danger("[src] is trying to tend the wounds of [patient]!"), \
-				span_danger("[src] is trying to tend your wounds!"))
+			C.visible_message("<span class='danger'>[src] is trying to tend the wounds of [patient]!</span>", \
+				"<span class='danger'>[src] is trying to tend your wounds!</span>")
 
 			if(do_mob(src, patient, 20)) //Slightly faster than default tend wounds, but does less HPS
 				if((get_dist(src, patient) <= 1) && (on) && assess_patient(patient))
@@ -406,8 +404,8 @@
 					else
 						patient.apply_damage_type((healies*-1),treatment_method) //don't need to check treatment_method since we know by this point that they were actually damaged.
 						log_combat(src, patient, "tended the wounds of", "internal tools", "([uppertext(treatment_method)])")
-					C.visible_message(span_notice("[src] tends the wounds of [patient]!"), \
-						span_green("[src] tends your wounds!"))
+					C.visible_message("<span class='notice'>[src] tends the wounds of [patient]!</span>", \
+						"<span class='green'>[src] tends your wounds!</span>")
 					ADD_TRAIT(patient,TRAIT_MEDIBOTCOMINGTHROUGH,tag)
 					addtimer(TRAIT_CALLBACK_REMOVE(patient, TRAIT_MEDIBOTCOMINGTHROUGH, tag), (30 SECONDS))
 				else
@@ -424,7 +422,7 @@
 
 /mob/living/simple_animal/bot/medbot/explode()
 	on = FALSE
-	visible_message(span_boldannounce("[src] blows apart!"))
+	visible_message("<span class='boldannounce'>[src] blows apart!</span>")
 	var/atom/Tsec = drop_location()
 
 	drop_part(firstaid, Tsec)

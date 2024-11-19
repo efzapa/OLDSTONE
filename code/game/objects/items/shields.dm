@@ -2,7 +2,7 @@
 	name = "shield"
 	icon = 'icons/obj/shields.dmi'
 	block_chance = 50
-	armor = list("blunt" = 60, "slash" = 55, "stab" = 50, "bullet" = 50, "laser" = 50, "energy" = 0, "bomb" = 30, "bio" = 0, "rad" = 0, "fire" = 80, "acid" = 70)
+	armor = list("melee" = 50, "bullet" = 50, "laser" = 50, "energy" = 0, "bomb" = 30, "bio" = 0, "rad" = 0, "fire" = 80, "acid" = 70)
 	var/transparent = FALSE	// makes beam projectiles pass through the shield
 
 /obj/item/shield/proc/on_shield_block(mob/living/carbon/human/owner, atom/movable/hitby, attack_text = "the attack", damage = 0, attack_type = MELEE_ATTACK)
@@ -41,17 +41,17 @@
 /obj/item/shield/riot/attackby(obj/item/W, mob/user, params)
 	if(istype(W, /obj/item/melee/baton))
 		if(cooldown < world.time - 25)
-			user.visible_message(span_warning("[user] bashes [src] with [W]!"))
+			user.visible_message("<span class='warning'>[user] bashes [src] with [W]!</span>")
 			playsound(user.loc, 'sound/blank.ogg', 50, TRUE)
 			cooldown = world.time
 	else if(istype(W, /obj/item/stack/sheet/mineral/titanium))
 		if (obj_integrity >= max_integrity)
-			to_chat(user, span_warning("[src] is already in perfect condition."))
+			to_chat(user, "<span class='warning'>[src] is already in perfect condition.</span>")
 		else
 			var/obj/item/stack/sheet/mineral/titanium/T = W
 			T.use(1)
 			obj_integrity = max_integrity
-			to_chat(user, span_notice("I repair [src] with [T]."))
+			to_chat(user, "<span class='notice'>I repair [src] with [T].</span>")
 	else
 		return ..()
 
@@ -60,11 +60,11 @@
 	var/healthpercent = round((obj_integrity/max_integrity) * 100, 1)
 	switch(healthpercent)
 		if(50 to 99)
-			. += span_info("It looks slightly damaged.")
+			. += "<span class='info'>It looks slightly damaged.</span>"
 		if(25 to 50)
-			. += span_info("It appears heavily damaged.")
+			. += "<span class='info'>It appears heavily damaged.</span>"
 		if(0 to 25)
-			. += span_warning("It's falling apart!")
+			. += "<span class='warning'>It's falling apart!</span>"
 
 /obj/item/shield/riot/proc/shatter(mob/living/carbon/human/owner)
 	playsound(owner, 'sound/blank.ogg', 100)
@@ -73,7 +73,7 @@
 /obj/item/shield/riot/on_shield_block(mob/living/carbon/human/owner, atom/movable/hitby, attack_text = "the attack", damage = 0, attack_type = MELEE_ATTACK)
 	if (obj_integrity <= damage)
 		var/turf/T = get_turf(owner)
-		T.visible_message(span_warning("[hitby] destroys [src]!"))
+		T.visible_message("<span class='warning'>[hitby] destroys [src]!</span>")
 		shatter(owner)
 		qdel(src)
 		return FALSE
@@ -94,7 +94,7 @@
 /obj/item/shield/riot/roman/fake
 	desc = ""
 	block_chance = 0
-	armor = list("blunt" = 0, "slash" = 0, "stab" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 0, "acid" = 0)
+	armor = list("melee" = 0, "bullet" = 0, "laser" = 0, "energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 0, "acid" = 0)
 	max_integrity = 30
 
 /obj/item/shield/riot/roman/shatter(mob/living/carbon/human/owner)
@@ -149,10 +149,10 @@
 	if(istype(W, /obj/item/assembly/flash/handheld))
 		var/obj/item/assembly/flash/handheld/flash = W
 		if(flash.burnt_out)
-			to_chat(user, span_warning("No sense replacing it with a broken bulb!"))
+			to_chat(user, "<span class='warning'>No sense replacing it with a broken bulb!</span>")
 			return
 		else
-			to_chat(user, span_notice("I begin to replace the bulb..."))
+			to_chat(user, "<span class='notice'>I begin to replace the bulb...</span>")
 			if(do_after(user, 20, target = user))
 				if(flash.burnt_out || !flash || QDELETED(flash))
 					return
@@ -180,7 +180,7 @@
 /obj/item/shield/riot/flash/examine(mob/user)
 	. = ..()
 	if (embedded_flash?.burnt_out)
-		. += span_info("The mounted bulb has burnt out. You can try replacing it with a new one.")
+		. += "<span class='info'>The mounted bulb has burnt out. You can try replacing it with a new one.</span>"
 
 /obj/item/shield/energy
 	name = "energy combat shield"
@@ -212,7 +212,7 @@
 
 /obj/item/shield/energy/attack_self(mob/living/carbon/human/user)
 	if(clumsy_check && HAS_TRAIT(user, TRAIT_CLUMSY) && prob(50))
-		to_chat(user, span_danger("I beat myself in the head with [src]!"))
+		to_chat(user, "<span class='danger'>I beat myself in the head with [src]!</span>")
 		user.take_bodypart_damage(5)
 	active = !active
 	icon_state = "[base_icon_state][active]"
@@ -223,14 +223,14 @@
 		throw_speed = on_throw_speed
 		w_class = WEIGHT_CLASS_BULKY
 		playsound(user, 'sound/blank.ogg', 35, TRUE)
-		to_chat(user, span_notice("[src] is now active."))
+		to_chat(user, "<span class='notice'>[src] is now active.</span>")
 	else
 		force = initial(force)
 		throwforce = initial(throwforce)
 		throw_speed = initial(throw_speed)
 		w_class = WEIGHT_CLASS_TINY
 		playsound(user, 'sound/blank.ogg', 35, TRUE)
-		to_chat(user, span_notice("[src] can now be concealed."))
+		to_chat(user, "<span class='notice'>[src] can now be concealed.</span>")
 	add_fingerprint(user)
 
 /obj/item/shield/riot/tele
@@ -264,12 +264,12 @@
 		throw_speed = 2
 		w_class = WEIGHT_CLASS_BULKY
 		slot_flags = ITEM_SLOT_BACK
-		to_chat(user, span_notice("I extend \the [src]."))
+		to_chat(user, "<span class='notice'>I extend \the [src].</span>")
 	else
 		force = 3
 		throwforce = 3
 		throw_speed = 1
 		w_class = WEIGHT_CLASS_NORMAL
 		slot_flags = null
-		to_chat(user, span_notice("[src] can now be concealed."))
+		to_chat(user, "<span class='notice'>[src] can now be concealed.</span>")
 	add_fingerprint(user)

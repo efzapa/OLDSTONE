@@ -62,11 +62,11 @@
 	var/obj/item/card/id/ID = user.get_idcard(TRUE)
 
 	if(!ID)
-		to_chat(user, span_warning("I don't have an ID."))
+		to_chat(user, "<span class='warning'>I don't have an ID.</span>")
 		return
 
 	if(!(ACCESS_HEADS in ID.access))
-		to_chat(user, span_warning("The access level of your card is not high enough."))
+		to_chat(user, "<span class='warning'>The access level of your card is not high enough.</span>")
 		return
 
 	var/old_len = authorized.len
@@ -121,7 +121,7 @@
 
 	if(SSshuttle.emergency.mode == SHUTTLE_STRANDED)
 		authorized.Cut()
-		DISABLE_BITFIELD(obj_flags, EMAGGED)
+		obj_flags &= ~EMAGGED
 
 	if(ENGINES_STARTED || (!IS_DOCKED))
 		return .
@@ -140,15 +140,15 @@
 	if(!IS_DOCKED)
 		return
 
-	if(CHECK_BITFIELD(obj_flags, EMAGGED) || ENGINES_STARTED)	//SYSTEM ERROR: THE SHUTTLE WILL LA-SYSTEM ERROR: THE SHUTTLE WILL LA-SYSTEM ERROR: THE SHUTTLE WILL LAUNCH IN 10 SECONDS
-		to_chat(user, span_warning("The shuttle is already about to launch!"))
+	if((obj_flags & EMAGGED) || ENGINES_STARTED)	//SYSTEM ERROR: THE SHUTTLE WILL LA-SYSTEM ERROR: THE SHUTTLE WILL LA-SYSTEM ERROR: THE SHUTTLE WILL LAUNCH IN 10 SECONDS
+		to_chat(user, "<span class='warning'>The shuttle is already about to launch!</span>")
 		return
 
 	var/time = TIME_LEFT
 	message_admins("[ADMIN_LOOKUPFLW(user.client)] has emagged the emergency shuttle [time] seconds before launch.")
 	log_game("[key_name(user)] has emagged the emergency shuttle in [COORD(src)] [time] seconds before launch.")
 
-	ENABLE_BITFIELD(obj_flags, EMAGGED)
+	obj_flags |= EMAGGED
 	SSshuttle.emergency.movement_force = list("KNOCKDOWN" = 60, "THROW" = 20)//YOUR PUNY SEATBELTS can SAVE YOU NOW, MORTAL
 	var/datum/species/S = new
 	for(var/i in 1 to 10)
@@ -469,7 +469,7 @@
 			launch_status = EARLY_LAUNCHED
 			return ..()
 	else
-		to_chat(usr, span_warning("Escape pods will only launch during \"Code Red\" security alert."))
+		to_chat(usr, "<span class='warning'>Escape pods will only launch during \"Code Red\" security alert.</span>")
 		return TRUE
 
 /obj/docking_port/mobile/pod/cancel()
@@ -490,8 +490,8 @@
 /obj/machinery/computer/shuttle/pod/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
 		return
-	ENABLE_BITFIELD(obj_flags, EMAGGED)
-	to_chat(user, span_warning("I fry the pod's alert level checking system."))
+	obj_flags |= EMAGGED
+	to_chat(user, "<span class='warning'>I fry the pod's alert level checking system.</span>")
 
 /obj/machinery/computer/shuttle/pod/connect_to_shuttle(obj/docking_port/mobile/port, obj/docking_port/stationary/dock, idnum, override=FALSE)
 	. = ..()

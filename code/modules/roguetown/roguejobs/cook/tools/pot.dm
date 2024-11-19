@@ -2,8 +2,8 @@
 	force = 10
 	throwforce = 15
 	possible_item_intents = list(INTENT_GENERIC)
-	name = "glass pot"
-	desc = "A delicate glass pot." // i've never seen this ingame
+	name = "pot"
+	desc = ""
 	icon_state = "pot"
 	icon = 'icons/roguetown/items/cooking.dmi'
 	item_state = "rods"
@@ -19,3 +19,7 @@
 	possible_item_intents = list(INTENT_GENERIC, /datum/intent/fill, INTENT_POUR, INTENT_SPLASH)
 	drop_sound = 'sound/foley/dropsound/shovel_drop.ogg'
 	slot_flags = null
+
+/obj/item/reagent_containers/glass/pot/proc/makeSoup(nutrimentamount)
+	reagents.add_reagent(/datum/reagent/consumable/nutriment, nutrimentamount)
+	playsound(src, "bubbles", 100, TRUE)

@@ -134,7 +134,7 @@ Stabilized extracts:
 	generate_mobtype()
 
 /obj/item/slimecross/stabilized/gold/attack_self(mob/user)
-	var/choice = input(user, "Which do you want to reset?", "Familiar Adjustment") as null|anything in sortList(list("Familiar Location", "Familiar Species", "Familiar Sentience", "Familiar Name"))
+	var/choice = input(user, "Which do you want to reset?", "Familiar Adjustment") as null|anything in sort_list(list("Familiar Location", "Familiar Species", "Familiar Sentience", "Familiar Name"))
 	if(!user.canUseTopic(src, BE_CLOSE))
 		return
 	if(isliving(user))
@@ -142,21 +142,21 @@ Stabilized extracts:
 		if(L.has_status_effect(/datum/status_effect/stabilized/gold))
 			L.remove_status_effect(/datum/status_effect/stabilized/gold)
 	if(choice == "Familiar Location")
-		to_chat(user, span_notice("I prod [src], and it shudders slightly."))
+		to_chat(user, "<span class='notice'>I prod [src], and it shudders slightly.</span>")
 		START_PROCESSING(SSobj, src)
 	if(choice == "Familiar Species")
-		to_chat(user, span_notice("I squeeze [src], and a shape seems to shift around inside."))
+		to_chat(user, "<span class='notice'>I squeeze [src], and a shape seems to shift around inside.</span>")
 		generate_mobtype()
 		START_PROCESSING(SSobj, src)
 	if(choice == "Familiar Sentience")
-		to_chat(user, span_notice("I poke [src], and it lets out a glowing pulse."))
+		to_chat(user, "<span class='notice'>I poke [src], and it lets out a glowing pulse.</span>")
 		saved_mind = null
 		START_PROCESSING(SSobj, src)
 	if(choice == "Familiar Name")
 		var/newname = copytext(sanitize_name(input(user, "Would you like to change the name of [mob_name]", "Name change", mob_name) as null|text),1,MAX_NAME_LEN)
 		if(newname)
 			mob_name = newname
-		to_chat(user, span_notice("I speak softly into [src], and it shakes slightly in response."))
+		to_chat(user, "<span class='notice'>I speak softly into [src], and it shakes slightly in response.</span>")
 		START_PROCESSING(SSobj, src)
 
 /obj/item/slimecross/stabilized/oil
@@ -183,7 +183,7 @@ Stabilized extracts:
 /obj/item/slimecross/stabilized/rainbow/attackby(obj/item/O, mob/user)
 	var/obj/item/slimecross/regenerative/regen = O
 	if(istype(regen) && !regencore)
-		to_chat(user, span_notice("I place [O] in [src], prepping the extract for automatic application!"))
+		to_chat(user, "<span class='notice'>I place [O] in [src], prepping the extract for automatic application!</span>")
 		regencore = regen
 		regen.forceMove(src)
 		return

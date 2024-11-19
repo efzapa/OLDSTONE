@@ -22,7 +22,7 @@
 		else
 			logs_missing += "[subject] (empty)"
 
-	var/list/combined = sortList(logs_present) + sortList(logs_missing)
+	var/list/combined = sort_list(logs_present) + sort_list(logs_missing)
 
 	var/selected = input("Investigate what?", "Investigate") as null|anything in combined
 
@@ -37,6 +37,6 @@
 
 	var/F = file("[GLOB.log_directory]/[selected].html")
 	if(!fexists(F))
-		to_chat(src, span_danger("No [selected] logfile was found."))
+		to_chat(src, "<span class='danger'>No [selected] logfile was found.</span>")
 		return
 	src << browse(F,"window=investigate[selected];size=800x300")

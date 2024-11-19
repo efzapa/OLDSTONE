@@ -1,5 +1,5 @@
 /obj/item/bodypart/l_arm/rproesthetic
-	name = "wooden left arm"
+	name = "wooden larm"
 	desc = "A left arm of wood."
 	icon = 'icons/roguetown/items/misc.dmi'
 	icon_state = "prarm"
@@ -22,15 +22,15 @@
 	if(affecting)
 		return
 	if(user.zone_selected != body_zone) //so we can't replace a leg with an arm, or a human arm with a monkey arm.
-		to_chat(user, span_warning("[src] isn't the right type for [parse_zone(user.zone_selected)]."))
+		to_chat(user, "<span class='warning'>[src] isn't the right type for [parse_zone(user.zone_selected)].</span>")
 		return -1
 	if(user.temporarilyRemoveItemFromInventory(src))
 		attach_limb(H)
-		user.visible_message(span_notice("[user] attaches [src] to [H]."))
+		user.visible_message("<span class='notice'>[user] attaches [src] to [H].</span>")
 		return 1
 
 /obj/item/bodypart/r_arm/rproesthetic
-	name = "wooden right arm"
+	name = "wooden rarm"
 	desc = "A right arm of wood."
 	icon = 'icons/roguetown/items/misc.dmi'
 	icon_state = "prarm"
@@ -53,9 +53,9 @@
 	if(affecting)
 		return
 	if(user.zone_selected != body_zone) //so we can't replace a leg with an arm, or a human arm with a monkey arm.
-		to_chat(user, span_warning("[src] isn't the right type for [parse_zone(user.zone_selected)]."))
+		to_chat(user, "<span class='warning'>[src] isn't the right type for [parse_zone(user.zone_selected)].</span>")
 		return -1
 	if(user.temporarilyRemoveItemFromInventory(src))
 		attach_limb(H)
-		user.visible_message(span_notice("[user] attaches [src] to [H]."))
+		user.visible_message("<span class='notice'>[user] attaches [src] to [H].</span>")
 		return 1

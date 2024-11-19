@@ -35,9 +35,9 @@
 /obj/machinery/scanner_gate/examine(mob/user)
 	. = ..()
 	if(locked)
-		. += span_notice("The control panel is ID-locked. Swipe a valid ID to unlock it.")
+		. += "<span class='notice'>The control panel is ID-locked. Swipe a valid ID to unlock it.</span>"
 	else
-		. += span_notice("The control panel is unlocked. Swipe an ID to lock it.")
+		. += "<span class='notice'>The control panel is unlocked. Swipe an ID to lock it.</span>"
 
 /obj/machinery/scanner_gate/Crossed(atom/movable/AM)
 	..()
@@ -58,14 +58,14 @@
 			if(allowed(user))
 				locked = FALSE
 				req_access = list()
-				to_chat(user, span_notice("I unlock [src]."))
+				to_chat(user, "<span class='notice'>I unlock [src].</span>")
 		else if(!(obj_flags & EMAGGED))
-			to_chat(user, span_notice("I lock [src] with [W]."))
+			to_chat(user, "<span class='notice'>I lock [src] with [W].</span>")
 			var/list/access = W.GetAccess()
 			req_access = access
 			locked = TRUE
 		else
-			to_chat(user, span_warning("I try to lock [src] with [W], but nothing happens."))
+			to_chat(user, "<span class='warning'>I try to lock [src] with [W], but nothing happens.</span>")
 	else
 		return ..()
 
@@ -75,7 +75,7 @@
 	locked = FALSE
 	req_access = list()
 	obj_flags |= EMAGGED
-	to_chat(user, span_notice("I fry the ID checking system."))
+	to_chat(user, "<span class='notice'>I fry the ID checking system.</span>")
 
 /obj/machinery/scanner_gate/proc/perform_scan(mob/living/M)
 	var/beep = FALSE
@@ -167,7 +167,7 @@
 		return
 	switch(action)
 		if("set_mode")
-			var/new_mode = input("Choose the scan mode","Scan Mode") as null|anything in sortList(list(SCANGATE_NONE,
+			var/new_mode = input("Choose the scan mode","Scan Mode") as null|anything in sort_list(list(SCANGATE_NONE,
 																								SCANGATE_MINDSHIELD,
 																								SCANGATE_NANITES,
 																								SCANGATE_DISEASE,
@@ -182,7 +182,7 @@
 			reverse = !reverse
 			. = TRUE
 		if("set_disease_threshold")
-			var/new_threshold = input("Set disease threshold","Scan Mode") as null|anything in sortList(list(DISEASE_SEVERITY_POSITIVE,
+			var/new_threshold = input("Set disease threshold","Scan Mode") as null|anything in sort_list(list(DISEASE_SEVERITY_POSITIVE,
 																								DISEASE_SEVERITY_NONTHREAT,
 																								DISEASE_SEVERITY_MINOR,
 																								DISEASE_SEVERITY_MEDIUM,
@@ -199,7 +199,7 @@
 			. = TRUE
 		//Some species are not scannable, like abductors (too unknown), androids (too artificial) or skeletons (too magic)
 		if("set_target_species")
-			var/new_species = input("Set target species","Scan Mode") as null|anything in sortList(list("Human",
+			var/new_species = input("Set target species","Scan Mode") as null|anything in sort_list(list("Human",
 																								"Lizardperson",
 																								"Flyperson",
 																								"Felinid",
@@ -234,7 +234,7 @@
 						detect_species = /datum/species/zombie
 			. = TRUE
 		if("set_target_nutrition")
-			var/new_nutrition = input("Set target nutrition level","Scan Mode") as null|anything in sortList(list("Starving",
+			var/new_nutrition = input("Set target nutrition level","Scan Mode") as null|anything in sort_list(list("Starving",
 																											"Obese"))
 			if(new_nutrition)
 				switch(new_nutrition)

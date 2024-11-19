@@ -22,7 +22,7 @@
 	/turf/open/floor/plating/beach/water))
 
 /obj/structure/glowshroom/fire_act(added, maxstacks)
-	visible_message(span_warning("[src] catches fire!"))
+	visible_message("<span class='warning'>[src] catches fire!</span>")
 	var/turf/T = get_turf(src)
 	qdel(src)
 	new /obj/effect/hotspot(T)
@@ -31,11 +31,7 @@
 	if(isliving(mover) && mover.z == z)
 //		var/throwdir = get_dir(src, mover)
 		var/mob/living/L = mover
-
-		if(HAS_TRAIT(L, TRAIT_KNEESTINGER_IMMUNITY)) //Dendor kneestinger immunity
-			return TRUE
-
-		if(L.electrocute_act(30, src)) 
+		if(L.electrocute_act(30, src))
 			L.consider_ambush()
 			if(L.throwing)
 				L.throwing.finalize(FALSE)
@@ -48,17 +44,16 @@
 	if(isliving(AM))
 		var/mob/living/L = AM
 		if(L.z == z)
-			if(!HAS_TRAIT(L, TRAIT_KNEESTINGER_IMMUNITY))
-				if(L.electrocute_act(30, src))
-					L.emote("painscream")
-					L.consider_ambush()
+			if(L.electrocute_act(30, src))
+				L.emote("painscream")
+				L.consider_ambush()
 	. = ..()
 
 /obj/structure/glowshroom/attackby(obj/item/W, mob/user, params)
 	if(isliving(user) && W && user.z == z)
 		if(W.flags_1 & CONDUCT_1)
 			var/mob/living/L = user
-			if(L.electrocute_act(30, src)) // The kneestingers will let you pass if you worship dendor, but they won't take your stupid ass hitting them.
+			if(L.electrocute_act(30, src))
 				L.emote("painscream")
 				L.consider_ambush()
 				if(L.throwing)
@@ -225,7 +220,7 @@
 
 /obj/structure/glowshroom/acid_act(acidpwr, acid_volume)
 	. = 1
-	visible_message(span_danger("[src] melts away!"))
+	visible_message("<span class='danger'>[src] melts away!</span>")
 	var/obj/effect/decal/cleanable/molten_object/I = new (get_turf(src))
 	I.desc = ""
 	qdel(src)

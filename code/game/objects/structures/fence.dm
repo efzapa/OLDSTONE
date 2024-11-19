@@ -60,29 +60,29 @@
 /obj/structure/fence/attackby(obj/item/W, mob/user)
 	if(W.tool_behaviour == TOOL_WIRECUTTER)
 		if(!cuttable)
-			to_chat(user, span_warning("This section of the fence can't be cut!"))
+			to_chat(user, "<span class='warning'>This section of the fence can't be cut!</span>")
 			return
 		if(invulnerable)
-			to_chat(user, span_warning("This fence is too strong to cut through!"))
+			to_chat(user, "<span class='warning'>This fence is too strong to cut through!</span>")
 			return
 		var/current_stage = hole_size
 		if(current_stage >= MAX_HOLE_SIZE)
-			to_chat(user, span_warning("This fence has too much cut out of it already!"))
+			to_chat(user, "<span class='warning'>This fence has too much cut out of it already!</span>")
 			return
 
-		user.visible_message(span_danger("\The [user] starts cutting through \the [src] with \the [W]."),\
-		span_danger("I start cutting through \the [src] with \the [W]."))
+		user.visible_message("<span class='danger'>\The [user] starts cutting through \the [src] with \the [W].</span>",\
+		"<span class='danger'>I start cutting through \the [src] with \the [W].</span>")
 
 		if(do_after(user, CUT_TIME*W.toolspeed, target = src))
 			if(current_stage == hole_size)
 				switch(++hole_size)
 					if(MEDIUM_HOLE)
-						visible_message(span_notice("\The [user] cuts into \the [src] some more."))
-						to_chat(user, span_info("I could probably fit myself through that hole now. Although climbing through would be much faster if you made it even bigger."))
+						visible_message("<span class='notice'>\The [user] cuts into \the [src] some more.</span>")
+						to_chat(user, "<span class='info'>I could probably fit myself through that hole now. Although climbing through would be much faster if you made it even bigger.</span>")
 						climbable = TRUE
 					if(LARGE_HOLE)
-						visible_message(span_notice("\The [user] completely cuts through \the [src]."))
-						to_chat(user, span_info("The hole in \the [src] is now big enough to walk through."))
+						visible_message("<span class='notice'>\The [user] completely cuts through \the [src].</span>")
+						to_chat(user, "<span class='info'>The hole in \the [src] is now big enough to walk through.</span>")
 						climbable = FALSE
 
 				update_cut_status()
@@ -130,10 +130,10 @@
 /obj/structure/fence/door/proc/toggle(mob/user)
 	switch(open)
 		if(FALSE)
-			visible_message(span_notice("\The [user] opens \the [src]."))
+			visible_message("<span class='notice'>\The [user] opens \the [src].</span>")
 			open = TRUE
 		if(TRUE)
-			visible_message(span_notice("\The [user] closes \the [src]."))
+			visible_message("<span class='notice'>\The [user] closes \the [src].</span>")
 			open = FALSE
 
 	update_door_status()

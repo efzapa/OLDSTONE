@@ -63,7 +63,7 @@
 
 
 					if(!isnull(GLOB.data_core.general))
-						for(var/datum/data/record/R in sortRecord(GLOB.data_core.general, sortBy, order))
+						for(var/datum/data/record/R in sort_record(GLOB.data_core.general, sortBy, order))
 							var/blood_type = ""
 							var/b_dna = ""
 							for(var/datum/data/record/E in GLOB.data_core.medical)
@@ -230,7 +230,7 @@
 				rank = I.assignment
 				screen = 1
 			else
-				to_chat(usr, span_danger("Unauthorized access."))
+				to_chat(usr, "<span class='danger'>Unauthorized access.</span>")
 			playsound(src, 'sound/blank.ogg', 50, FALSE)
 		if(authenticated)
 			if(href_list["screen"])

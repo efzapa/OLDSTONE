@@ -12,7 +12,7 @@
 	icon_state = "metal"
 	max_integrity = 1000
 	integrity_failure = 0.5
-	armor = list("blunt" = 10, "slash" = 5, "stab" = 7, "bullet" = 0, "laser" = 0, "energy" = 100, "bomb" = 10, "bio" = 100, "rad" = 100, "fire" = 50, "acid" = 50)
+	armor = list("melee" = 10, "bullet" = 0, "laser" = 0, "energy" = 100, "bomb" = 10, "bio" = 100, "rad" = 100, "fire" = 50, "acid" = 50)
 	CanAtmosPass = ATMOS_PASS_DENSITY
 	rad_flags = RAD_PROTECT_CONTENTS | RAD_NO_CONTAMINATE
 	rad_insulation = RAD_MEDIUM_INSULATION
@@ -53,8 +53,8 @@
 		return
 	if(door_opened)
 		playsound(src, 'sound/combat/hits/onwood/woodimpact (1).ogg', 100)
-		user.visible_message(span_warning("[user] kicks [src] shut!"), \
-			span_notice("I kick [src] shut!"))
+		user.visible_message("<span class='warning'>[user] kicks [src] shut!</span>", \
+			"<span class='notice'>I kick [src] shut!</span>")
 		force_closed()
 	else
 		if(locked)
@@ -64,19 +64,19 @@
 					kickthresh--
 				if((prob(L.STASTR * 0.5) || kickthresh == 0) && (L.STASTR >= initial(kickthresh)))
 					playsound(src, 'sound/combat/hits/onwood/woodimpact (1).ogg', 100)
-					user.visible_message(span_warning("[user] kicks open [src]!"), \
-						span_notice("I kick open [src]!"))
+					user.visible_message("<span class='warning'>[user] kicks open [src]!</span>", \
+						"<span class='notice'>I kick open [src]!</span>")
 					locked = 0
 					force_open()
 				else
 					playsound(src, 'sound/combat/hits/onwood/woodimpact (1).ogg', 100)
-					user.visible_message(span_warning("[user] kicks [src]!"), \
-						span_notice("I kick [src]!"))
+					user.visible_message("<span class='warning'>[user] kicks [src]!</span>", \
+						"<span class='notice'>I kick [src]!</span>")
 			//try to kick open, destroy lock
 		else
 			playsound(src, 'sound/combat/hits/onwood/woodimpact (1).ogg', 100)
-			user.visible_message(span_warning("[user] kicks open [src]!"), \
-				span_notice("I kick open [src]!"))
+			user.visible_message("<span class='warning'>[user] kicks open [src]!</span>", \
+				"<span class='notice'>I kick open [src]!</span>")
 			force_open()
 
 /obj/structure/mineral_door/proc/force_open()
@@ -143,12 +143,12 @@
 		var/mob/user = AM
 		if(HAS_TRAIT(user, TRAIT_BASHDOORS))
 			if(locked)
-				user.visible_message(span_warning("[user] bashes into [src]!"))
-				take_damage(200, "brute", "blunt", 1)
+				user.visible_message("<span class='warning'>[user] bashes into [src]!</span>")
+				take_damage(200, "brute", "melee", 1)
 			else
 				playsound(src, 'sound/combat/hits/onwood/woodimpact (1).ogg', 100)
 				force_open()
-				user.visible_message(span_warning("[user] smashes through [src]!"))
+				user.visible_message("<span class='warning'>[user] smashes through [src]!</span>")
 			return
 		if(locked)
 			playsound(src, rattlesound, 100)
@@ -188,13 +188,13 @@
 		if(isliving(user))
 			var/mob/living/L = user
 			if(L.m_intent == MOVE_INTENT_SNEAK)
-				to_chat(user, span_warning("This door is locked."))
+				to_chat(user, "<span class='warning'>This door is locked.</span>")
 				return
 		if(world.time >= last_bump+20)
 			last_bump = world.time
 			playsound(src, 'sound/foley/doors/knocking.ogg', 100)
-			user.visible_message(span_warning("[user] knocks on [src]."), \
-				span_notice("I knock on [src]."))
+			user.visible_message("<span class='warning'>[user] knocks on [src].</span>", \
+				"<span class='notice'>I knock on [src].</span>")
 		return
 	return TryToSwitchState(user)
 
@@ -286,7 +286,7 @@
 	if(!keylock)
 		return
 	if(lockbroken)
-		to_chat(user, span_warning("The lock to this door is broken."))
+		to_chat(user, "<span class='warning'>The lock to this door is broken.</span>")
 	user.changeNext_move(CLICK_CD_MELEE)
 	if(istype(I,/obj/item/keyring))
 		var/obj/item/keyring/R = I
@@ -326,13 +326,13 @@
 	if(isSwitchingStates || door_opened)
 		return
 	if(locked)
-		user.visible_message(span_warning("[user] unlocks [src]."), \
-			span_notice("I unlock [src]."))
+		user.visible_message("<span class='warning'>[user] unlocks [src].</span>", \
+			"<span class='notice'>I unlock [src].</span>")
 		playsound(src, unlocksound, 100)
 		locked = 0
 	else
-		user.visible_message(span_warning("[user] locks [src]."), \
-			span_notice("I lock [src]."))
+		user.visible_message("<span class='warning'>[user] locks [src].</span>", \
+			"<span class='notice'>I lock [src].</span>")
 		playsound(src, locksound, 100)
 		locked = 1
 
@@ -355,12 +355,6 @@
 		brokenstate = TRUE
 	..()
 
-/obj/structure/mineral_door/OnCrafted(dirin, user)
-	. = ..()
-	keylock = FALSE
-	GLOB.lockhashes.Remove(lockhash)
-	lockhash = 0
-
 /////////////////////// TOOL OVERRIDES ///////////////////////
 
 
@@ -371,38 +365,38 @@
 	if(I.tool_behaviour != TOOL_MINING)
 		return
 	. = TRUE
-	to_chat(user, span_notice("I start digging [src]..."))
+	to_chat(user, "<span class='notice'>I start digging [src]...</span>")
 	if(I.use_tool(src, user, 40, volume=50))
-		to_chat(user, span_notice("I finish digging."))
+		to_chat(user, "<span class='notice'>I finish digging.</span>")
 		deconstruct(TRUE)*/
 
 /obj/structure/mineral_door/welder_act(mob/living/user, obj/item/I) //override if the door is supposed to be flammable.
 	..()
 	. = TRUE
 	if(anchored)
-		to_chat(user, span_warning("[src] is still firmly secured to the ground!"))
+		to_chat(user, "<span class='warning'>[src] is still firmly secured to the ground!</span>")
 		return
 
-	user.visible_message(span_notice("[user] starts to weld apart [src]!"), span_notice("I start welding apart [src]."))
+	user.visible_message("<span class='notice'>[user] starts to weld apart [src]!</span>", "<span class='notice'>I start welding apart [src].</span>")
 	if(!I.use_tool(src, user, 60, 5, 50))
-		to_chat(user, span_warning("I failed to weld apart [src]!"))
+		to_chat(user, "<span class='warning'>I failed to weld apart [src]!</span>")
 		return
 
-	user.visible_message(span_notice("[user] welded [src] into pieces!"), span_notice("I welded apart [src]!"))
+	user.visible_message("<span class='notice'>[user] welded [src] into pieces!</span>", "<span class='notice'>I welded apart [src]!</span>")
 	deconstruct(TRUE)
 
 /obj/structure/mineral_door/proc/crowbar_door(mob/living/user, obj/item/I) //if the door is flammable, call this in crowbar_act() so we can still decon it
 	. = TRUE
 	if(anchored)
-		to_chat(user, span_warning("[src] is still firmly secured to the ground!"))
+		to_chat(user, "<span class='warning'>[src] is still firmly secured to the ground!</span>")
 		return
 
-	user.visible_message(span_notice("[user] starts to pry apart [src]!"), span_notice("I start prying apart [src]."))
+	user.visible_message("<span class='notice'>[user] starts to pry apart [src]!</span>", "<span class='notice'>I start prying apart [src].</span>")
 	if(!I.use_tool(src, user, 60, volume = 50))
-		to_chat(user, span_warning("I failed to pry apart [src]!"))
+		to_chat(user, "<span class='warning'>I failed to pry apart [src]!</span>")
 		return
 
-	user.visible_message(span_notice("[user] pried [src] into pieces!"), span_notice("I pried apart [src]!"))
+	user.visible_message("<span class='notice'>[user] pried [src] into pieces!</span>", "<span class='notice'>I pried apart [src]!</span>")
 	deconstruct(TRUE)
 
 
@@ -515,7 +509,7 @@
 /obj/structure/mineral_door/paperframe/examine(mob/user)
 	. = ..()
 	if(obj_integrity < max_integrity)
-		. += span_info("It looks a bit damaged, you may be able to fix it with some <b>paper</b>.")
+		. += "<span class='info'>It looks a bit damaged, you may be able to fix it with some <b>paper</b>.</span>"
 
 /obj/structure/mineral_door/paperframe/pickaxe_door(mob/living/user, obj/item/I)
 	return
@@ -532,11 +526,11 @@
 		return
 
 	if((user.used_intent.type != INTENT_HARM) && istype(I, /obj/item/paper) && (obj_integrity < max_integrity))
-		user.visible_message(span_notice("[user] starts to patch the holes in [src]."), span_notice("I start patching some of the holes in [src]!"))
+		user.visible_message("<span class='notice'>[user] starts to patch the holes in [src].</span>", "<span class='notice'>I start patching some of the holes in [src]!</span>")
 		if(do_after(user, 20, TRUE, src))
 			obj_integrity = min(obj_integrity+4,max_integrity)
 			qdel(I)
-			user.visible_message(span_notice("[user] patches some of the holes in [src]."), span_notice("I patch some of the holes in [src]!"))
+			user.visible_message("<span class='notice'>[user] patches some of the holes in [src].</span>", "<span class='notice'>I patch some of the holes in [src]!</span>")
 			return TRUE
 
 	return ..()
@@ -617,7 +611,7 @@
 	closeSound = 'sound/foley/doors/shut.ogg'
 	sheetType = null
 	resistance_flags = FLAMMABLE
-	max_integrity = 500
+	max_integrity = 1000
 	damage_deflection = 12
 	layer = ABOVE_MOB_LAYER
 	opacity = FALSE
@@ -642,12 +636,12 @@
 	over_state = "fancy_woodopen"
 
 /obj/structure/mineral_door/wood/deadbolt
-	desc = "This door comes with a deadbolt."
+	desc = ""
 	icon_state = "wooddir"
 	base_state = "wood"
 	var/lockdir
 	keylock = FALSE
-	max_integrity = 1000
+	max_integrity = 500
 	over_state = "woodopen"
 	kickthresh = 10
 	openSound = 'sound/foley/doors/shittyopen.ogg'
@@ -666,18 +660,18 @@
 	if(door_opened || isSwitchingStates)
 		return
 	if(lockbroken)
-		to_chat(user, span_warning("The lock to this door is broken."))
+		to_chat(user, "<span class='warning'>The lock to this door is broken.</span>")
 		return
 	if(brokenstate)
-		to_chat(user, span_warning("There isn't much left of this door."))
+		to_chat(user, "<span class='warning'>There isn't much left of this door.</span>")
 		return
 	if(get_dir(src,user) == lockdir)
 		lock_toggle(user)
 	else
-		to_chat(user, span_warning("The door doesn't lock from this side."))
+		to_chat(user, "<span class='warning'>The door doesn't lock from this side.</span>")
 
 /obj/structure/mineral_door/wood/donjon
-	desc = "dungeon door"
+	desc = ""
 	icon_state = "donjondir"
 	base_state = "donjon"
 	keylock = TRUE
@@ -691,11 +685,11 @@
 	attacked_sound = list("sound/combat/hits/onmetal/metalimpact (1).ogg", "sound/combat/hits/onmetal/metalimpact (2).ogg")
 
 /obj/structure/mineral_door/wood/donjon/stone
-	desc = "stone door"
+	desc = ""
 	icon_state = "stone"
 	base_state = "stone"
 	keylock = TRUE
-	max_integrity = 1500
+	max_integrity = 1000
 	over_state = "stoneopen"
 	attacked_sound = list('sound/combat/hits/onwood/woodimpact (1).ogg','sound/combat/hits/onwood/woodimpact (2).ogg')
 
@@ -714,23 +708,23 @@
 	if(door_opened || isSwitchingStates)
 		return
 	if(brokenstate)
-		to_chat(user, span_warning("There isn't much left of this door."))
+		to_chat(user, "<span class='warning'>There isn't much left of this door.</span>")
 		return
 	if(get_dir(src,user) == viewportdir)
 		view_toggle(user)
 	else
-		to_chat(user, span_warning("The viewport doesn't toggle from this side."))
+		to_chat(user, "<span class='warning'>The viewport doesn't toggle from this side.</span>")
 		return
 
 /obj/structure/mineral_door/wood/donjon/proc/view_toggle(mob/user)
 	if(door_opened)
 		return
 	if(opacity)
-		to_chat(user, span_info("I slide the viewport open."))
+		to_chat(user, "<span class='info'>I slide the viewport open.</span>")
 		opacity = FALSE
 		playsound(src, 'sound/foley/doors/windowup.ogg', 100, FALSE)
 	else
-		to_chat(user, span_info("I slide the viewport closed."))
+		to_chat(user, "<span class='info'>I slide the viewport closed.</span>")
 		opacity = TRUE
 		playsound(src, 'sound/foley/doors/windowup.ogg', 100, FALSE)
 
@@ -742,7 +736,7 @@
 	openSound = 'sound/foley/doors/ironopen.ogg'
 	closeSound = 'sound/foley/doors/ironclose.ogg'
 	resistance_flags = null
-	max_integrity = 2000
+	max_integrity = 1000
 	damage_deflection = 15
 	layer = ABOVE_MOB_LAYER
 	keylock = TRUE
@@ -750,6 +744,7 @@
 	blade_dulling = DULLING_BASH
 	opacity = FALSE
 	windowed = TRUE
+	keylock = TRUE
 	sheetType = null
 	locksound = 'sound/foley/doors/lock.ogg'
 	unlocksound = 'sound/foley/doors/unlock.ogg'
@@ -769,5 +764,5 @@
 
 
 /obj/structure/mineral_door/bars/onkick(mob/user)
-	user.visible_message(span_warning("[user] kicks [src]!"))
+	user.visible_message("<span class='warning'>[user] kicks [src]!</span>")
 	return

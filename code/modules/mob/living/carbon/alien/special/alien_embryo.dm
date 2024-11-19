@@ -10,9 +10,9 @@
 /obj/item/organ/body_egg/alien_embryo/on_find(mob/living/finder)
 	..()
 	if(stage < 4)
-		to_chat(finder, span_notice("It's small and weak, barely the size of a foetus."))
+		to_chat(finder, "<span class='notice'>It's small and weak, barely the size of a foetus.</span>")
 	else
-		to_chat(finder, span_notice("It's grown quite large, and writhes slightly as you look at it."))
+		to_chat(finder, "<span class='notice'>It's grown quite large, and writhes slightly as you look at it.</span>")
 		if(prob(10))
 			AttemptGrow(0)
 
@@ -30,24 +30,24 @@
 			if(prob(2))
 				owner.emote("cough")
 			if(prob(2))
-				to_chat(owner, span_danger("My throat feels sore."))
+				to_chat(owner, "<span class='danger'>My throat feels sore.</span>")
 			if(prob(2))
-				to_chat(owner, span_danger("Mucous runs down the back of my throat."))
+				to_chat(owner, "<span class='danger'>Mucous runs down the back of my throat.</span>")
 		if(4)
 			if(prob(2))
 				owner.emote("sneeze")
 			if(prob(2))
 				owner.emote("cough")
 			if(prob(4))
-				to_chat(owner, span_danger("My muscles ache."))
+				to_chat(owner, "<span class='danger'>My muscles ache.</span>")
 				if(prob(20))
 					owner.take_bodypart_damage(1)
 			if(prob(4))
-				to_chat(owner, span_danger("My stomach hurts."))
+				to_chat(owner, "<span class='danger'>My stomach hurts.</span>")
 				if(prob(20))
 					owner.adjustToxLoss(1)
 		if(5)
-			to_chat(owner, span_danger("I feel something tearing its way out of my stomach..."))
+			to_chat(owner, "<span class='danger'>I feel something tearing its way out of my stomach...</span>")
 			owner.adjustToxLoss(10)
 
 /obj/item/organ/body_egg/alien_embryo/egg_process()
@@ -56,6 +56,10 @@
 		INVOKE_ASYNC(src, PROC_REF(RefreshInfectionImage))
 
 	if(stage == 5 && prob(50))
+		for(var/datum/surgery/S in owner.surgeries)
+			if(S.location == BODY_ZONE_CHEST && istype(S.get_surgery_step(), /datum/surgery_step/manipulate_organs))
+				AttemptGrow(0)
+				return
 		AttemptGrow()
 
 
@@ -100,10 +104,10 @@
 		new_xeno.invisibility = 0
 
 	if(gib_on_success)
-		new_xeno.visible_message(span_danger("[new_xeno] bursts out of [owner] in a shower of gore!"), span_danger("I exit [owner], my previous host."), span_hear("I hear organic matter ripping and tearing!"))
+		new_xeno.visible_message("<span class='danger'>[new_xeno] bursts out of [owner] in a shower of gore!</span>", "<span class='danger'>I exit [owner], my previous host.</span>", "<span class='hear'>I hear organic matter ripping and tearing!</span>")
 		owner.gib(TRUE)
 	else
-		new_xeno.visible_message(span_danger("[new_xeno] wriggles out of [owner]!"), span_danger("I exit [owner], my previous host."))
+		new_xeno.visible_message("<span class='danger'>[new_xeno] wriggles out of [owner]!</span>", "<span class='danger'>I exit [owner], my previous host.</span>")
 		owner.adjustBruteLoss(40)
 		owner.cut_overlay(overlay)
 	qdel(src)

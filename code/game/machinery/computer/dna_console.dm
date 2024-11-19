@@ -70,29 +70,29 @@
 			diskette.forceMove(drop_location())
 			diskette = null
 		diskette = I
-		to_chat(user, span_notice("I insert [I]."))
+		to_chat(user, "<span class='notice'>I insert [I].</span>")
 		updateUsrDialog()
 		return
 	if (istype(I, /obj/item/chromosome))
 		if(LAZYLEN(stored_chromosomes) < max_chromosomes)
 			I.forceMove(src)
 			stored_chromosomes += I
-			to_chat(user, span_notice("I insert [I]."))
+			to_chat(user, "<span class='notice'>I insert [I].</span>")
 		else
-			to_chat(user, span_warning("I cannot store any more chromosomes!"))
+			to_chat(user, "<span class='warning'>I cannot store any more chromosomes!</span>")
 		return
 	if(istype(I, /obj/item/dnainjector/activator))
 		var/obj/item/dnainjector/activator/A = I
 		if(A.used)
-			to_chat(user,span_notice("Recycled [I]."))
+			to_chat(user,"<span class='notice'>Recycled [I].</span>")
 			if(A.research)
 				var/c_typepath = generate_chromosome()
 				var/obj/item/chromosome/CM = new c_typepath (drop_location())
-				to_chat(user,span_notice("Recycled [I]."))
+				to_chat(user,"<span class='notice'>Recycled [I].</span>")
 				if((LAZYLEN(stored_chromosomes) < max_chromosomes) && prob(60))
 					CM.forceMove(src)
 					stored_chromosomes += CM
-					to_chat(user,span_notice("[capitalize(CM.name)] added to storage."))
+					to_chat(user,"<span class='notice'>[capitalize(CM.name)] added to storage.</span>")
 			qdel(I)
 			return
 
@@ -114,9 +114,9 @@
 /obj/machinery/computer/scan_consolenew/examine(mob/user)
 	. = ..()
 	if(jokerready < world.time)
-		. += span_notice("JOKER algorithm available.")
+		. += "<span class='notice'>JOKER algorithm available.</span>"
 	else
-		. += span_notice("JOKER algorithm available in about [round(0.00166666667 * (jokerready - world.time))] minutes.")
+		. += "<span class='notice'>JOKER algorithm available in about [round(0.00166666667 * (jokerready - world.time))] minutes.</span>"
 
 /obj/machinery/computer/scan_consolenew/ui_interact(mob/user, last_change)
 	. = ..()
@@ -143,11 +143,11 @@
 				occupant_status += "[viable_occupant.name] => "
 				switch(viable_occupant.stat)
 					if(CONSCIOUS)
-						occupant_status += span_good("Conscious")
+						occupant_status += "<span class='good'>Conscious</span>"
 					if(UNCONSCIOUS)
-						occupant_status += span_average("Unconscious")
+						occupant_status += "<span class='average'>Unconscious</span>"
 					else
-						occupant_status += span_bad("DEAD")
+						occupant_status += "<span class='bad'>DEAD</span>"
 				occupant_status += "</div></div>"
 				occupant_status += "<div class='line'><div class='statusLabel'>Health:</div><div class='progressBar'><div style='width: [viable_occupant.health]%;' class='progressFill good'></div></div><div class='statusValue'>[viable_occupant.health] %</div></div>"
 				occupant_status += "<div class='line'><div class='statusLabel'>Radiation Level:</div><div class='progressBar'><div style='width: [viable_occupant.radiation/(RAD_MOB_SAFE/100)]%;' class='progressFill bad'></div></div><div class='statusValue'>[viable_occupant.radiation/(RAD_MOB_SAFE/100)] %</div></div>"
@@ -164,14 +164,14 @@
 		else
 			scanner_status = "Closed"
 			if(connected.locked)
-				scanner_status += span_bad("(Locked)")
+				scanner_status += "<span class='bad'>(Locked)</span>"
 			else
-				scanner_status += span_good("(Unlocked)")
+				scanner_status += "<span class='good'>(Unlocked)</span>"
 
 
 	else
 		occupant_status += "<span class='bad'>----</span></div></div>"
-		scanner_status += span_bad("Error: No scanner detected")
+		scanner_status += "<span class='bad'>Error: No scanner detected</span>"
 
 	var/list/status = list("<div class='statusDisplay'>")
 	status += "<div class='line'><div class='statusLabel'>Scanner:</div><div class='statusValue'>[scanner_status]</div></div>"
@@ -203,33 +203,33 @@
 	if(connected)
 		buttons += "<a href='?src=[REF(src)];task=toggleopen;'>[connected.state_open ? "Close" : "Open"] Scanner</a>"
 		if (connected.state_open)
-			buttons += span_linkoff("[connected.locked ? "Unlock" : "Lock"] Scanner")
+			buttons += "<span class='linkOff'>[connected.locked ? "Unlock" : "Lock"] Scanner</span>"
 		else
 			buttons += "<a href='?src=[REF(src)];task=togglelock;'>[connected.locked ? "Unlock" : "Lock"] Scanner</a>"
 	else
-		buttons += span_linkoff("Open Scanner</span> <span class='linkOff'>Lock Scanner")
+		buttons += "<span class='linkOff'>Open Scanner</span> <span class='linkOff'>Lock Scanner</span>"
 	if(viable_occupant && (scrambleready < world.time))
 		buttons += "<a href='?src=[REF(src)];task=scramble'>Scramble DNA</a>"
 	else
-		buttons += span_linkoff("Scramble DNA")
+		buttons += "<span class='linkOff'>Scramble DNA</span>"
 	if(diskette)
 		buttons += "<a href='?src=[REF(src)];task=screen;text=disk;'>Disk</a>"
 	else
-		buttons += span_linkoff("Disk")
+		buttons += "<span class='linkOff'>Disk</span>"
 	if(current_screen == "mutations")
 		buttons += "<br><span class='linkOff'>Mutations</span>"
 	else
 		buttons += "<br><a href='?src=[REF(src)];task=screen;text=mutations;'>Mutations</a>"
 	if((current_screen == "mainmenu") || !current_screen)
-		buttons += span_linkoff("Genetic Sequencer")
+		buttons += "<span class='linkOff'>Genetic Sequencer</span>"
 	else
 		buttons += "<a href='?src=[REF(src)];task=screen;text=mainmenu;'>Genetic Sequencer</a>"
 	if(current_screen == "ui")
-		buttons += span_linkoff("Unique Identifiers")
+		buttons += "<span class='linkOff'>Unique Identifiers</span>"
 	else
 		buttons += "<a href='?src=[REF(src)];task=screen;text=ui;'>Unique Identifiers</a>"
 	if(current_screen == "advinjector")
-		buttons += span_linkoff("Adv. Injectors")
+		buttons += "<span class='linkOff'>Adv. Injectors</span>"
 	else
 		buttons += "<a href='?src=[REF(src)];task=screen;text=advinjector;'>Adv. Injectors</a>"
 
@@ -270,12 +270,12 @@
 							temp_html += "<br><a href='?src=[REF(src)];task=setbuffer;num=[i];'>Save to Buffer</a>"
 						else
 							temp_html += "<br><span class='linkOff'>Save to Buffer</span>"
-						temp_html += span_linkoff("Clear Buffer")
+						temp_html += "<span class='linkOff'>Clear Buffer</span>"
 						if(diskette)
 							temp_html += "<a href='?src=[REF(src)];task=loaddisk;num=[i];'>Load from Disk</a>"
 						else
-							temp_html += span_linkoff("Load from Disk")
-						temp_html += span_linkoff("Save to Disk")
+							temp_html += "<span class='linkOff'>Load from Disk</span>"
+						temp_html += "<span class='linkOff'>Save to Disk</span>"
 					else
 						var/ui = buffer_slot["UI"]
 						var/ue = buffer_slot["UE"]
@@ -290,12 +290,12 @@
 							if(viable_occupant)
 								temp_html += "<a href='?src=[REF(src)];task=transferbuffer;num=[i];text=ue'>Occupant</a>"
 							else
-								temp_html += span_linkoff("Occupant")
+								temp_html += "<span class='linkOff'>Occupant</span>"
 							temp_html += "<a href='?src=[REF(src)];task=setdelayed;num=[i];delayaction=[SCANNER_ACTION_UE]'>Occupant:Delayed</a>"
 							if(injectorready < world.time)
 								temp_html += "<a href='?src=[REF(src)];task=injector;num=[i];text=ue'>Injector</a>"
 							else
-								temp_html += span_linkoff("Injector")
+								temp_html += "<span class='linkOff'>Injector</span>"
 						else
 							temp_html += "<br>\tBlood Type: No Data"
 							temp_html += "<br>\tUE: No Data"
@@ -304,12 +304,12 @@
 							if(viable_occupant)
 								temp_html += "<a href='?src=[REF(src)];task=transferbuffer;num=[i];text=ui'>Occupant</a>"
 							else
-								temp_html += span_linkoff("Occupant")
+								temp_html += "<span class='linkOff'>Occupant</span>"
 							temp_html += "<a href='?src=[REF(src)];task=setdelayed;num=[i];delayaction=[SCANNER_ACTION_UI]'>Occupant:Delayed</a>"
 							if(injectorready < world.time)
 								temp_html += "<a href='?src=[REF(src)];task=injector;num=[i];text=ui'>Injector</a>"
 							else
-								temp_html += span_linkoff("Injector")
+								temp_html += "<span class='linkOff'>Injector</span>"
 						else
 							temp_html += "<br>\tUI: No Data"
 						if(ue && name && blood_type && ui)
@@ -317,12 +317,12 @@
 							if(viable_occupant)
 								temp_html += "<a href='?src=[REF(src)];task=transferbuffer;num=[i];text=mixed'>Occupant</a>"
 							else
-								temp_html += span_linkoff("Occupant")
+								temp_html += "<span class='linkOff'>Occupant</span>"
 							temp_html += "<a href='?src=[REF(src)];task=setdelayed;num=[i];delayaction=[SCANNER_ACTION_MIXED]'>Occupant:Delayed</a>"
 							if(injectorready < world.time)
 								temp_html += "<a href='?src=[REF(src)];task=injector;num=[i];text=mixed'>UI+UE Injector</a>"
 							else
-								temp_html += span_linkoff("UI+UE Injector")
+								temp_html += "<span class='linkOff'>UI+UE Injector</span>"
 						if(viable_occupant)
 							temp_html += "<br><a href='?src=[REF(src)];task=setbuffer;num=[i];'>Save to Buffer</a>"
 						else
@@ -331,11 +331,11 @@
 						if(diskette)
 							temp_html += "<a href='?src=[REF(src)];task=loaddisk;num=[i];'>Load from Disk</a>"
 						else
-							temp_html += span_linkoff("Load from Disk")
+							temp_html += "<span class='linkOff'>Load from Disk</span>"
 						if(diskette && !diskette.read_only)
 							temp_html += "<a href='?src=[REF(src)];task=savedisk;num=[i];'>Save to Disk</a>"
 						else
-							temp_html += span_linkoff("Save to Disk")
+							temp_html += "<span class='linkOff'>Save to Disk</span>"
 		if("disk")
 			temp_html += status
 			temp_html += buttons
@@ -539,15 +539,15 @@
 		temp_html += "<a href='?src=[REF(src)];task=activator;path=[mutation];slot=[storage_slot];'>Print Activator</a>"
 		temp_html += "<a href='?src=[REF(src)];task=mutator;path=[mutation];slot;=[storage_slot];'>Print Mutator</a>"
 	else
-		temp_html += span_linkoff("Print Activator")
-		temp_html += span_linkoff("Print Mutator")
+		temp_html += "<span class='linkOff'>Print Activator</span>"
+		temp_html += "<span class='linkOff'>Print Mutator</span>"
 	temp_html += "<br><div class='statusLine'>"
 	if(storage_slot)
 		temp_html += "<a href='?src=[REF(src)];task=deletemut;num=[storage_slot];'>Delete</a>"
 		if((LAZYLEN(stored_mutations) < max_storage) && diskette && !diskette.read_only)
 			temp_html += "<a href='?src=[REF(src)];task=exportdiskmut;path=[mutation];'>Export</a>"
 		else
-			temp_html += span_linkoff("Export")
+			temp_html += "<span class='linkOff'>Export</span>"
 		temp_html += "<a href='?src=[REF(src)];task=screen;text=mutations;'>Back</a>"
 	else if(active && !scrambled)
 		temp_html += "<a href='?src=[REF(src)];task=savemut;path=[mutation];'>Store</a>"
@@ -555,7 +555,7 @@
 	if(extra || scrambled)
 		temp_html += "<a href='?src=[REF(src)];task=nullify;'>Nullify</a>"
 	else
-		temp_html += span_linkoff("Nullify")
+		temp_html += "<span class='linkOff'>Nullify</span>"
 	temp_html += "</div></div>"
 	return temp_html
 
@@ -742,9 +742,9 @@
 							A.copy_mutation(HM)
 							succes = TRUE
 							stored_mutations += A
-							to_chat(usr,span_notice("Mutation succesfully stored."))
+							to_chat(usr,"<span class='notice'>Mutation succesfully stored.</span>")
 				if(!succes) //we can exactly return here
-					to_chat(usr,span_warning("Mutation storage is full."))
+					to_chat(usr,"<span class='warning'>Mutation storage is full.</span>")
 		if("deletemut")
 			var/datum/mutation/human/HM = stored_mutations[num]
 			if(HM)
@@ -837,7 +837,7 @@
 						var/datum/mutation/human/HM = new A.type()
 						diskette.mutations += HM
 						HM.copy_mutation(A)
-						to_chat(usr, span_notice("Successfully wrote [A.name] to [diskette.name]."))
+						to_chat(usr, "<span class='notice'>Successfully wrote [A.name] to [diskette.name].</span>")
 		if("deletediskmut")
 			if(diskette && !diskette.read_only)
 				if(num && (LAZYLEN(diskette.mutations) >= num))
@@ -851,7 +851,7 @@
 					var/datum/mutation/human/HM = new A.type()
 					HM.copy_mutation(A)
 					stored_mutations += HM
-					to_chat(usr,span_notice("Successfully wrote [A.name] to storage."))
+					to_chat(usr,"<span class='notice'>Successfully wrote [A.name] to storage.</span>")
 		if("combine")
 			if(num && (LAZYLEN(stored_mutations) >= num))
 				if(LAZYLEN(stored_mutations) < max_storage)
@@ -861,17 +861,17 @@
 						var/result_path = get_mixed_mutation(combine, path)
 						if(result_path)
 							stored_mutations += new result_path()
-							to_chat(usr, span_boldnotice("Success! New mutation has been added to storage"))
+							to_chat(usr, "<span class='boldnotice'>Success! New mutation has been added to storage</span>")
 							discover(result_path)
 							combine = null
 						else
-							to_chat(usr, span_warning("Failed. No mutation could be created."))
+							to_chat(usr, "<span class='warning'>Failed. No mutation could be created.</span>")
 							combine = null
 					else
 						combine = path
-						to_chat(usr,span_notice("Selected [A.name] for combining"))
+						to_chat(usr,"<span class='notice'>Selected [A.name] for combining</span>")
 				else
-					to_chat(usr, span_warning("Not enough space to store potential mutation."))
+					to_chat(usr, "<span class='warning'>Not enough space to store potential mutation.</span>")
 		if("ejectchromosome")
 			if(LAZYLEN(stored_chromosomes) <= num)
 				var/obj/item/chromosome/CM = stored_chromosomes[num]
@@ -886,9 +886,9 @@
 					if(CM.can_apply(HM))
 						chromosomes += CM
 				if(chromosomes.len)
-					var/obj/item/chromosome/CM = input("Select a chromosome to apply", "Apply Chromosome") as null|anything in sortNames(chromosomes)
+					var/obj/item/chromosome/CM = input("Select a chromosome to apply", "Apply Chromosome") as null|anything in sort_names(chromosomes)
 					if(CM)
-						to_chat(usr, span_notice("I apply [CM] to [HM.name]."))
+						to_chat(usr, "<span class='notice'>I apply [CM] to [HM.name].</span>")
 						stored_chromosomes -= CM
 						CM.apply(HM)
 		if("expand_advinjector")
@@ -904,7 +904,7 @@
 						total_instability += mootacion.instability
 					total_instability += HM.instability
 					if((total_instability > max_injector_instability) || (true_selection.len + 1) > max_injector_mutations)
-						to_chat(usr, span_warning("Adding more mutations would make the advanced injector too unstable!"))
+						to_chat(usr, "<span class='warning'>Adding more mutations would make the advanced injector too unstable!</span>")
 					else
 						true_selection += HM //reminder that this works. because I keep forgetting this works
 		if("remove_from_advinjector")
@@ -989,7 +989,7 @@
 
 /obj/machinery/computer/scan_consolenew/proc/on_scanner_close()
 	if(delayed_action && get_viable_occupant())
-		to_chat(connected.occupant, span_notice("[src] activates!"))
+		to_chat(connected.occupant, "<span class='notice'>[src] activates!</span>")
 		apply_buffer(delayed_action["action"],delayed_action["buffer"])
 		delayed_action = null //or make it stick + reset button ?
 

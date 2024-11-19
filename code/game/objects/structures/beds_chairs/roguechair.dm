@@ -122,9 +122,8 @@
 	blade_dulling = DULLING_BASHCHOP
 	destroy_sound = 'sound/combat/hits/onwood/destroyfurniture.ogg'
 	attacked_sound = "woodimpact"
-	item_chair = null
 
-/obj/item/chair/rogue
+/obj/item/chair/rogue/
 	name = "chair"
 	icon = 'icons/roguetown/items/chairs.dmi'
 	icon_state = "chair2"
@@ -154,7 +153,7 @@
 		if((M.mobility_flags & MOBILITY_STAND))
 			if(isturf(loc))
 				var/movefrom = get_dir(M.loc, loc)
-				if(movefrom == dir && item_chair)
+				if(movefrom == dir && item_chair != null)
 					playsound(loc, 'sound/foley/chairfall.ogg', 100, FALSE)
 					var/obj/item/I = new item_chair(loc)
 					item_chair = null
@@ -273,7 +272,6 @@
 	debris = list(/obj/item/grown/log/tree/small = 1)
 
 /obj/structure/bed/rogue/shit
-	name = "straw bed"
 	icon_state = "shitbed"
 	sleepy = 1
 
@@ -357,7 +355,6 @@
 	debris = list(/obj/item/grown/log/tree/small = 1)
 
 /obj/structure/bed/rogue/inn/pileofshit
-	name = "inn bed"
 	icon_state = "shitbed2"
 	icon = 'icons/roguetown/misc/structure.dmi'
 	anchored = TRUE

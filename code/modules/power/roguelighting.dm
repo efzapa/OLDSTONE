@@ -62,7 +62,7 @@
 /obj/effect/landmark/mapGenerator/sunlights
 	mapGeneratorType = /datum/mapGenerator/sunlights
 	endTurfX = 255
-	endTurfY = 400
+	endTurfY = 255
 	startTurfX = 1
 	startTurfY = 1
 
@@ -153,13 +153,11 @@
 	fueluse = 60 MINUTES
 	bulb_colour = "#f9ad80"
 	bulb_power = 1
-	flags_1 = NODECONSTRUCT_1
 	use_power = NO_POWER_USE
 	var/datum/looping_sound/soundloop = /datum/looping_sound/fireloop
 	pass_flags = LETPASSTHROW
 	var/cookonme = FALSE
 	var/crossfire = TRUE
-	var/can_damage = FALSE
 
 /obj/machinery/light/rogue/Initialize()
 	if(soundloop)
@@ -175,6 +173,14 @@
 	if(W==/datum/weather/rain)
 		START_PROCESSING(SSweather,src)
 
+/obj/machinery/light/rogue/attack_hand(mob/living/carbon/human/user)
+	. = ..()
+	if(.)
+		return
+	user.changeNext_move(CLICK_CD_MELEE)
+	add_fingerprint(user)
+
+
 /obj/machinery/light/rogue/examine(mob/user)
 	. = ..()
 	if(Adjacent(user))
@@ -185,10 +191,11 @@
 				minsleft = "less than a minute"
 			else
 				minsleft = "[round(minsleft)] minutes"
-			. += span_info("The fire will last for [minsleft].")
+			. += "<span class='info'>The fire will last for [minsleft].</span>"
 		else
 			if(initial(fueluse) > 0)
-				. += span_warning("The fire is burned out and hungry...")
+				. += "<span class='warning'>The fire is burned out and hungry...</span>"
+
 
 /obj/machinery/light/rogue/extinguish()
 	if(on)
@@ -196,10 +203,7 @@
 		new /obj/effect/temp_visual/small_smoke(src.loc)
 	..()
 
-/obj/machinery/light/rogue/OnCrafted(dirin, user)
-	. = ..()
-	can_damage = TRUE
-	burn_out()
+
 
 /obj/machinery/light/rogue/burn_out()
 	if(soundloop)
@@ -257,7 +261,7 @@
 	if(cookonme)
 		if(istype(W, /obj/item/reagent_containers/food/snacks))
 			if(istype(W, /obj/item/reagent_containers/food/snacks/egg))
-				to_chat(user, span_warning("I wouldn't be able to cook this over the fire..."))
+				to_chat(user, "<span class='warning'>I wouldn't be able to cook this over the fire...</span>")
 				return FALSE
 			var/obj/item/A = user.get_inactive_held_item()
 			if(A)
@@ -271,15 +275,15 @@
 					var/prob2spoil = 33
 					if(user.mind.get_skill_level(/datum/skill/craft/cooking))
 						prob2spoil = 1
-					user.visible_message(span_notice("[user] starts to cook [W] over [src]."))
+					user.visible_message("<span class='notice'>[user] starts to cook [W] over [src].</span>")
 					for(var/i in 1 to 6)
 						if(do_after(user, 30, target = src))
 							var/obj/item/reagent_containers/food/snacks/S = W
 							var/obj/item/C
 							if(prob(prob2spoil))
-								user.visible_message(span_warning("[user] burns [S]."))
+								user.visible_message("<span class='warning'>[user] burns [S].</span>")
 								if(user.client?.prefs.showrolls)
-									to_chat(user, span_warning("Cooking fail... [prob2spoil]%."))
+									to_chat(user, "<span class='warning'>Critfail... [prob2spoil]%.</span>")
 								C = S.cooking(1000, null)
 							else
 								C = S.cooking(S.cooktime/4, src)
@@ -295,7 +299,7 @@
 	if(W.firefuel)
 		if(initial(fueluse))
 			if(fueluse > initial(fueluse) - 5 SECONDS)
-				to_chat(user, span_warning("The fire is fully fueled."))
+				to_chat(user, "<span class='warning'>Full.</span>")
 				return
 		else
 			if(!on)
@@ -303,7 +307,7 @@
 		if (alert(usr, "Feed [W] to the fire?", "ROGUETOWN", "Yes", "No") != "Yes")
 			return
 		qdel(W)
-		user.visible_message(span_warning("[user] feeds [W] to [src]."))
+		user.visible_message("<span class='warning'>[user] feeds [W] to [src].</span>")
 		if(initial(fueluse))
 			fueluse = fueluse + W.firefuel
 			if(fueluse > initial(fueluse)) //keep it at the max
@@ -318,26 +322,14 @@
 				set_light(0)
 				update_icon()
 				qdel(W)
-				src.visible_message(span_warning("[user] snuffs the fire."))
+				src.visible_message("<span class='warning'>[user] snuffs the fire.</span>")
 				return
 			if(user.used_intent?.type != INTENT_SPLASH)
 				W.spark_act()
-	. = ..()
+	..()
 
 /obj/machinery/light/rogue/take_damage(damage_amount, damage_type = BRUTE, damage_flag = 0, sound_effect = 1)
-	if(!can_damage)
-		return
-	. = ..()
-
-/obj/machinery/light/rogue/break_light_tube(skip_sound_and_sparks = 0)
-	if(status == LIGHT_EMPTY || status == LIGHT_BROKEN)
-		return	
-	if(!skip_sound_and_sparks)
-		if(status == LIGHT_OK || status == LIGHT_BURNED)
-			playsound(src.loc, 'sound/blank.ogg', 75, TRUE)
-		if(on)
-			do_sparks(3, TRUE, src)
-	update()
+	return
 
 /obj/machinery/light/rogue/firebowl
 	name = "brazier"
@@ -347,9 +339,11 @@
 //	pixel_y = 10
 	base_state = "stonefire"
 	climbable = TRUE
+	pass_flags = LETPASSTHROW
 	cookonme = TRUE
+	dir = SOUTH
+	crossfire = TRUE
 	fueluse = 0
-	max_integrity = 150
 
 /obj/machinery/light/rogue/firebowl/CanPass(atom/movable/mover, turf/target)
 	if(istype(mover) && (mover.pass_flags & PASSTABLE))
@@ -369,19 +363,19 @@
 		var/mob/living/carbon/human/H = user
 
 		if(istype(H))
-			H.visible_message(span_info("[H] warms \his hand over the fire."))
+			H.visible_message("<span class='info'>[H] warms \his hand over the fire.</span>")
 
 			if(do_after(H, 15, target = src))
 				var/obj/item/bodypart/affecting = H.get_bodypart("[(user.active_hand_index % 2 == 0) ? "r" : "l" ]_arm")
-				to_chat(H, span_warning("HOT!"))
+				to_chat(H, "<span class='warning'>HOT!</span>")
 				if(affecting && affecting.receive_damage( 0, 5 ))		// 5 burn damage
 					H.update_damage_overlays()
 		return TRUE //fires that are on always have this interaction with lmb unless its a torch
 
 	else
 		if(icon_state == "[base_state]over")
-			user.visible_message(span_notice("[user] starts to pick up [src]..."), \
-				span_notice("I start to pick up [src]..."))
+			user.visible_message("<span class='notice'>[user] starts to pick up [src]...</span>", \
+				"<span class='notice'>I start to pick up [src]...</span>")
 			if(do_after(user, 30, target = src))
 				icon_state = "[base_state]0"
 			return
@@ -421,19 +415,19 @@
 		var/mob/living/L = user
 		if(icon_state == "[base_state]over")
 			playsound(src, 'sound/combat/hits/onwood/woodimpact (1).ogg', 100)
-			user.visible_message(span_warning("[user] kicks [src]!"), \
-				span_warning("I kick [src]!"))
+			user.visible_message("<span class='warning'>[user] kicks [src]!</span>", \
+				"<span class='warning'>I kick [src]!</span>")
 			return
 		if(prob(L.STASTR * 8))
 			playsound(src, 'sound/combat/hits/onwood/woodimpact (1).ogg', 100)
-			user.visible_message(span_warning("[user] kicks over [src]!"), \
-				span_warning("I kick over [src]!"))
+			user.visible_message("<span class='warning'>[user] kicks over [src]!</span>", \
+				"<span class='warning'>I kick over [src]!</span>")
 			burn_out()
 			knock_over()
 		else
 			playsound(src, 'sound/combat/hits/onwood/woodimpact (1).ogg', 100)
-			user.visible_message(span_warning("[user] kicks [src]!"), \
-				span_warning("I kick [src]!"))
+			user.visible_message("<span class='warning'>[user] kicks [src]!</span>", \
+				"<span class='warning'>I kick [src]!</span>")
 
 /obj/machinery/light/rogue/wallfire
 	name = "fireplace"
@@ -453,23 +447,9 @@
 	pixel_y = 32
 	soundloop = null
 
-/obj/machinery/light/rogue/wallfire/candle/OnCrafted(dirin, user)
-	pixel_x = 0
-	pixel_y = 0
-	switch(dirin)
-		if(NORTH)
-			pixel_y = 32
-		if(SOUTH)
-			pixel_y = -32
-		if(EAST)
-			pixel_x = 32
-		if(WEST)
-			pixel_x = -32
-	. = ..()
-	
 /obj/machinery/light/rogue/wallfire/candle/attack_hand(mob/user)
 	if(isliving(user) && on)
-		user.visible_message(span_warning("[user] snuffs [src]."))
+		user.visible_message("<span class='warning'>[user] snuffs [src].</span>")
 		burn_out()
 		return TRUE //fires that are on always have this interaction with lmb unless its a torch
 	. = ..()
@@ -534,16 +514,6 @@
 	torchy.spark_act()
 	. = ..()
 
-/obj/machinery/light/rogue/torchholder/OnCrafted(dirin, user)
-	if(dirin == NORTH)
-		pixel_y = 32
-	dirin = turn(dirin, 180)
-	QDEL_NULL(torchy)
-	on = FALSE
-	set_light(0)
-	update_icon()
-	. = ..(dirin)
-
 /obj/machinery/light/rogue/torchholder/process()
 	if(on)
 		if(torchy)
@@ -577,7 +547,7 @@
 		icon_state = "torchwall"
 
 /obj/machinery/light/rogue/torchholder/burn_out()
-	if(torchy && torchy.on)
+	if(torchy.on)
 		torchy.turn_off()
 	..()
 
@@ -587,11 +557,11 @@
 		if(torchy)
 			if(LR.on && !on)
 				if(torchy.fuel <= 0)
-					to_chat(user, span_warning("The mounted torch is burned out."))
+					to_chat(user, "<span class='warning'>The mounted torch is burned out.</span>")
 					return
 				else
 					torchy.spark_act()
-					user.visible_message(span_info("[user] lights [src]."))
+					user.visible_message("<span class='info'>[user] lights [src].</span>")
 					playsound(src.loc, 'sound/items/firelight.ogg', 100)
 					on = TRUE
 					update()
@@ -601,20 +571,18 @@
 			if(!LR.on && on)
 				if(LR.fuel > 0)
 					LR.spark_act()
-					user.visible_message(span_info("[user] lights [LR] in [src]."))
+					user.visible_message("<span class='info'>[user] lights [LR] in [src].</span>")
 					user.update_inv_hands()
 		else
 			if(LR.on)
-				if(!user.transferItemToLoc(LR, src))
-					return
+				LR.forceMove(src)
 				torchy = LR
 				on = TRUE
 				update()
 				update_icon()
 				addtimer(CALLBACK(src, PROC_REF(trigger_weather)), rand(5,20))
 			else
-				if(!user.transferItemToLoc(LR, src))
-					return
+				LR.forceMove(src)
 				torchy = LR
 				update_icon()
 			playsound(src.loc, 'sound/foley/torchfixtureput.ogg', 100)
@@ -638,7 +606,7 @@
 
 /obj/machinery/light/rogue/chand/attack_hand(mob/user)
 	if(isliving(user) && on)
-		user.visible_message(span_warning("[user] snuffs [src]."))
+		user.visible_message("<span class='warning'>[user] snuffs [src].</span>")
 		burn_out()
 		return TRUE //fires that are on always have this interaction with lmb unless its a torch
 	. = ..()
@@ -653,6 +621,7 @@
 	layer = 2.8
 	var/obj/item/attachment = null
 	var/obj/item/reagent_containers/food/snacks/food = null
+	on = FALSE
 	cookonme = TRUE
 	var/datum/looping_sound/boilloop/boilloop
 
@@ -681,7 +650,7 @@
 			var/obj/item/reagent_containers/glass/pot = attachment
 			if(W.type in subtypesof(/obj/item/reagent_containers/food/snacks) || W.type == /obj/item/reagent_containers/powder/flour) 
 				if(pot.reagents.chem_temp < 374)
-					to_chat(user, span_warning("[pot] isn't boiling!"))
+					to_chat(user, "<span class='warning'>[pot] isn't boiling!</span>")
 					return
 				var/nutrimentamount = W.reagents.get_reagent_amount(/datum/reagent/consumable/nutriment)
 				if(W.type in subtypesof(/obj/item/reagent_containers/food/snacks))
@@ -692,10 +661,10 @@
 					nutrimentamount += 2 //Boiling is a way of cooking grain without baking
 				if(nutrimentamount > 0)
 					if(nutrimentamount + pot.reagents.total_volume > pot.volume)
-						to_chat(user, span_warning("[attachment] is full!"))
+						to_chat(user, "<span class='warning'>[attachment] is full!</span>")
 						return
-					user.visible_message(span_info("[user] places [W] into the pot."))
-					pot.reagents.add_reagent(/datum/reagent/consumable/nutriment, nutrimentamount)
+					user.visible_message("<span class='info'>[user] places [W] into the pot.</span>")
+					addtimer(CALLBACK(pot, TYPE_PROC_REF(/obj/item/reagent_containers/glass/pot, makeSoup), nutrimentamount), rand(1 MINUTES, 3 MINUTES))
 					qdel(W)
 				return
 	. = ..()
@@ -742,13 +711,14 @@
 		if(on)
 			var/mob/living/carbon/human/H = user
 			if(istype(H))
-				H.visible_message(span_info("[H] warms \his hand over the embers."))
+				H.visible_message("<span class='info'>[H] warms \his hand over the embers.</span>")
 				if(do_after(H, 50, target = src))
 					var/obj/item/bodypart/affecting = H.get_bodypart("[(user.active_hand_index % 2 == 0) ? "r" : "l" ]_arm")
-					to_chat(H, span_warning("HOT!"))
+					to_chat(H, "<span class='warning'>HOT!</span>")
 					if(affecting && affecting.receive_damage( 0, 5 ))		// 5 burn damage
 						H.update_damage_overlays()
 			return TRUE
+
 
 /obj/machinery/light/rogue/hearth/process()
 	if(isopenturf(loc))
@@ -780,7 +750,7 @@
 
 /obj/machinery/light/rogue/hearth/onkick(mob/user)
 	if(isliving(user) && on)
-		user.visible_message(span_warning("[user] snuffs [src]."))
+		user.visible_message("<span class='warning'>[user] snuffs [src].</span>")
 		burn_out()
 
 /obj/machinery/light/rogue/hearth/Destroy()
@@ -794,11 +764,10 @@
 	density = FALSE
 	layer = 2.8
 	brightness = 5
-	fueluse = 10 MINUTES
+	on = FALSE
+	fueluse = 15 MINUTES
 	bulb_colour = "#da5e21"
 	cookonme = TRUE
-	can_damage = TRUE
-	max_integrity = 30
 
 /obj/machinery/light/rogue/campfire/process()
 	..()
@@ -810,7 +779,7 @@
 /obj/machinery/light/rogue/campfire/onkick(mob/user)
 	if(isliving(user) && on)
 		var/mob/living/L = user
-		L.visible_message(span_info("[L] snuffs [src]."))
+		L.visible_message("<span class='info'>[L] snuffs [src].</span>")
 		burn_out()
 
 /obj/machinery/light/rogue/campfire/attack_hand(mob/user)
@@ -822,11 +791,11 @@
 		var/mob/living/carbon/human/H = user
 
 		if(istype(H))
-			H.visible_message(span_info("[H] warms \his hand near the fire."))
+			H.visible_message("<span class='info'>[H] warms \his hand near the fire.</span>")
 
 			if(do_after(H, 100, target = src))
 				var/obj/item/bodypart/affecting = H.get_bodypart("[(user.active_hand_index % 2 == 0) ? "r" : "l" ]_arm")
-				to_chat(H, span_warning("HOT!"))
+				to_chat(H, "<span class='warning'>HOT!</span>")
 				if(affecting && affecting.receive_damage( 0, 5 ))		// 5 burn damage
 					H.update_damage_overlays()
 		return TRUE //fires that are on always have this interaction with lmb unless its a torch
@@ -836,12 +805,12 @@
 	base_state = "densefire"
 	density = TRUE
 	layer = 2.8
+	brightness = 5
 	climbable = TRUE
 	on = FALSE
-	fueluse = 20 MINUTES
+	fueluse = 30 MINUTES
 	pass_flags = LETPASSTHROW
 	bulb_colour = "#eea96a"
-	max_integrity = 60
 
 /obj/machinery/light/rogue/campfire/densefire/CanPass(atom/movable/mover, turf/target)
 	if(istype(mover) && (mover.pass_flags & PASSTABLE))

@@ -2,8 +2,7 @@
 
 /obj/machinery/light/rogue/oven
 	icon = 'icons/roguetown/misc/lighting.dmi'
-	name = "stone oven"
-	desc = "Stands sentinel against hunger and darkness when lit."
+	name = "oven"
 	icon_state = "oven1"
 	base_state = "oven"
 	density = FALSE
@@ -15,8 +14,7 @@
 	var/need_underlay_update = TRUE
 
 /obj/machinery/light/rogue/oven/OnCrafted(dirin)
-	dirin = turn(dirin, 180)
-	. = ..(dirin)
+	dir = turn(dirin, 180)
 	update_icon()
 
 /obj/machinery/light/rogue/oven/attackby(obj/item/W, mob/living/user, params)
@@ -34,7 +32,7 @@
 			donefoods = FALSE
 			W.forceMove(src)
 			food += W
-			user.visible_message(span_warning("[user] puts something in the oven."))
+			user.visible_message("<span class='warning'>[user] puts something in the oven.</span>")
 			need_underlay_update = TRUE
 			update_icon()
 			return
@@ -50,7 +48,7 @@
 				food -= I
 				qdel(I)
 				food += C
-				visible_message(span_notice("Something smells good!"))
+				visible_message("<span class='notice'>Something smells good!</span>")
 				need_underlay_update = TRUE
 		update_icon()
 

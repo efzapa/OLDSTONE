@@ -9,12 +9,14 @@
 	if(!prev_lying)
 		gib_animation()
 
-	spill_embedded_objects()
-	
 	spill_organs(no_brain, no_organs, no_bodyparts)
 
 	if(!no_bodyparts)
 		spread_bodyparts(no_brain, no_organs)
+
+	for(var/obj/item/I in simple_embedded_objects)
+		simple_embedded_objects -= I
+		I.forceMove(get_turf(src))
 
 	spawn_gibs(no_bodyparts)
 	qdel(src)
@@ -25,10 +27,6 @@
 /mob/living/proc/spawn_gibs()
 	new /obj/effect/gibspawner/generic(drop_location(), src, get_static_viruses())
 
-/mob/living/proc/spill_embedded_objects()
-	for(var/obj/item/embedded_item as anything in simple_embedded_objects)
-		simple_remove_embedded_object(embedded_item)
-
 /mob/living/proc/spill_organs()
 	return
 
@@ -38,11 +36,9 @@
 /mob/living/dust(just_ash, drop_items, force)
 	death(TRUE)
 
-	spill_embedded_objects()
-
 	if(drop_items)
 		unequip_everything()
-	
+
 	if(buckled)
 		buckled.unbuckle_mob(src, force = TRUE)
 
@@ -83,7 +79,6 @@
 
 	set_drugginess(0)
 	set_disgust(0)
-	cure_holdbreath()
 	SetSleeping(0, 0)
 	reset_perspective(null)
 	reload_fullscreen()
@@ -101,17 +96,17 @@
 
 	if(client)
 		client.move_delay = initial(client.move_delay)
-		var/atom/movable/screen/gameover/hog/H = new()
+		var/obj/screen/gameover/hog/H = new()
 		H.layer = SPLASHSCREEN_LAYER+0.1
 		client.screen += H
 //		flick("gameover",H)
-//		addtimer(CALLBACK(H, TYPE_PROC_REF(/atom/movable/screen/gameover, Fade)), 29)
+//		addtimer(CALLBACK(H, TYPE_PROC_REF(/obj/screen/gameover, Fade)), 29)
 		H.Fade()
 		mob_timers["lastdied"] = world.time
-		addtimer(CALLBACK(H, TYPE_PROC_REF(/atom/movable/screen/gameover, Fade), TRUE), 100)
+		addtimer(CALLBACK(H, TYPE_PROC_REF(/obj/screen/gameover, Fade), TRUE), 100)
 //		addtimer(CALLBACK(client, PROC_REF(ghostize), 1, src), 150)
 		add_client_colour(/datum/client_colour/monochrome)
-		client.verbs.Add(GLOB.ghost_verbs)
+		client.verbs += /client/proc/descend
 
 	for(var/s in ownedSoullinks)
 		var/datum/soullink/S = s

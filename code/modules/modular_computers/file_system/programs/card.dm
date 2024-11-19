@@ -150,20 +150,20 @@
 								contents += "  [get_access_desc(A)]"
 
 						if(!printer.print_text(contents,"access report"))
-							to_chat(usr, span_notice("Hardware error: Printer was unable to print the file. It may be out of paper."))
+							to_chat(usr, "<span class='notice'>Hardware error: Printer was unable to print the file. It may be out of paper.</span>")
 							return
 						else
-							computer.visible_message(span_notice("\The [computer] prints out paper."))
+							computer.visible_message("<span class='notice'>\The [computer] prints out paper.</span>")
 				else
 					var/contents = {"<h4>Crew Manifest</h4>
 									<br>
 									[GLOB.data_core ? GLOB.data_core.get_manifest(0) : ""]
 									"}
 					if(!printer.print_text(contents,text("crew manifest ([])", station_time_timestamp())))
-						to_chat(usr, span_notice("Hardware error: Printer was unable to print the file. It may be out of paper."))
+						to_chat(usr, "<span class='notice'>Hardware error: Printer was unable to print the file. It may be out of paper.</span>")
 						return
 					else
-						computer.visible_message(span_notice("\The [computer] prints out paper."))
+						computer.visible_message("<span class='notice'>\The [computer] prints out paper.</span>")
 		if("PRG_eject")
 			if(computer && card_slot)
 				var/select = params["target"]
@@ -207,7 +207,7 @@
 						id_card.registered_name = temp_name
 						id_card.update_label()
 					else
-						computer.visible_message(span_notice("[computer] buzzes rudely."))
+						computer.visible_message("<span class='notice'>[computer] buzzes rudely.</span>")
 				//else if(params["account"])
 				//	var/account_num = text2num(input("Enter account number.", "Account", id_card.associated_account_number))
 				//	id_card.associated_account_number = account_num
@@ -231,7 +231,7 @@
 								jobdatum = J
 								break
 						if(!jobdatum)
-							to_chat(usr, span_warning("No log exists for this job: [t1]"))
+							to_chat(usr, "<span class='warning'>No log exists for this job: [t1]</span>")
 							return
 
 						access = jobdatum.get_access()
@@ -338,7 +338,7 @@
 	if(!mod_mode)
 		data["manifest"] = list()
 		var/list/crew = list()
-		for(var/datum/data/record/t in sortRecord(GLOB.data_core.general))
+		for(var/datum/data/record/t in sort_record(GLOB.data_core.general))
 			crew.Add(list(list(
 				"name" = t.fields["name"],
 				"rank" = t.fields["rank"])))
