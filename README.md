@@ -6,8 +6,8 @@
 </p>
 
 "Ne participes, nec mors sequetur"
-# Oldstone
-Oldstone is a fantasy roleplaying game based on the source code for Blackstone, our aim is to provide a classic Blackstone experience, keeping the core features that made it the hit that it was in the first place.
+# FALLKIRK
+Fallkirk is a fantasy roleplaying game based on Blackstone, our aim is to provide a classic Blackstone experience, keeping the core features that made it the hit that it was in the first place while reimagining it in modern code standards.
 
 ## Wiki
 The wiki is currently being worked on.
